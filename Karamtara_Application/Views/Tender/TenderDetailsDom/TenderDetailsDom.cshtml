@@ -1,0 +1,307 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@{
+    ViewBag.Title = "TenderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{int colCount = Model.LineList.Count;}
+<div class="main-content mainContentPaddingBtm">
+    <input type="hidden" value="@Model.EnquiryId" id="hidEnqId" name="enquiryId" />
+    <input type="hidden" value="@Model.BomId" id="hidBomId" name="bomId" />
+    <input type="hidden" value="@Model.RevisionNo" id="hidRevNo" name="revisionNo" />
+    <input type="hidden" value="1" id="hidTndId" name="TndId" />
+    <input type="hidden" value="1" id="hidTndRevNo" name="TndRevNo" />
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row prjNmBlock">
+                <div class="col-sm-8 align-self-center">
+                    <span>Project :</span>@Model.ProjectName
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" id="btnSubmit" class="createBomBtn saveBtn">SAVE</button>
+                    <button type="button" class="createBomBtn publishBtn">Publish</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="row AddOptnDtl">
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#RMModel">
+                    <img src="../../Assets/images/plusIcon.png" />RAW MATERIAL PRICE
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#BankGtyModel">
+                    <img src="../../Assets/images/plusIcon.png" />BANK GUARANTY
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#markupModel">
+                    <img src="../../Assets/images/plusIcon.png" />ADD MARKUP
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#FrghtChargModel">
+                    <img src="../../Assets/images/plusIcon.png" />FRIEGHT CHANRGES
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#TestChgModel">
+                    <img src="../../Assets/images/plusIcon.png" />ADD TEST CHARGES
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#auditTrial">
+                    <img src="../../Assets/images/plusIcon.png" />ADD FINAL PRICE
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="TenderDtlTable tableBlock">
+                <div class="row">
+                    <table class="table">
+                        <tr>
+                            <th class="SrNoDtl">Sr. No</th>
+                            <th class="Tenddesc">Description</th>
+                            <th class="unit">Unit </th>
+                            <th class="qtyWt" colspan="@(colCount + 1)">Quantity</th>
+                            @*<th class="uniWt">Unit Weight</th>*@
+                            <th class="uniGrWt excludeWt">Unit Gr. Wt.</th>
+                            <th class="uniNtWt excludeWt">Unit Nt. Wt.</th>
+                            <th class="totGrWt excludeWt">Total Gr. Wt.</th>
+                            <th class="totNtWt excludeWt">Total Nt. Wt.</th>
+                            <th class="uniCost">Unit Cost</th>
+                            <th class="uniFirm">Unit Ex-works Firm</th>
+                            <th class="uniInsu">Unit Freight & Insurance</th>
+                            <th class="lastBlankTD"></th>
+                        </tr>
+                        <tr>
+                            <td scope="col" class="SrNoDtl"></td>
+                            <td scope="col" class="Tenddesc"></td>
+                            <td scope="col" class="unit"></td>
+                            @foreach (var item in Model.LineList)
+                            {
+                                <td scope="col" class="qtyWt">@item.LineName</td>
+                                <td style="display:none"><input type="hidden" name="LineName" value="@item.LineId" /></td>
+                            }
+                            @*<td scope="col" class="qtyWt">TL-01</td>
+                                <td scope="col" class="qtyWt">TL-02</td>
+                                <td scope="col" class="qtyWt">TL-03</td>*@
+                            <td scope="col" class="qtyWtTotal excludeWt">Total</td>
+                            @*<td scope="col" class="uniWt">KG</td>*@
+                            <td scope="col" class="uniGrWt excludeWt">KG</td>
+                            <td scope="col" class="uniNtWt excludeWt">KG</td>
+                            <td scope="col" class="totGrWt excludeWt">KG</td>
+                            <td scope="col" class="totNtWt excludeWt">KG</td>
+                            <td scope="col" class="uniCost">INR</td>
+                            <td scope="col" class="uniFirm">INR</td>
+                            <td scope="col" class="uniInsu">INR</td>
+                            <td class="lastBlankTD"></td>
+                        </tr>
+                        <!--this is one complete block-->
+                        @if (Model.MasterList != null && Model.MasterList.Count > 0)
+                        {
+                            foreach (var data in Model.MasterList)
+                            {
+                                if (data.IsRelated)
+                                {
+                                    <tr>
+                                        <td scope="col" class="SrNoDtl">@data.SrNo</td>
+                                        <td scope="col" class="Tenddesc"> <input type="number" value=@data.Name contenteditable="false" onchange="editLineDetails(this)" />  </td>
+                                        <td scope="col" class="unit"> </td>
+                                        <td scope="col" class="qtyWt" colspan="@colCount"></td>
+                                        <td scope="col" class="qtyWtTotal">Total</td>
+                                        <td scope="col" class="uniGrWt"></td>
+                                        <td scope="col" class="uniNtWt"></td>
+                                        <td scope="col" class="totGrWt"></td>
+                                        <td scope="col" class="totNtWt"></td>
+                                        <td scope="col" class="uniCost"></td>
+                                        <td scope="col" class="uniFirm"></td>
+                                        <td scope="col" class="uniInsu"></td>
+                                        <td class="lastBlankTD"></td>
+                                    </tr>
+                                }
+                                else if (data.IsDirectChild)
+                                {
+                                    <tr>
+
+                                        <td scope="col" class="SrNoDtl"></td>
+                                        <td scope="col" class="Tenddesc">@data.Name</td>
+                                        <td scope="col" class="unit">Set</td>
+                                        @{ int lineNo = 1;}
+                                        @foreach (var item in Model.LineList)
+                                        {
+                                            int value = 0;
+                                            int qtyId = 0;
+                                            if (Model.LineQtyList.Any())
+                                            {
+                                                dynamic dynamic = Model.LineQtyList.Where(
+                                                x => x.ProductId == data.Id && Convert.ToInt32(x.Type) == Convert.ToInt32(data.Type) && x.ProductGroupId == data.ProductGroupId
+                                                && x.AssemblyId == data.AssemblyId && x.SubAssemblyId == data.SubAssemblyId && x.ComponentId == data.ComponentId
+                                                && x.LineId == item.LineId
+                                                ).FirstOrDefault();
+
+                                                if (dynamic != null)
+                                                {
+                                                    value = dynamic.Quantity;
+                                                    qtyId = dynamic.Id;
+                                                }
+                                            }
+                                            <td style="display:none"><input type="hidden" id="hidTenderLineQtyId" value="@qtyId" name="TenderLineQtyId" /></td>
+                                            <td scope="col" class="qtyWt" name='Line Id_' @lineNo>
+                                                <input type="number" ProductGroupId="@data.ProductGroupId" AssemblyId="@data.AssemblyId" SubAssemblyId="@data.SubAssemblyId"
+                                                       ComponentId="@data.ComponentId" TypeId="@data.Type" ProductId="@data.Id" value="@value" lineqtyid="@qtyId" lineId="@item.LineId"
+                                                       name='@item.LineName' onfocus="pushDetails(this)" onchange="editLineDetails(this)" />
+
+                                            </td>
+                                            lineNo++;
+                                        }
+                                        <td scope="col" class="qtyWtTotal">3354</td>
+                                        <td scope="col" class="uniGrWt">@data.TotalUnitGrWt</td>
+                                        <td scope="col" class="uniNtWt">@data.TotalUnitNetWt</td>
+                                        <td scope="col" class="totGrWt"></td>
+                                        <td scope="col" class="totNtWt"></td>
+                                        <td scope="col" class="uniCost">-</td>
+                                        <td scope="col" class="uniFirm">-</td>
+                                        <td scope="col" class="uniInsu">-</td>
+                                        <td class="lastBlankTD"></td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton" onclick="closeModal()">OK</button>
+                @*<button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="refreshList()">cancel</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var tenderLineDetails = [];
+
+    function successModal() {
+        $("#modalOkButton").html("OK");
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Record updated Successfully');
+        $("#successModel").modal('show');
+    }
+
+    function failureModal() {
+        $("#modalOkButton").html("OK");
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Record updation failed');
+        $("#successModel").modal('show');
+    }
+
+    $(document).ready(function () {
+        setTotalLineQuantity();
+    });
+
+    $("#btnSubmit").click(function () {
+
+        var array = JSON.stringify(tenderLineDetails);
+
+        $.ajax({
+            type: "post",
+            url: '/TenderDetailsDom/SaveLineQty?values=' + array,
+            success: function (data) {
+                if (data) {
+                    $(".modal").modal('hide');
+                    successModal();
+                    //window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    //})
+
+    function editLineDetails(element) {
+        setTotalLineQuantity();
+        var lineQtyId = $(element).attr("lineqtyid");
+        var index = tenderLineDetails.findIndex(x => x.LineQtyId == lineQtyId);
+        if (index != -1) {
+            tenderLineDetails[index].Quantity = $(element).val();
+        }
+    }
+
+    function pushDetails(element) {
+        var obj = {};
+        var lineQtyId = $(element).attr("lineqtyid");
+        var index = tenderLineDetails.findIndex(x => x.LineQtyId == lineQtyId);
+        if (index != -1) {
+            tenderLineDetails[index].Quantity = $(element).val();
+        }
+        else {
+            var customId = $(element).attr("lineqtyid");
+
+            if (customId == "0") {
+                customId = randomId();
+            }
+            $(element).attr("lineqtyid", customId)
+            obj.LineQtyId = customId;
+            obj.LineId = $(element).attr("lineId");;
+            obj.Quantity = $(element).val();
+            obj.TenderId = $("#hidTndId").val();
+            obj.TenderRevNo = $("#hidTndRevNo").val();
+            obj.BomId = $("#hidBomId").val();
+            obj.RevisionNo = $("#hidRevNo").val();
+            obj.ProductId = $(element).attr('productid');
+            obj.Type = $(element).attr('typeid');
+            obj.ProductGroupId = $(element).attr('productgroupid');
+            obj.AssemblyId = $(element).attr('assemblyid');
+            obj.SubAssemblyId = $(element).attr('subassemblyid');
+            obj.ComponentId = $(element).attr('componentid');
+            tenderLineDetails.push(obj);
+            obj = {};
+        }
+
+    }
+
+    function setTotalLineQuantity() {
+        var lineElements = $('.TenderDtlTable table').find('td.qtyWtTotal').not(".excludeWt");
+
+        $(lineElements).each(function (index, ele) {
+            var total = 0;
+            var lineItems = $(ele).parent().find('td.qtyWt');
+            $(lineItems).each(function (count, element) {
+                var value = parseFloat($(element).find("input").val())
+                if (value != "" && !isNaN(value))
+                    total = total + parseFloat(value);
+            });
+            $(ele).text(total);
+
+            var totalGrWt = $(ele).parent().find('td.totGrWt');
+            var UnitGrWt = $(ele).parent().find('td.uniGrWt').text();
+            var totalNtWt = $(ele).parent().find('td.totNtWt');
+            var UnitNtWt = $(ele).parent().find('td.uniNtWt').text();
+            if (UnitGrWt != "" && !isNaN(UnitGrWt))
+                $(totalGrWt).text((total * parseFloat(UnitGrWt)).toFixed(3));
+            if (UnitNtWt != "" && !isNaN(UnitNtWt))
+                $(totalNtWt).text((total * parseFloat(UnitNtWt)).toFixed(3));
+        });
+    }
+
+    function randomId() {
+        var S4 = function () {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        };
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+    function closeModal() {
+        $(".modal").modal('hide');
+        $("#successModel").modal('hide');
+    }
+</script>

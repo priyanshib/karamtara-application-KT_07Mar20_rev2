@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="~/Assets/css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="~/Assets/css/style.css" />
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+    <script src="~/Scripts/gijgo/combined/gijgo.min.js"></script>
+    <link href="~/Content/gijgo/combined/gijgo.min.css" rel="stylesheet" />
+
+    @*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="/scripts/jquery-2.1.0.min.js"></script>*@
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="~/Assets/js/popper.js"></script>
+    <script src="~/Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <script src="~/Assets/js/snackbar.min.js"></script>
+    <link href="~/Assets/css/css.css" rel="stylesheet">
+
+    <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+    <!-- Added for datepicker-->
+    <script>
+        @{
+            string username = "";
+            bool IsAdmin = false;
+            var userInfo = (Karamtara_Application.Models.UserModel)Session["UserData"];
+            if(userInfo != null)
+            {
+                username = (userInfo.FirstName + " " + userInfo.LastName);
+                IsAdmin = userInfo.UserTypeId == 1 ? true : false;
+            }
+
+        }
+    </script>
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="~/Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. @username <img src="~/Assets/images/user.png" /></div>
+                    <div class="logOut col-12">
+                        @Html.ActionLink("Logout", "Logout", "Login")
+                    </div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-10">
+                    <div class="row ">
+                        <div class="col-sm-1 text-center">
+                            <a href="~/Enquiry/CreateEnquiry">
+                                <img src="~/Assets/images/enquiry.png" />
+                                <div class="activities">Enquiry</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="~/ProductGroup/Index">
+                                <img src="~/Assets/images/assembleMaster.png" />
+                                <div class="activities">Product Group Master</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="~/AssemblyMaster/AssemblyMaster">
+                                <img src="~/Assets/images/assembleMaster.png" />
+                                <div class="activities">Assembly Master</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="~/SubAssemblyMaster/SubAssemblyMaster">
+                                <img src="~/Assets/images/prodMaster.png" />
+                                <div class="activities">Sub Assembly Master </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="~/ComponentMaster/ComponentMaster">
+                                <img src="~/Assets/images/prodMaster.png" />
+                                <div class="activities">Component Master</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="~/RawMaterialMaster/Index">
+                                <img src="~/Assets/images/RawMaterialMaster.png" />
+                                <div class="activities">Raw Material Master</div>
+                            </a>
+                        </div>
+                        <div class="col-sm-1 text-center">
+                            <a href="~/TestingMaster/Index">
+                                <img src="~/Assets/images/testMaster.png" />
+                                <div class="activities">Testing master</div>
+                            </a>
+                        </div>
+                        @*<div class="col-sm-1 text-center">
+            <img src="~/Assets/images/report.png" />
+            <div class="activities">Report</div>
+        </div>*@
+                        <div class="col-sm-1 text-center">
+                            <a href="~/BOMList/Index">
+                                <img src="~/Assets/images/invoice.svg" />
+                                <div class="activities">BOM</div>
+                            </a>
+                        </div>
+                        @if (IsAdmin)
+                        {
+                            <div class="col-sm-1 text-center">
+                                <a href="~/User/Index">
+                                    <img src="~/Assets/images/team.svg" />
+                                    <div class="activities">Users</div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-2 text-right fullscreen">
+                    <img src="~/Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+
+        @RenderBody()
+        @*<hr />*@
+    </div>
+
+</body>
+</html>
+
+<script>
+    var count = 2;
+    function AddRows() {
+        $.each(new Array(10), function (i) {
+            $('.addSubAssmBOM tr:last')
+                .after(' <tr>' +
+                    '<td><input type="text" class="catClass"></td>' +
+                    ' <td><input type="text" class="TechNameClass"></td>' +
+                    '<td><input type="text">' + '</tr>');
+
+            count++;
+
+        });
+    }
+    window.onload = AddRows;
+    $(document).ready(function () {
+        $(".fullscreen").click(function () {
+           // alert("fullscreen");
+            $(".header").slideToggle();
+        })
+
+
+        
+    })
+</script>

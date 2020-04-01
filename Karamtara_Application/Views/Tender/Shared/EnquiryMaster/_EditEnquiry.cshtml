@@ -1,0 +1,620 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+
+<script type="text/javascript">
+    @{ var rowCount=0;}
+</script>
+
+<div class="createTable tableBlock" id="EditEnquiryTopDiv">
+    <div class="row">
+        <table class="table tableCustomer">
+            <tr class="selectedActivies">
+                <td colspan="3">
+                    <div class="col-sm-12 p-1">
+                        <div class="row">
+                            <div class="activities col-sm-11 "><img src="/Assets/images/enquiry.png" height="20px" class="mr-10"><span class="titleHead">Edit Enquiry</span></div>                            
+                            <div class="collpaseClose col-sm-1 text-right"><img src="~/Assets/images/collapseClose.svg" height="12px"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTH">Tender Dept File No.</td>
+                <td colspan="2" class="TDtitle p-0 ">
+                    <span class="bmd-form-group ">
+                        @Html.TextBoxFor(x => x.TenderFileNo, null, new { @class = "w-100 text-left pl-10 pr-10", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.ProjectId)
+                        @Html.HiddenFor(x => x.IsPublished, new { id = "isPublished" })
+                        @Html.HiddenFor(x => x.RemovedBoqIds, new { id = "RemovedBoqIds" })
+                        @Html.HiddenFor(x => x.RemovedPsIds, new { id = "RemovedPsIds" })
+                        @Html.HiddenFor(x => x.RemovedOaIds, new { id = "RemovedOaIds" })
+                        </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTH">Project Name</td>
+                <td colspan="2" class="p-0">
+                    <span class="bmd-form-group ">
+                        @Html.TextBoxFor(x => x.ProjectName, null, new { @class = "w-100 text-left pl-10 pr-10", @readonly = "readonly" })
+                    </span>
+                   
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTH">Enquiry Type</td>
+                <td colspan="2" class="p-0">
+                    <div class="SelectTD">
+                        @if (Model.IsPublished)
+                        {
+                            @Html.DropDownListFor(x => x.EnquiryTypeId, new SelectList(Model.EnquiryTypeList, "Value", "Text", Model.EnquiryType), "Select Type", new { @class = "browser-default custom-select", @readonly = "readonly" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(x => x.EnquiryTypeId, new SelectList(Model.EnquiryTypeList, "Value", "Text", Model.EnquiryType), "Select Type", new { @class = "browser-default custom-select" })
+                        }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTH">End Customer Name</td>
+                <td colspan="2" class="p-0">
+                    @if (Model.IsPublished)
+                    {
+                        @Html.TextBoxFor(x => x.EndCustName, null, new { @class = "w-100 text-left pl-10 pr-10", @readonly = "readonly" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(x => x.EndCustName, null, new { @class = "w-100 text-left pl-10 pr-10" })
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTH">Enquiry Date</td>
+                <td colspan="2" class="calenderInput p-0">
+                    @Html.TextBoxFor(x => x.EnqDate, Model.EnqDate.ToLocalTime().Date.ToString("dd-MM-yyyy"), new { @placeholder = "Select Date of Enquiry", @id = "calEnqDate", @class = "calenderClass" })
+                </td>
+            </tr>
+            <tr>
+                <td class="tableTH">Enquiry Due Date</td>
+                <td colspan="2" class="calenderInput p-0">
+                    @Html.TextBoxFor(x => x.EnqDueDate, Model.EnqDueDate.ToLocalTime().Date.ToString("dd-MM-yyyy"), new { @placeholder = "Select Enquiry Due Date", @id = "calEnqDueDate", @class = "calenderClass" })
+                </td>
+            </tr>
+            <tr class="GreyBg">
+                <td class="tableTH">Add EPC Customers</td>
+                <td colspan="2">
+                    <button type="button" class="addRowBtn" id="minEPCBtn"><img src="~/Assets/images/countMin.png"></button>
+                    <span id="EPCCount" class="CountNo">@Model.CustomerList.Count</span>
+                    <button type="button" class="addRowBtn" id="addEPCBtn"><img src="~/Assets/images/countPlus.png"></button>
+                </td>
+            </tr>
+            @foreach (var x in Model.CustomerList)
+            {
+                rowCount++;
+                @Html.HiddenFor(y => x.EnquiryId);
+                <tr class="custDtlTR">
+                    <td colspan="3" class="p-0 customerDtls" id="customerDtls">
+                        <table class="table m-0 custDtlTable" id="custDtlTable">
+                            <tr>
+                                <td class="tableTH">Name of EPC Customers</td>
+                                <td colspan="2" class="TDtitle p-0">
+                                    <span class="bmd-form-group ">
+                                        @Html.TextBoxFor(y => x.EpCCustomerName, null, new { @class = "w-100 text-left pl-10 pr-10", @id = "EPCCustomerName_" + rowCount, @name = "EpCCustomerName" })
+                               </span>
+                                        </td>
+                            </tr>
+                            <tr>
+                                <td class="tableTH">Country</td>
+                                <td colspan="2" class="TDtitle p-0"> @Html.DropDownListFor(z => x.CountryId, new SelectList(Model.CountryList, "Id", "CountryName", x.CountryId), "Select Country", new { @class = "browser-default custom-select" })</td>
+                            </tr>
+                            <tr>
+                                <td class="tableTH">Date of Enquiry</td>
+                                <td class="calenderInput p-0">
+                                    @Html.TextBoxFor(y => x.EnquiryDate, x.EnquiryDate.ToLocalTime().Date.ToString("dd-MM-yyyy"), new { @placeholder = "DD-MM-YYYY", @id = "CustEnq" + rowCount, @class = "calenderClass calTest", @name = "EnquiryDate" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="tableTH">Expiry Date</td>
+                                <td class="calenderInput p-0">
+                                    @Html.TextBoxFor(y => x.ExpiryDate, x.ExpiryDate.ToLocalTime().Date.ToString("dd-MM-yyyy"), new { @placeholder = "DD-MM-YYYY", @id = "CustExp" + rowCount, @class = "calenderClass calTest", @name = "ExpiryDate" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tableTH">Attachments</td>
+                                <td class="p-0">
+                                    <div class="col-lg-12 attFileDtls pl-1">
+                                        <div class="row">
+                                            <div class="col-lg-3 pr-0">
+                                                <label for="boqFile_@rowCount" class="bold mr-10">
+                                                    <img src="~/Assets/images/attachment.png" /> BOQ
+                                                </label>
+                                                @if (!string.IsNullOrEmpty(x.BoqFileName))
+                                                {
+                                                <div class="attachFilenm" id="divBoqFileName_@rowCount">
+                                                    <span class="bold"> BOQ File </span>
+                                                    <button type="button" class="removeButton boqFile_@rowCount" onclick="removeName(this, @rowCount, 'boq', @x.EnquiryId);" data-filName="boqName_">X</button>
+                                                    <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                                                </div>
+                                                }
+                                                else
+                                                {
+                                                <div class="attachFilenm d-none" id="divBoqFileName_@rowCount">
+                                                    <span class="bold"> </span>
+                                                    <button type="button" class="removeButton boqFile_@rowCount" onclick="removeName(this, @rowCount, 'boq', @x.EnquiryId);" data-filName="boqName_">X</button>
+                                                    <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                                                </div>
+                                                }
+                                                @Html.TextBox("BoqFile", null, new { @class = "form-control col-sm-8 d-none boqfileclass", type = "file", @id = "boqFile_" + rowCount })
+                                                @Html.HiddenFor(y => x.BoqFileName, new { id = "boqName_" + rowCount })
+                                            </div>
+
+                                            <div class="col-lg-5 pr-0">
+                                                <label for="proSpec_@rowCount" class="bold mr-10">
+                                                    <img src="/Assets/images/attachment.png" /> Project Specification
+                                                </label>
+                                                @if (!string.IsNullOrEmpty(x.ProjectSpecFileName))
+                                                {
+                                                    <div class="attachFilenm" id='divPsFileName_@rowCount'>
+                                                        <span class="bold">Project Specification</span>
+                                                        <button type="button" class="removeButton proSpec_@rowCount" onclick="removeName(this, @rowCount, 'prospec', @x.EnquiryId);" data-filName="proSpecName_">X</button>
+                                                        <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="attachFilenm d-none" id="divPsFileName_@rowCount">
+                                                        <span class="bold">project name</span>
+                                                        <button type="button" class="removeButton proSpec_@rowCount" onclick="removeName(this, @rowCount, 'prospec', @x.EnquiryId);" data-filName="proSpecName_">X</button>
+                                                        <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                                                    </div>
+                                                }
+                                                @Html.TextBox("ProjectSpecFile", null, new { @class = "form-control col-sm-8 d-none prospecfileclass", type = "file", @id = "proSpec_" + rowCount })
+                                                @Html.HiddenFor(y => x.ProjectSpecFileName, new { id = "proSpecName_" + rowCount })
+                                            </div>
+
+                                            <div class="col-lg-4 pr-0">
+                                                <label for="otherAttach_@rowCount" class="bold">
+                                                    <img src="/Assets/images/attachment.png" /> Other Attachments
+                                                </label>
+                                                @if (!string.IsNullOrEmpty(x.OtherFileName))
+                                                {
+                                                    <div class="attachFilenm" id="divOtherFileName_@rowCount">
+                                                        <span class="bold"> Other File </span>
+                                                        <button type="button" class="removeButton otherAttach_@rowCount" onclick="removeName(this, @rowCount, 'oa', @x.EnquiryId);" data-filName="otherName_">X</button>
+                                                        <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="attachFilenm d-none" id="divOtherFileName_@rowCount">
+                                                        <span class="bold">project name</span>
+                                                        <button type="button" class="removeButton otherAttach_@rowCount" onclick="removeName(this, @rowCount, 'oa', @x.EnquiryId);" data-filName="otherName_">X</button>
+                                                        <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                                                    </div>
+                                                }
+                                                @Html.TextBox("OtherFile", null, new { @class = "form-control col-sm-8 d-none otherfileclass", type = "file", @id = "otherAttach_" + rowCount })
+                                                @Html.HiddenFor(y => x.OtherFileName, new { id = "otherName_" + rowCount })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            }
+            <!--this block going to repeted-->
+            <tr>
+                <td rowspan="2" class="tableTH">Add Project Summary</td>
+                <td colspan="2" class="summaryTD">
+                    @Html.TextAreaFor(x => x.Summary, new { @rows = "8" })
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="p-0">
+                    <button type="button" class="submitEnq cancelEnq" id="btnCancel" onclick="clearData(false);">Cancel</button>
+                    <button type="button" class="submitEnq" id="btnSave" onclick="submitFunction(false);">Save</button>
+                    <button type="button" class="submitEnq sucessEnq" onclick="submitFunction(true);" id="btnCreateEnq">Publish</button>
+                    @*<button type="button" class="submitEnq attachmentBtn"><img src="~/Assets/images/attachment.png" />attachment</button>*@
+                    <label for="Attachment" class="bold">
+                        <img src="/Assets/images/attachment.png" /> Attachment
+                    </label>
+                    @if (!string.IsNullOrEmpty(Model.EnquiryAttachmentName))
+                    {
+                        <div class=" attachFilenm text-right pr-4" id="divAttachment">
+                            <span class="bold">Project Attachment</span>
+                            <button type="button" class="removeButton" onclick="removeAttachment(this);" data-filName="attachmentName_">X</button>
+                            <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="attachFilenm d-none" id="divAttachment">
+                            <span class="bold">Project Attachment</span>
+                            @*<button type="button" class="removeButton" onclick="removeName(this);">X</button>*@
+                            @*<button type="button" class="removeButton boqFile_@rowCount" onclick="removeName(this, @rowCount);" data-filName="boqName_">X</button>*@
+                            <img class="attachImg" src="/Assets/images/AllFile.svg" />
+                        </div>
+                    }
+                    @Html.TextBox("EnquiryAttachment", null, new { @class = "form-control col-sm-8 d-none", type = "file", @id = "Attachment", data_count = "1" })
+                    @Html.HiddenFor(y => y.EnquiryAttachmentName, new { id = "attachmentName_1", @readonly = "readonly" })
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    function submitFunction(value) {
+
+        const calendarwale = document.querySelectorAll('.calenderClass');
+        calendarwale.forEach(item => {
+            var dateValue = item.value;
+            if (dateValue) {
+                var result = validatedate(dateValue);
+                if (!result) {
+                    item.value = '';
+                    item.setAttribute('required', 'required');
+                    return false;
+                }
+            }
+            else {
+                item.setAttribute('required', 'required');
+                return false;
+            }
+        });
+
+        if (value == false) {
+            $('#isPublished').val(false);
+            var url = '@Url.Action("EditProject", "TenderEnquiry", new { IsPubllished = false })';
+            $("#CreateEnquiryForm").attr('action', url);
+        }
+        else {
+            $('#isPublished').val(true);
+            var url = '@Url.Action("EditProject", "TenderEnquiry", new { IsPubllished = true })';
+            $("#CreateEnquiryForm").attr('action', url);
+        }
+
+        var form = $('#CreateEnquiryForm');
+        form.submit();
+    };
+
+    function validatedate(inputText) {
+        var dateformat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+        // Match the date format through regular expression
+        if (inputText.match(dateformat)) {
+            //Test which seperator is used '/' or '-'
+            var pdate = inputText.split('-');
+
+            var dd = parseInt(pdate[0]);
+            var mm = parseInt(pdate[1]);
+            var yy = parseInt(pdate[2]);
+
+            // Create list of days of a month [assume there is no leap year by default]
+            var ListofDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            if (mm == 1 || mm > 2) {
+                if (dd > ListofDays[mm - 1]) {
+                    return false;
+                }
+                else
+                    return true;
+            }
+            if (mm == 2) {
+                var lyear = false;
+                if ((!(yy % 4) && yy % 100) || !(yy % 400)) {
+                    lyear = true;
+                }
+                if ((lyear == false) && (dd >= 29)) {
+                    return false;
+                }
+                if ((lyear == true) && (dd > 29)) {
+                    return false;
+                }
+                else
+                    return true;
+            }
+            else
+                return false;
+        }
+        else {
+            return false;
+        }
+    }
+
+    $(".collpaseClose").click(function () {
+        $(".collapseSide").removeClass("col-sm-7").addClass("col-sm-12");
+        $(".collapseHide").css("display", "none");
+        $(".enquiryTd").css("display", "none");
+        $(".creteEnquiryTd").css("display", "table-cell");
+    })
+
+    $(document).ready(function () {
+        $('.calenderClass').each(function () {
+            $(this).datepicker({
+                uiLibrary: 'bootstrap4',
+                autoclose: true,
+                todayHighlight: true,
+                format: "dd-mm-yyyy",
+                changeYear: true,
+                showStatus: true,
+                showWeeks: true,
+                currentText: 'Now',
+                autoSize: true,
+                gotoCurrent: true,
+                showAnim: 'blind',
+                highlightWeek: true
+            });
+        });
+
+        $("#Attachment").change(function () {
+            var filename = this.files[0].name;
+            $("#divAttachment span").text(filename);
+            $("#divAttachment").removeClass('d-none');
+        });
+    });
+
+
+    $(document).ready(function () {
+        var data = $(".custDtlTable").length;
+
+        for (i = 1; i <= data; i++) {
+            $('#boqFile_' + i).addClass('noValidate');
+            $('#proSpec_' + i).addClass('noValidate');
+
+            (function () {
+                var m = i;
+                $("#boqFile_" + i).on("change", function () {
+                    var filename = this.files[0].name;
+                    $("#divBoqFileName_" + m + " span").text(filename);
+                    $("#divBoqFileName_" + m).removeClass('d-none');
+                    $('label[for=boqFile_' + m + ']').closest('label').attr('style', 'color:black');
+                    $("#boqName_" + m).val("");
+                });
+            })();
+
+            (function () {
+                var m = i;
+                $("#proSpec_" + m).on("change", function () {
+                    var filename = this.files[0].name;
+                    $("#divPsFileName_" + m + " span").text(filename);
+                    $("#divPsFileName_" + m).removeClass('d-none');
+                    $('label[for=proSpec_' + m + ']').closest('label').attr('style', 'color:black');
+                    $("#proSpecName" + m).val("");
+                });
+            })();
+
+            (function () {
+                var m = i;
+                $("#otherAttach_" + m).on("change", function () {
+                    var filename = this.files[0].name;
+                    $("#divOtherFileName_" + m + " span").text(filename);
+                    $("#divOtherFileName_" + m).removeClass('d-none');
+                    $("#otherName_" + m).val("");
+                });
+            })();
+        }
+    });
+
+    $(document).ready(function () {
+        var isPublished = '@Model.IsPublished'
+        if (isPublished == 'True') {
+            $('.calenderClass').each(function () {
+            })
+        }
+        });
+
+    function removeAttachment(elem) {
+        $("#divAttachment").addClass('d-none');
+        $("#attachmentName_1").val('');
+        //var className = $(elem).attr('class');
+        //var id = className.replace(/\s+/g, "").replace('removeButton', '');
+        //$('#' + id).val('');
+        //var changeId = $(elem).attr('data-filName');
+        //$("#" + changeId + num).val("");
+    };
+
+    function removeName(elem, num, type, enqId) {
+        if (type == 'boq') {
+            var oldValue = $("#RemovedBoqIds").val();
+            var newValue = oldValue.concat(enqId + ', ');
+            $("#RemovedBoqIds").val(newValue);
+        }
+        else if (type == 'prospec') {
+            var oldValue = $("#RemovedPsIds").val();
+            var newValue = oldValue.concat(enqId + ', ');
+            $("#RemovedPsIds").val(newValue);
+        }
+        else if (type == 'oa') {
+            var oldValue = $("#RemovedOaIds").val();
+            var newValue = oldValue.concat(enqId + ', ');
+            $("#RemovedOaIds").val(newValue);
+        }
+
+        $(elem).parent().addClass('d-none');
+                var className = $(elem).attr('class');
+                var id = className.replace(/\s+/g,"").replace('removeButton', '');
+        $('#' + id).val('');
+                var changeId = $(elem).attr('data-filName');
+        $("#" + changeId + num).val("");
+    }
+
+        //clone EPC section
+    var count = @Model.CustomerList.Count;
+    var EPC = '<tr class="custDtlTR"> <td colspan="3" class="p-0 customerDtls" id="customerDtls"> <table class="table m-0 custDtlTable" id="tableNew2">'+
+        '<tr> <td class="tableTH">Name of EPC Customers</td> <td colspan="2" class="TDtitle p-0">' +
+        '<span class="bmd-form-group">@Html.TextBox("x.EPCCustomerName", null, new { @id = "EpcCustomerName", @class = "validateThis" })</span>' +
+        '<tr> <td class="tableTH">Country</td> <td colspan="2" class="TDtitle p-0">' +
+        '<select id="CountryD_0" class = "browser-default custom-select" name="x.CountryId"><option value="0" >Select Country</option></select> </td></tr>' +
+        '</td> </tr> <tr> <td class="tableTH">Date of Enquiry</td> <td class="calenderInput p-0">' +
+        '@Html.TextBox("x.EnquiryDate", DateTime.Now.ToLocalTime().Date.ToString("dd-MM-yyyy"),new { @placeholder = "DD-MM-YYYY", @id = "CustEnq", @class = "calenderClass calTest" }) </td> </tr> <tr> <td class="tableTH">Expiry Date</td>' +
+        '<td class="calenderInput p-0" > @Html.TextBox("x.ExpiryDate", null, new { @placeholder = "DD-MM-YYYY", @id = "CustExp", @class = "calenderClass calTest" })' +
+        '</td> </tr> <tr> <td class="tableTH">Attachments</td> <td class="p-0"> <div class="col-lg-12 attFileDtls pl-1"> <div class="row"><div class="col-lg-3 pr-0">' +
+        '<label for="boqFile" class="bold mr-10" id="labelForB"> <img src="/Assets/images/attachment.png" /> BOQ </label>' +
+        '<div class="attachFilenm d-none" id = "divBoqFileNameNew" > <span class="bold">project name</span>' +
+        '<button type = "button" class="removeButton boqFile" onClick = "removeName(this);" > X</button > <img class="attachImg" src="/Assets/images/AllFile.svg" />' +
+        '</div>@Html.TextBox("BoqFile", null, new { @class = "form-control col-sm-8 d-none", type = "file", @id = "boqFileNew" }) </div><div class="col-lg-5 pr-0">'+
+        '<label for="proSpec" class="bold mr-10" id="labelForPS"> <img src="/Assets/images/attachment.png" /> Project Specification </label>' +
+        '<div class="attachFilenm d-none" id="divPsFileNameNew"> <span class="bold">project name</span>' +
+        '<button type = "button" class="removeButton proSpec" onClick = "removeName(this);" > X</button > <img class="attachImg" src="/Assets/images/AllFile.svg" />' +
+        '</div> @Html.TextBox("ProjectSpecFile", null, new { @class = "form-control col-sm-8 d-none", type = "file", @id = "proSpecNew" })' +
+        '</div><div class="col-lg-4 pr-0"> <label for="otherAttach" class="bold" id="labelForOA"><img src="/Assets/images/attachment.png" />' +
+        'Other Attachments</label > <div class="attachFilenm d-none" id="divOtherFileNameNew">  <span class="bold">project name</span>' +
+        '<button type="button" class="removeButton otherAttach" onClick="removeName(this);">X</button> <img class="attachImg" src="/Assets/images/AllFile.svg" />'+
+        '</div> @Html.TextBox("OtherFile", null, new { @class = "form-control col-sm-8 d-none", type = "file", @id = "otherAttachNew" })' +
+        '</div> </div> </div> </td></tr> </table></td></tr>';
+
+    //$('#EpcCustomerName').rules('add', { required: true });
+
+    $("#addEPCBtn").click(function () {
+    count = count + 1;
+        document.getElementById("EPCCount").innerHTML = count;
+    $('.custDtlTR').last().after(EPC);
+    //var newTemp = 'EPCCustomerNameNew' + count;
+    //$('#EpcCustomerNameNew').attr('id', newTemp);
+    //$('#' + newTemp).attr('name', newTemp);
+
+    //ids nd all
+    var temp = 'boqFile' + count;
+    var newdivName = 'divBoqFileName' + count;
+    $('#boqFileNew').attr('id', temp);
+    $('#labelForB').attr('for', temp);
+    $('.boqFile').addClass(temp).removeClass('boqFile');
+    $('#labelForB').attr('id', 'labelForB' + count);
+    $('#divBoqFileNameNew').attr('id', newdivName);
+    $('#boqFile' + count).bind('change', function () {
+    var filename = this.files[0].name;
+    $("#" + newdivName + " span").text(filename);
+    $("#" + newdivName).removeClass('d-none');
+    $('label[for=' + temp +']').attr('style', 'color:black');
+    });
+
+    var temp2 = 'proSpec' + count;
+    $('#proSpecNew').attr('id', temp2);
+    $('#labelForPS').attr('for', temp2);
+    $('.proSpec').addClass(temp2).removeClass('proSpec');
+    $('#labelForPS').attr('id', 'labelForPS' + count);
+    var newdivName1 = 'divPsFileName' + count;
+    $('#divPsFileNameNew').attr('id', newdivName1);
+    $('#proSpec' + count).bind('change', function () {
+    var filename = this.files[0].name;
+    $("#" + newdivName1 + " span").text(filename);
+    $("#" + newdivName1).removeClass('d-none');
+    $('label[for=' + temp2 + ']').closest('label').attr('style', 'color:black');
+    });
+
+    var temp3 = 'otherAttach' + count;
+    $('#otherAttachNew').attr('id', temp3);
+    $('#labelForOA').attr('for', temp3);
+    $('.otherAttach').addClass(temp3).removeClass('otherAttach');
+    $('#labelForOA').attr('id', 'labelForOA' + count);
+    var newdivName2 = 'divOtherFileName' + count;
+    $('#divOtherFileNameNew').attr('id', newdivName2);
+    $('#otherAttach' + count).bind('change', function () {
+    var filename = this.files[0].name;
+    $("#" + newdivName2 + " span").text(filename);
+    $("#" + newdivName2).removeClass('d-none');
+    });
+
+    $('#CreateEnquiryForm').validate();
+    {
+    };
+
+    $("input[class*=validateThis]").each(function () {
+    $(this).rules('add', { required: true });
+    });
+
+    //$(".removeButton").click(function () {
+    //   $(this).parent().addClass('d-none');
+    //});
+
+
+    //$('#boqFile' + count).bind('change', function () {
+    //    var filename = this.files[0].name;
+    //    $(this).siblings('.attachFilenm').removeClass('d-none');
+    //    var a = $('.attachFilenm span');
+    //    $(this).siblings('.attachFilenm span').html(filename);
+    //});
+
+    //$('#boqFile' + count).bind('change', function () {
+    //    var filename = this.files[0].name;
+    //    $(this).siblings('.attachFilenm').removeClass('d-none');
+    //    var a = $('.attachFilenm span');
+    //    $(this).siblings('.attachFilenm span').html(filename);
+    //});
+
+    //$('#boqFile' + count).bind('change', function () {
+    //    var filename = this.files[0].name;
+    //    $(this).siblings('.attachFilenm').removeClass('d-none');
+    //    var a = $('.attachFilenm span');
+    //    $(this).siblings('.attachFilenm span').html(filename);
+    //});
+
+    $("#CustEnq").attr("id", "CustEnq" + count);
+    $("#CustEnq" + count).datepicker({
+    uiLibrary: 'bootstrap4',
+    autoclose: true,
+    todayHighlight: true,
+    format: "dd-mm-yyyy",
+    changeYear: true,
+    showStatus: true,
+    showWeeks: true,
+    currentText: 'Now',
+    autoSize: true,
+    gotoCurrent: true,
+    showAnim: 'blind',
+    highlightWeek: true
+    });
+
+    $("#CustExp").attr("id", "CustExp" + count);
+    $("#CustExp" + count).datepicker({
+    uiLibrary: 'bootstrap4',
+    autoclose: true,
+    todayHighlight: true,
+    format: "dd-mm-yyyy",
+    changeYear: true,
+    showStatus: true,
+    showWeeks: true,
+    currentText: 'Now',
+    autoSize: true,
+    gotoCurrent: true,
+    showAnim: 'blind',
+    highlightWeek: true
+        });
+
+        $("#CountryD_0").attr('id', 'CountryD_' + count);
+        var element = $("#CountryD_" + count);
+        element.empty(); // remove old options
+        element.append($("<option></option>").attr("value", '').text('Select Country'));
+
+        $.map(arrayOfArrays, function (item) {
+            element.append($("<option></option>").attr("value", item.Id).text(item.CountryName));
+        });
+    });
+
+    $("#minEPCBtn").click(function () {
+    if (count > 1) {
+    count = count - 1;
+    }
+    document.getElementById("EPCCount").innerHTML = count;
+    $('.tableCustomer').find('.custDtlTR').not(':first').last().remove();
+    });
+
+    function clearData(value) {
+        $('#EditEnquiryTopDiv').find('input:text').val('');
+
+        $(".custom-select").each(function () {
+            $(this)[0].selectedIndex = 0;
+        });
+        window.location.reload();
+    }
+
+    //$(document).ready(function () {
+    //    $('[id]').each(function () {
+    //        var ids = $('[id="' + this.id + '"]');
+    //        if (ids.length > 1 && ids[0] == this)
+    //            console.warn('Multiple IDs #' + this.id);
+    //    });
+    //});
+
+</script>

@@ -1,0 +1,22 @@
+﻿@model Karamtara_Application.Models.SubAssemblyMasterModel
+
+<div class="createProdDtls tableBlock">
+    <div class="row">
+        <table class="table ParentTable">
+            <tr>
+                <th class="CatNo">Cat. No /  Drawing No</th>
+                <th class="" colspan="2">Sub Assembly Name</th>
+            </tr>
+            @foreach (var item in Model.SubAssemblyList)
+            {
+                <tr onclick="GetComponents(@item.SubAssemblyId, this);" class="selectionRow">
+                    <td>@item.CatalogueNo @(string.IsNullOrEmpty(item.DrawingNo) ? "" : ("/ " + item.DrawingNo))</td>
+                    <td>@item.SubAssemblyName</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>
+
+

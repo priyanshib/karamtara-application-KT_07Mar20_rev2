@@ -1,0 +1,37 @@
+else if (calEvent.title == 'A') {
+    var tooltip = '<table class="tooltipevent table table-bordered table-hover caltable2 grids" style=""> <tr><td>InTime:</td><td>' + calEvent.InTime + '</td></tr><tr><td>OutTime:</td><td>' + calEvent.OutTime + '</td></tr><tr><td>TotalDuration:</td><td>' + calEvent.TotalDuration + '</td></tr></table>';
+    var $tooltip = $(tooltip).appendTo('body');
+    $(this).wrap('<a id="link" href="/Leave/LeaveApplication.aspx" />')
+
+    $(this).parent().mouseover(function (e) {
+        $(this).css('z-index', 10000);
+        $tooltip.fadeIn('500');
+        $tooltip.fadeTo('10', 1.9);
+    }).mousemove(function (e) {
+        $tooltip.css('top', e.pageY + 10);
+        $tooltip.css('left', e.pageX + 20);
+    });
+
+
+}
+else {
+    var tooltip = '<table class="tooltipevent table table-bordered table-hover caltable2 grids" style=""> <tr><td>InTime:</td><td>' + calEvent.InTime + '</td></tr><tr><td>OutTime:</td><td>' + calEvent.OutTime + '</td></tr><tr><td>TotalDuration:</td><td>' + calEvent.TotalDuration + '</td></tr></table>';
+    var $tooltip = $(tooltip).appendTo('body');
+}
+
+if (calEvent.title != 'A') {
+    $(this).mouseover(function (e) {
+        $(this).css('z-index', 10000);
+        $tooltip.fadeIn('500');
+        $tooltip.fadeTo('10', 1.9);
+    }).mousemove(function (e) {
+        $tooltip.css('top', e.pageY + 10);
+        $tooltip.css('left', e.pageX + 20);
+    });
+}
+},
+
+eventMouseout: function (calEvent, jsEvent) {
+$(this).css('z-index', 8);
+$('.tooltipevent').remove();
+}

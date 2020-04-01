@@ -1,0 +1,209 @@
+﻿@using Karamtara_Application.Models.Tender
+@model CurrencyDetailModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    decimal value = 0;
+    int i = 0;
+}
+
+<div class="BomRefDtls main-container">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        Currency
+    </div>
+    <div class="col-sm-12 row BomRefItem m-0">
+        <div class="col-sm-5">
+            <div class="col-sm-8">
+                Cross Currency Margin
+                @{
+                    value = 0;
+                    if (Model.intTenderDetails != null && Model.intTenderDetails.Any())
+                    {
+                        dynamic = new ExpandoObject();
+                        dynamic = Model.intTenderDetails.Where(x => x.Description == "ConversionRate").FirstOrDefault();
+                        value = dynamic == null ? 0 : dynamic.Value;
+                    }
+                }
+                <p class="d-flex align-items-center mt-1"><input name="conversionRate" onblur="SetConversionRate(this)" value="@value" type="number" id="conversionRate" />%</p>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            @Html.DropDownListFor(x => x.CurrencyId, new SelectList(Model.CurrencyList, "Id", "Name", Model.CurrencyId), new { @class = "selectDrpdwn", @id = "BackCurrId" })
+        </div>
+        <div class="col-sm-4 text-right">
+            <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+            <button type="button" id="btnSubmitCurrency" class="submitEnq publishBtn">Submit</button>
+        </div>
+    </div>
+    <div class="col-sm-12 p-0">
+        <div class="tableBlock overflowModel">
+            <table class="table currencyTable">
+                <tr>
+                    <th class="intCurr">International Currency</th>
+                    <th class="convertRs">Convert into INR</th>
+                    <th class="convertRs">Actual Value</th>
+                    <th class="convertRs">Considered Value</th>
+                    <th class="convertRs">Display In View</th>
+                </tr>
+                @foreach (var item in Model.List)
+                {
+                    if (i == 2)
+                    {
+                        <tr>
+                            <th colspan="5" class="TenderRevisonName">Euro To Other Currencies</th>
+                        </tr>
+                    }
+                    i = i + 1;
+                    <tr>
+                        <td class="intCurr">@item.Name</td>
+                        <td class="convertRs currencyValue"><input id="currencyName" type="number" currencyid="@item.Id" currencyname="@item.Name" value="@item.Value" onchange="SetCurrency(this)" class="whiteBgInput" /></td>
+                        <td class="convertRs actualValue"></td>
+                        <td class="convertRs consideredValue"></td>
+                        @if (item.Id == 1 && Model.TenderType == 2)
+                        {
+                            <td class="convertRs displayInView text-center">@Html.CheckBox("DisplayInView", true, new { @class = "displayInViewChkBox ", @id = "displayInView", @onchange = "SetCurrency(this)", @disabled = "disabled" })</td>
+                        }
+                        else
+                        {
+                            <td class="convertRs displayInView text-center">@Html.CheckBox("DisplayInView", @item.DisplayInView, new { @class = "displayInViewChkBox ", @id = "displayInView", @onchange = "SetCurrency(this)" })</td>
+                        }
+
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tndCurrency = [], conversionRate =@value, euroValue = 0, usdValue = 0, value, currencyValue, TenderType=@Model.TenderType;
+    if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+        usdValue = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+    }
+    if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+        euroValue = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+    }
+
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $(".bgBlue").find(".whiteBgInput").css("color", "#fff");
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").not(".close").hide();
+        $("input[type='button']").hide();
+        $("select").attr("disabled", true);
+    }
+    CalcActualConsideredValues();
+
+    function CalcActualConsideredValues() {
+        $('.currencyTable').find('td.currencyValue').each(function (index, item) {
+            var currencyName = $(item).find("input").attr("currencyname").toLowerCase();
+            if (currencyName == "euro") {
+                if (usdValue == 0) {
+                    $(item).parent().find(".actualValue").text(0);
+                    $(item).parent().find(".consideredValue").text(0);
+                }
+                else {
+                    value = (euroValue / usdValue);
+                    $(item).parent().find(".actualValue").text(value.toFixed(3));
+                    value += Number(conversionRate) / 100;
+                    $(item).parent().find(".consideredValue").text(value.toFixed(3));
+                }
+            }
+            else if (currencyName == "usd") {
+                if (euroValue == 0) {
+                    $(item).parent().find(".actualValue").text(0);
+                    $(item).parent().find(".consideredValue").text(0);
+                }
+                else {
+                    value = (usdValue / euroValue);
+
+                    $(item).parent().find(".actualValue").text(value.toFixed(3));
+                    value += Number(conversionRate) / 100;
+                    $(item).parent().find(".consideredValue").text(value.toFixed(3));
+                }
+            }
+            else {
+                currencyValue = 0;
+                if (currencyList.filter(x => (x.Name).toLowerCase() == currencyName).length > 0) {
+                    currencyValue = Number(currencyList.filter(x => (x.Name).toLowerCase() == currencyName)[0].Value);
+                }
+                else if (tndCurrency.filter(x => (x.CurrencyName).toLowerCase() == currencyName).length > 0) {
+                    currencyValue = Number(tndCurrency.filter(x => (x.CurrencyName).toLowerCase() == currencyName)[0].Value);
+                }
+                if (currencyValue == 0) {
+                    $(item).parent().find(".actualValue").text(0);
+                    $(item).parent().find(".consideredValue").text(0);
+                }
+                else {
+                    value = (euroValue / currencyValue);
+                    $(item).parent().find(".actualValue").text(value.toFixed(3));
+                    value += Number(conversionRate) / 100;
+                    $(item).parent().find(".consideredValue").text(value.toFixed(3));
+                }
+            }
+        });
+    }
+
+    function SetCurrency(element) {
+        var parentItem,inputElement,chkElement;
+        parentItem = $(element).closest("tr");
+        inputElement = $(parentItem).find("#currencyName");
+        chkElement = $(parentItem).find("#displayInView");
+
+        var currencyName = $(inputElement).attr("currencyname").toLowerCase();
+        if (currencyName == "usd") {
+            usdValue = Number($(inputElement).val());
+        }
+        else if (currencyName == "euro") {
+            euroValue = Number($(inputElement).val());
+        }
+        tndCurrency = tndCurrency.filter((x) => x.CurrencyId != $(inputElement).attr("currencyid"));
+        tndCurrency.push({ CurrencyId: $(inputElement).attr("currencyid"), CurrencyName: $(inputElement).attr("currencyname"), Value: $(inputElement).val(), DisplayInView: $(chkElement).prop("checked")});
+        CalcActualConsideredValues();
+    }
+
+    function SetConversionRate(element) {
+        conversionRate = $(element).val();
+        CalcActualConsideredValues();
+    }
+
+    $("#btnSubmitCurrency").click(function () {
+        if (!conversionRate) {
+            ShowSnackBar("Please enter conversion rate");
+        }
+
+        var array = JSON.stringify(tndCurrency);
+        var tndId = $("#tndId").val();
+        var tndRevId = $("#tndRevId").val();
+        var BackCurrId = $("#BackCurrId").val();
+        isControlChanged = false;
+        $.ajax({
+            type: "post",
+            data: { currencies: array, tndId: tndId, tndRevNo: tndRevId, conversionRate: conversionRate, CurrId: BackCurrId },
+            url: '/IntTenderPricingKT/SaveCurrency',
+            async: false,
+            success: function (data) {
+                if (data) {
+                    $(".modal").modal('hide');
+                    SubmitTestPrice();
+                    //SubmitMarkup();
+                    //SubmitFreight();
+                    window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,269 @@
+﻿@model Karamtara_Application.Models.UserModel
+@{
+    ViewBag.Title = "UserView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="col-sm-12 p-0">
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="tableBlock">
+                <div class="row">
+                    <table class="table">
+                        <tr>
+                            <th> Name </th>
+                            <th> Email </th>
+                            <th> Status </th>
+                            <th> Type of User </th>
+                        </tr>
+
+                        @foreach (var user in Model.UserList)
+                        {
+                            <tr>
+                                <td>
+                                    <label>  @(user.FirstName + " " + user.LastName) </label>
+                                </td>
+                                <td>
+                                    <label>  @user.Email </label>
+                                </td>
+                                <td>
+                                    <label>  @(user.IsActive ? "Active" : "Inactive") </label>
+                                </td>
+                                <td>
+                                    <label>   @user.UserType </label>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-7" style="box-shadow:-1px -1px 6px -1px #ccc">
+            <div class="container-fluid p-0">
+                <div class="col-sm-12 mb-5">
+                    <div class="text-center m-4">
+                        <img src="~/Assets/images/CreateUser.svg" width="50px" />
+                    </div>
+
+                    <div class="text-center createUserTxt">CREATE USER </div>
+                </div>
+                @using (Html.BeginForm("CreateUsers", "User", FormMethod.Post, new { @id = "CreateUsersForm", enctype = "multipart/form-data" }))
+                {
+                    <div class="UserForms pr-5 pl-5">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <img src="~/Assets/images/addUser.svg" width="30px" class="AddUserImg" />
+                            </div>
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="userLabel">Email Id</label>
+                                            <input type="email" class="form-control userInput" id="email_1" name="emailId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="userTypes" class="userLabel">Type of User</label>
+                                            @Html.DropDownList("UserType", new SelectList(Model.UserTypeList, "TypeId", "TypeName"), new { @id = "userTypes", @class = "form-control userInput" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="userDivider"></div>*@
+                    <div class="UserForms pr-5 pl-5 ">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <img src="~/Assets/images/addUser.svg" width="30px" class="AddUserImg" />
+                            </div>
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="userLabel">Email Id</label>
+                                            <input type="email" class="form-control userInput" id="email_2" name="emailId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="userTypes" class="userLabel">Type of User</label>
+                                            @Html.DropDownList("UserType", new SelectList(Model.UserTypeList, "TypeId", "TypeName"), new { @id = "userTypes", @class = "form-control userInput" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="userDivider"></div>*@
+                    <div class="UserForms pr-5 pl-5">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <img src="~/Assets/images/addUser.svg" width="30px" class="AddUserImg" />
+                            </div>
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="userLabel">Email Id</label>
+                                            <input type="email" class="form-control userInput" id="email_3" name="emailId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="userTypes" class="userLabel">Type of User</label>
+                                            @Html.DropDownList("UserType", new SelectList(Model.UserTypeList, "TypeId", "TypeName"), new { @id = "userTypes", @class = "form-control userInput" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="UserForms pr-5 pl-5">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <img src="~/Assets/images/addUser.svg" width="30px" class="AddUserImg" />
+                            </div>
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="userLabel">Email Id</label>
+                                            <input type="email" class="form-control userInput" id="email_4" name="emailId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="userTypes" class="userLabel">Type of User</label>
+                                            @Html.DropDownList("UserType", new SelectList(Model.UserTypeList, "TypeId", "TypeName"), new { @id = "userTypes", @class = "form-control userInput" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="UserForms pr-5 pl-5">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <img src="~/Assets/images/addUser.svg" width="30px" class="AddUserImg" />
+                            </div>
+                            <div class="col-sm-11">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="email" class="userLabel">Email Id</label>
+                                            <input type="email" class="form-control userInput" id="email_5" name="emailId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="userTypes" class="userLabel">Type of User</label>
+                                            @Html.DropDownList("UserType", new SelectList(Model.UserTypeList, "TypeId", "TypeName"), new { @id = "userTypes", @class = "form-control userInput" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 mt-4 mb-4 text-center">
+                        <button type="button" class="createComponent blueBtn" id="createUserButton" onclick="createUsers();"> Create User </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function createUsers() {
+        var email1 = $("#email_1").val();
+        var email2 = $("#email_2").val();
+        var email3 = $("#email_3").val();
+        var email4 = $("#email_4").val();
+        var email5 = $("#email_5").val();
+
+        //function isEmail(email) {
+        //    var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        //    return regex.test(email);
+        //}
+
+        //if (!isEmail(email1) || !isEmail(email2) || !isEmail(email3) || !isEmail(email4) || !isEmail(email5))
+
+
+        if (email1 || email2 || email3 || email4 || email5) {
+
+            var form = $("#CreateUsersForm").serialize();
+
+            $.ajax({
+                type: "Post",
+                url: "/User/CreateUsers",
+                data: form,
+                dataType: 'json',
+                success: function (data) {
+                    if (data == true) {
+                        successModal();
+                        clearFields();
+                    }
+                    else
+                        failureModal(data);
+                },
+                error: function (err) {
+
+                }
+            });
+        }
+        else
+            emptyModal();
+    };
+
+    function successModal() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Users created successfully');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    function failureModal(data) {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Following users were not created because these users already exists<br><br>' + data);
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function emptyModal() {
+        $('#modalTitle').html('Info');
+        $('#modalBody').html('No Email Ids entered');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function clearFields() {
+        $('.userInput').each(function () {
+            $(this).prop('selectedIndex', 0);
+        });
+
+        $("input[type='email']").val('');
+    }
+
+</script>

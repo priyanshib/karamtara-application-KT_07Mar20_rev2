@@ -1,0 +1,284 @@
+﻿@model Karamtara_Application.Models.TenderListModel
+
+@{
+    int rowNum = 0;
+}
+<div class="col-sm-12">
+    <div class="row">
+        <table class="table prodDetails" id="prodTbl2">
+
+            <tr>
+                <th class="DeptNo">Tender File No</th>
+                <th class="productNm">Project Name</th>
+                <th class="createDt">Project Create Date</th>
+                <th class="DueDt">Project Due Date</th>
+            </tr>
+            @if (Model.ProjectList != null && Model.ProjectList.Count > 0)
+            {
+                foreach (var item in Model.ProjectList)
+                {
+                    rowNum++;
+                    <tr>
+                        <td class="DeptNo">
+                            <button type="button" class="addRowBtn" id="addRowBtnId"><img src="/Assets/images/addBtn.png" id="plusIcon_@rowNum" onclick="expCust(@rowNum);" /></button>
+                            @item.ProjectNo
+                        </td>
+                        <td class="productNm">@item.ProjectName</td>
+                        <td class="createDt">@item.ProjectCreateDate.ToString("dd-MM-yyyy")</td>
+                        <td class="DueDt">@item.ProjectDueDate.ToString("dd-MM-yyyy")</td>
+                    </tr>
+                    <tr class="collapseRow" id="custRow_@rowNum">
+                        <td colspan="6" class="p-0">
+                            <table class="collapseTable w-100">
+                                <tr>
+                                <tr>
+                                    <th class="bomCustNm">Customer Name</th>
+                                    <th class="bomEnq">Enquiry Due Date</th>
+                                    <th class="bomCtry">Country</th>
+                                    <th class="bomRevi">Bom No</th>
+                                    <th class="bomRevi">Bom Revision</th>
+                                    <th class="bomRevi">Tender Revision</th>
+                                    <th class="bomStatus">BOM Status</th>
+                                    <th class="Options">Options</th>
+                                </tr>
+                                @foreach (var innerTemp in Model.CustomerList.Where(x => x.ProjectId == item.ProjectId))
+                                {
+                                    <tr>
+                                        <td class="bomCustNm">@innerTemp.CustomerName</td>
+                                        <td class="bomEnq">@innerTemp.EnquiryDate.ToString("dd-MM-yyyy")</td>
+                                        <td class="bomCtry">@innerTemp.Country</td>
+                                        <td class="bomRevi">@innerTemp.BomId </td>
+                                        <td class="bomRevi">@innerTemp.BomRevisionId </td>
+                                        <td class="bomRevi">@innerTemp.TenderRevisionId </td>
+                                        <td class="bomStatus statusOpen">@innerTemp.Status</td>
+                                        <td class="Options statusOpen c-pointer">
+                                            <span id="" class="optionSpan"> Options</span>
+                                            <div class="ActnActivities tenderActionList" id="ActnActivities_@string.Format("{0}_{1}", innerTemp.TenderId, innerTemp.TenderRevisionId)">
+                                                <ul>
+                                                    @if (innerTemp.Status == "Tender Published")
+                                                    {
+                                                        <li onclick="ViewTender(@innerTemp.EnquiryId,@innerTemp.TenderId,@innerTemp.TenderRevisionId,@innerTemp.BomId,@innerTemp.BomRevisionId)"> View Tender</li>
+                                                        <li onclick="location.href='@Url.Action("ViewTenderBOM", "BOMRevision", new { enqId = innerTemp.EnquiryId, bomId = innerTemp.BomId, revNo = innerTemp.BomRevisionId, tndNo = innerTemp.TenderId, tndRevNo = innerTemp.TenderRevisionId })'">View Bom Costing</li>
+                                                        <li onclick="location.href='@Url.Action("DownloadTenderPricingData","Report", new { bomId = innerTemp.BomId, bomRevId = innerTemp.BomRevisionId, tenderId = innerTemp.TenderId, tenderRevId = innerTemp.TenderRevisionId })'">Tender Details Report<img src="~/Assets/images/download-white.svg" width="15px" class="ml-1" /></li>
+                                                        if (innerTemp.TenderRevisionId > 1)
+                                                        {
+                                                        <li onclick="location.href='@Url.Action("DomTenderCompareRevision", "Report", new { bomId = innerTemp.BomId, revId = innerTemp.BomRevisionId, tndId = innerTemp.TenderId, tndRevNo = innerTemp.TenderRevisionId })'">Tender Revision<img src="~/Assets/images/download-white.svg" width="15px" class="ml-1" /></li>
+                                                        }
+                                                        <li onclick="location.href='@Url.Action("DomTenderRevPricing", "Report", new { enqId = innerTemp.EnquiryId, bomId = innerTemp.BomId, revNo = innerTemp.BomRevisionId, tndId = innerTemp.TenderId, tndRevNo = innerTemp.TenderRevisionId })'">View Tnd Rev Report</li>
+                                                        <li>
+                                                            <div class="" data-toggle="modal" data-target="#ReportModel" onclick="ViewTenderReport(@innerTemp.TenderId)">
+                                                                RM Tonnage - Revision wise
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="" data-toggle="modal" data-target="#ReportModel" onclick="ViewTenderRMReport(@innerTemp.TenderId)">
+                                                                RM Price - Revision wise
+                                                            </div>
+                                                        </li>
+                                                        <li onclick="location.href='@Url.Action("GetCompQtyLevelReport", "Report", new { bomId = innerTemp.BomId, revNo = innerTemp.BomRevisionId})'">Component Quantity Level Report <img src="~/Assets/images/download-white.svg" width="15px" class="ml-1" /></li>
+                                                        <li onclick="location.href='@Url.Action("GetTenderProductReport", "Report", new { tenderId = innerTemp.TenderId, tenderRevId = innerTemp.TenderRevisionId })'">RM Tonnage - PG Wise<img src="~/Assets/images/download-white.svg" width="15px" class="ml-1" /></li>
+                                                        <li onclick="location.href='@Url.Action("GetTenderTonnageReport", "Report", new { tenderId = innerTemp.TenderId})'">RM Tonnage - Revision Wise<img src="~/Assets/images/download-white.svg" width="15px" class="ml-1" /></li>
+                                                        <li onclick="location.href='@Url.Action("DownloadTenderPricingCustomerData", "Report", new {bomId=innerTemp.BomId,bomRevId=innerTemp.BomRevisionId,tenderId=innerTemp.TenderId,tenderRevId=innerTemp.TenderRevisionId})'">Customer Quotation<img src="~/Assets/images/download-white.svg" width="15px" class="ml-1" /></li>
+
+                                                        //if (innerTemp.MaxTndRevNo == innerTemp.TenderRevisionId)
+                                                        //{
+                                                            <li onclick="CreateTndRevision(@innerTemp.EnquiryId,@innerTemp.TenderId,@innerTemp.TenderRevisionId,@innerTemp.BomId,@innerTemp.BomRevisionId)"> Create Tender Revision</li>
+                                                        //}
+                                                        @*<li onclick="location.href='@Url.Action("GetTenderTonnageReport", "Report", new { tenderId = innerTemp.TenderId})'">Revision Comparison</li>*@
+                                                    }
+                                                    else
+                                                    {
+                                                        <li onclick="EditTender(@innerTemp.EnquiryId,@innerTemp.TenderId,@innerTemp.TenderRevisionId,@innerTemp.BomId,@innerTemp.BomRevisionId)"> Edit Tender </li>
+                                                        <li onclick="ShowDeletionConfirmation(@innerTemp.TenderId,@innerTemp.TenderRevisionId)">Delete Tender</li>
+                                                    }
+                                                </ul>
+                                                <div class="closeMenu">
+                                                    <button type="button" class="close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="ReportModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+                <button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="CloseModal()">cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".optionSpan").click(function () {
+            $(this).next('.ActnActivities').toggle(200);
+        });
+        $(".closeMenu").click(function () {
+            $(".ActnActivities").hide();
+        });
+
+        $(document).mouseup(function (e) {
+            var container = $(".ActnActivities");
+            if (!container.is(e.target) && container.has(e.target).length === 0) {
+                container.fadeOut();
+            }
+        });
+    });
+    function CreateTndRevision(enqId, tndId, tndRevId, bomId, bomRevId) {
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/CreateTenderRev?tndId=' + tndId + '&tndRevId=' + tndRevId,
+            success: function (data) {
+                if (data) {
+                    $("div[id='snackbar']").remove();
+                    $('<div id="snackbar"></div>').appendTo('body');
+                    var x = document.getElementById("snackbar");
+                    x.innerHTML = "Revision created successfully";
+                    x.className = "snackBarshow";
+                    setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+                    setTimeout(function () {
+                        window.location.href = "/TenderPricing/TenderDetailsDom?enqId=" + enqId + "&bomId=" + bomId + "&revNo=" + bomRevId + "&tndId=" + tndId + "&tndRevNo=" + (tndRevId + 1);
+                    }, 1000);
+                }
+            },
+            error: function (courses) {
+                //ShowSnackbar("Revision creation failed");
+            }
+        });
+    }
+
+    function ViewTender(enqId, tndId, tndRevId, bomId, bomRevId) {
+        window.location.href = "/TenderPricing/ViewTenderDetailsDom?enqId=" + enqId + "&bomId=" + bomId + "&revNo=" + bomRevId + "&tndId=" + tndId + "&tndRevNo=" + tndRevId;
+    }
+
+
+    function ViewTenderReport(tndId) {
+        $.ajax({
+            type: "post",
+            url: "/report/TenderTonnage?tndId=" + tndId,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            beforeSend: function () {
+                $('.loaderGif').show();
+            },
+            success: function (data) {
+                $("#ReportModel").find(".modal-body").html(data);
+            },
+            complete: function () {
+                $('.loaderGif').hide();
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function ViewTenderRMReport(tndId) {
+        $.ajax({
+            type: "post",
+            url: "/report/GetTndRawMaterialPricing?tndId=" + tndId,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            beforeSend: function () {
+                $('.loaderGif').show();
+            },
+            success: function (data) {
+                $("#ReportModel").find(".modal-body").html(data);
+            },
+            complete: function () {
+                $('.loaderGif').hide();
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function EditTender(enqId, tndId, tndRevId, bomId, bomRevId) {
+        window.location.href = "/TenderPricing/TenderDetailsDom?enqId=" + enqId + "&bomId=" + bomId + "&revNo=" + bomRevId + "&tndId=" + tndId + "&tndRevNo=" + tndRevId;
+    }
+
+    function ShowDeletionConfirmation(tndId, tndRevId) {
+        $("#modalCancelButton").show();
+        $('#modalTitle').html('Confirm Deletion');
+        $("#modalOkButton").html("Yes");
+        $('#modalBody').html('Are you sure want to delete the record?');
+        $("#modalOkButton").attr('onclick', 'DeleteTender(' + tndId + ',' + tndRevId + ')');
+        $("#successModel").modal('show');
+    }
+
+    function CloseModal() {
+        $("#successModel").modal('hide');
+    }
+
+    function DeleteTender(tndId, tndRevId) {
+
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/CancelTenderRev?tndId=' + tndId + '&tndRevId=' + tndRevId,
+            success: function (data) {
+                $("#successModel").modal('hide');
+                if (data) {
+                    ShowSnackBar("Tender deleted successfully.");
+                    var delay = 2000;
+                    var redirectUrl = "/TenderList/GetDomesticTenders";
+                    setTimeout(function () { window.location.href = redirectUrl }, delay);
+
+                }
+                else {
+                    ShowSnackbar(" Error while deleting Tender.");
+                    window.location.href = "/TenderList/GetDomesticTenders/";
+                }
+            },
+            error: function (courses) {
+                $("#successModel").modal('hide');
+                failureModal();
+            }
+        });
+    }
+
+    $('.collapseRow').toggle();
+    $('[data-toggle="tooltip"]').tooltip();
+
+    function expCust(id) {
+        var ids = 'custRow_' + id;
+
+        if ($('#' + ids).is(':visible')) {
+            $('#' + ids).hide(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/addBtn.png");
+        }
+        else {
+            $('#' + ids).show(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/minBtn.png");
+        }
+    };
+</script>

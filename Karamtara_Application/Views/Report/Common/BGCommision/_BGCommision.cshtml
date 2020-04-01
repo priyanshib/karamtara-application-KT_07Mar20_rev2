@@ -1,0 +1,156 @@
+﻿@model Karamtara_Application.Models.Tender.TenderBGModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    dynamic.TenderNo = 0;
+    dynamic.TenderRevisionNo = 0;
+    dynamic.BGMonth = 0;
+    dynamic.CommisionPercentage = 0;
+    dynamic.BGPercentage = 0;
+    dynamic.BGAmount = 0;
+    dynamic.DeliveryMonth = 0;
+    dynamic.ContractValue = 0;
+    dynamic.PerformancePeriod = 18;
+    dynamic.GracePeriod = 3;
+    int tendorNo = Model.TenderNo;
+    int tendorRevNo = Model.TenderRevisionNo;
+    decimal bGMonth = 0;
+    decimal commisionPercentage = 0;
+    decimal bGPercentage = 0;
+    decimal bGAmount = 0;
+}
+
+
+@using (Html.BeginForm("SaveBGData", "TenderPricing", new { IsPublished = false }, FormMethod.Post, new { @id = "BGCommisionForm", enctype = "multipart/form-data" }))
+{
+   
+            if (Model.List != null && Model.List.Any())
+            {
+                dynamic = Model.List.FirstOrDefault();
+            }    
+       
+                <table class="table m-0 parentTable">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    <tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    <tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    <tr>
+                    <tr>
+                        <th class="TendSrNo">S.NO.</th>
+                        <th class="sapCode">Description</th>
+                    </tr>
+                    <tr>
+                        @{
+                            if (Model.List != null && Model.List.Any())
+                            {
+                                dynamic = new ExpandoObject();
+                                dynamic = Model.List.Where(x => x.BGType == 1).FirstOrDefault();
+                                if (dynamic != null)
+                                {
+                                    bGMonth = dynamic.BGMonth;
+                                    commisionPercentage = dynamic.CommisionPercentage;
+                                    bGPercentage = dynamic.BGPercentage;
+                                    bGAmount = dynamic.BGAmount;
+                                }
+                                else
+                                {
+                                    bGMonth = 0;
+                                    commisionPercentage = 0;
+                                    bGPercentage = 0;
+                                    bGAmount = 0;
+                                }
+                            }
+                            else
+                            {
+                                bGMonth = 0;
+                                commisionPercentage = 0;
+                                bGPercentage = 0;
+                                bGAmount = 0;
+                            }
+                        }
+
+                        <td class="TendSrNo">1</td>
+                        <td class="sapCode">Advance BG</td>
+                    </tr>
+                    <tr>
+                        @{
+                            if (Model.List != null && Model.List.Any())
+                            {
+                                dynamic = new ExpandoObject();
+                                dynamic = Model.List.Where(x => x.BGType == 2).FirstOrDefault();
+                                if (dynamic != null)
+                                {
+                                    bGMonth = dynamic.BGMonth;
+                                    commisionPercentage = dynamic.CommisionPercentage;
+                                    bGPercentage = dynamic.BGPercentage;
+                                    bGAmount = dynamic.BGAmount;
+                                }
+                                else
+                                {
+                                    bGMonth = dynamic.PerformancePeriod + dynamic.GracePeriod + dynamic.DeliveryMonth;
+                                    commisionPercentage = 0;
+                                    bGPercentage = 0;
+                                    bGAmount = 0;
+
+                                }
+                            }
+                            else
+                            {
+                                bGMonth = dynamic.PerformancePeriod + dynamic.GracePeriod + dynamic.DeliveryMonth;
+                                commisionPercentage = 0;
+                                bGPercentage = 0;
+                                bGAmount = 0;
+                            }
+                        }
+                        <td class="TendSrNo">2</td>
+                        <td class="sapCode">Performance BG</td>
+                    </tr>
+                    <tr>
+                        @{
+                            if (Model.List != null && Model.List.Any())
+                            {
+                                dynamic = new ExpandoObject();
+                                dynamic = Model.List.Where(x => x.BGType == 3).FirstOrDefault();
+                                if (dynamic != null)
+                                {
+                                    bGMonth = dynamic.BGMonth;
+                                    commisionPercentage = dynamic.CommisionPercentage;
+                                    bGPercentage = dynamic.BGPercentage;
+                                    bGAmount = dynamic.BGAmount;
+                                }
+                                else
+                                {
+                                    bGMonth = 0;
+                                    commisionPercentage = 0;
+                                    bGPercentage = 0;
+                                    bGAmount = 0;
+                                }
+                            }
+                            else
+                            {
+                                bGMonth = 0;
+                                commisionPercentage = 0;
+                                bGPercentage = 0;
+                                bGAmount = 0;
+                            }
+                        }
+                        <td class="TendSrNo">3</td>
+                        <td class="sapCode">Retention BG</td>
+                    </tr>
+                    <tr class="ModelFooter tableBlock">
+                        <td class="TendSrNo"></td>
+                        <td class="text-left">BG Commission %</td>
+                    </tr>
+                </table>
+          
+     
+}
+<script>   
+</script>

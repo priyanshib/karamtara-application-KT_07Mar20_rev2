@@ -1,0 +1,80 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+@using (Html.BeginForm("SubmitTechQuery", "Enquiry", FormMethod.Post, new { @id = "techQueryForm" }))
+{
+<div>
+    @if (Model.TechQueryList != null && Model.TechQueryList.Count > 0)
+    {
+        foreach (var x in Model.TechQueryList)
+        {
+    <div class="CreateCatDiv border-bottom">
+        <label class="qutnLabel"><img src="~/Assets/images/qutnIcon.svg" width="35px" class="mr-2"/>@x.Query</label>
+        @if (string.IsNullOrEmpty(x.Answer))
+        {
+            <div class="ansDiv"><img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2"/> @Html.TextBoxFor(y => x.Answer, null, new { @class = "tpClass" }) <input type="hidden" name="x.Id" value="@x.Id"></div>
+        }
+        else
+        {
+            <div class="ansDiv"> <img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2"/> @x.Answer  </div>
+        }
+        
+    </div>
+            @*<table class="table m-0">
+                <tr> <td> @x.Query </td> </tr>
+                @if (string.IsNullOrEmpty(x.Answer))
+                {
+                    <tr> <td> @Html.TextBoxFor(y => x.Answer, null, new { @class = "tpClass" }) <input type="hidden" name="x.Id" value="@x.Id"></td> </tr>
+                }
+                else
+                {
+                    <tr> <td> @x.Answer </td> </tr>
+                }
+            </table>*@
+
+        }
+    }
+    <div class="w-100 text-right mt-3 mb-3">
+        <button type="button" id="querySubmit" class="submitBomBtn publishBtn">Submit</button>
+    </div>
+   
+</div>
+}
+
+<script>
+
+    $("#querySubmit").on('click', function () {
+        $('input[type=text]').each(function () {
+            var getText = $(this).val() + '~!'; //here you can set your pattern superseded 88
+            $(this).val(getText);
+        });
+
+
+        var form = $("#techQueryForm").serialize();
+
+        $.ajax({
+            type: "post",
+            url: "/Enquiry/SubmitTechQuery",
+            dataType: "json",
+            data: form,
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data === true || data == 'true') {
+                    $("#Querymodal").modal('hide');
+                    alert('Queries updated Successfully');
+                    $("#enquirytxtSearch").val('');
+                }
+                else {
+                    $("#Querymodal").modal('hide');
+                    alert('Failed to update');
+                    $("#enquirytxtSearch").val('');
+                }
+                // $('#commentIcon_' + num).removeAttr('style');
+                //   $('#commentIcon_' + num).attr('title', comment);
+                //   $('#commentIcon_' + num).tooltip();
+            },
+            error: function (courses) {
+
+            }
+        });
+    })
+
+</script>

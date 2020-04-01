@@ -1,0 +1,67 @@
+﻿@model Karamtara_Application.Models.TenderListModel
+
+<div class="comparetenderDtl">
+
+    <div class="col-sm-12 BomRefHeader m-0">
+        <div class="row">
+            <div class="col-sm-9">
+                Compare Tender
+            </div>
+            <div class="col-sm-2 text-right">
+                <button type="button" class="submitBomBtn publishBtn" id="CompareTenders" onclick="CompareTenders()">Download Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tableBlock overflowModel">
+        <table class="table ">
+            <tr>
+                <th class="DeptNo text-center" style="width:20px">Tender File No</th>
+                <th class="productNm">Project Name</th>
+                <th class="bomCustNm" style="width:120px">Customer Name</th>
+                <th class="bomRevi text-center" style="width:20px">Bom Id</th>
+                <th class="bomRevi text-center" style="width:20px">Bom Revision</th>
+                <th class="bomRevi text-center" style="width:20px">Tender Revision</th>
+                <th class="checkCompare"></th>
+            </tr>
+            @{ var count = 1;}
+            @foreach (var item in Model.TndCompareList)
+            {
+                <tr>
+                    <td class="DeptNo text-center" style="width:20px">@count</td>
+                    <td class="productNm">@item.ProjectName</td>
+                    <td class="bomCustNm" style="width:120px">@item.CustomerName</td>
+                    <td class="bomRevi text-center" style="width:20px">@item.BomId</td>
+                    <td class="bomRevi text-center" style="width:20px">@item.BomRevisionNo</td>
+                    <td class="tndId text-center" style="width:20px;display:none;">@item.TenderId</td>
+                    <td class="tndRevNo text-center" style="width:20px">@item.TenderRevNo</td>
+                    <td class="checkCompare">
+                        <label class="container checkbox">
+                            <input type="checkbox" name="checkbox" value="0" id="chbox">
+                            <span class="checkmark"></span>
+                        </label>
+                    </td>
+                </tr>
+                count++;
+            }
+        </table>
+
+    </div>
+
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("input[name='checkbox']").change(function () {
+            var maxAllowed = 2;
+            var count = $("input[name='checkbox']:checked").length;
+            if (count > maxAllowed) {
+                $(this).prop("checked", "");
+                alert("Please select only two tenders for comparison");
+            }
+        })
+    });
+
+    
+</script>

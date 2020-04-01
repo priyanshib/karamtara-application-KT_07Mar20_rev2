@@ -1,0 +1,208 @@
+﻿@model Karamtara_Application.Models.LoginModel
+
+@{
+    Layout = null;
+}
+
+@if (Convert.ToInt32(TempData["Success"]) == -1)
+{
+    <script>ShowSnackBar("Password Reset link has Expired or is Invalid");</script>
+}
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="~/Assets/css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="~/Assets/css/style.css" />
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+
+    <script src="~/Assets/js/popper.js"></script>
+    <script src="~/Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <!-- Added for datepicker-->
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <!--
+
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"><img src="images/user.png" /> Mr. Sachin Sawant</div>
+                    <div class="logOut col-12">Logout</div>
+                </div>-->
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="main-content">
+            <div class="row loginBlock">
+                <span>Login</span>
+                @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @id = "LoginForm", @class = "loginForm", @autocomplete = "off" }))
+                {
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="email" class="font-weight-bold">Email Id</label>
+                        @Html.TextBoxFor(x => x.UserName, null, new { @class = "form-control", id = "email", @required = "required", @autocomplete = "off" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- manually specified -->
+                        <label for="password" class="font-weight-bold">Password</label>
+                        @Html.TextBoxFor(x => x.Password, null, new { @class = "form-control", id = "password", @type = "password", @required = "required", @autocomplete = "off" })
+                    </div>
+                    <div>
+                        <span id="errorSpan" class="errorSpanMsg m-0 text-left" style="display:none">Error</span>
+                    </div>
+                    <div class="loginBtn">
+                        <button type="submit" class="btn" id="loginBtn">LOGIN</button>
+                    </div>
+
+
+                    @*<div class="forgetPassBtn">
+                            <button type="button" class="btn">FORGET PASSWORD</button>
+                        </div>*@
+                    <div class="signup">
+                        <button type="button" class="btn" onclick="location.href='@Url.Action("Index", "Signup")'">SIGN UP</button>
+                    </div>
+                    <div class="forgotPassword">
+                        @*<button type="button" class="btn" onclick="location.href='@Url.Action("Index", "ManagePassword")'">Forgot Password</button>*@
+                        <a href="#" class="Bold" onclick="location.href='@Url.Action("Index", "ManagePassword")'">Forgot Password</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @*<a href="#" class="Bold" onclick="location.href='@Url.Action("TestEmail", "login")'">Send Mail</a>*@
+    @*<a href="#" class="Bold" onclick="location.href='/Report/DownloadIntTenderPricingDataK?enqId=12&bomId=8&bomRevId=1&tenderId=9&tenderRevId=2'">Download Int KT Tnd Dtls</a>
+    <a href="#" class="Bold" onclick="location.href='/Report/DownloadIntTenderPricingDataI?enqId=12&bomId=8&bomRevId=1&tenderId=10&tenderRevId=1'">Download Int Iselfa Tnd Dtls</a>
+    <a href="#" class="Bold" onclick="location.href='/Report/DownloadTenderPricingData?bomId=9&bomRevId=1&tenderId=11&tenderRevId=1'"> Dom Tnd Dtls</a>
+
+    <a href="#" class="Bold" onclick="location.href='/Report/IntTenderCompareRevisionK?bomId=8&revId=1&tndId=9&tndRevNo=2'"> Int KT Tnd Rev</a>
+    <a href="#" class="Bold" onclick="location.href='/Report/IntTenderCompareRevisionI?bomId=8&revId=1&tndId=10&tndRevNo=1'">Int Iselfa Tnd Rev</a>
+    <a href="#" class="Bold" onclick="location.href='/Report/DomTenderCompareRevision?enqId=14&bomId=9&revId=1&tndId=11&tndRevNo=1'">Dom Tnd Rev</a>*@
+
+    <div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modelHeader">
+                    <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="modalBody" class="lableMsg">  </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+
+    function ShowSnackBar(key) {
+        $("#snackbar").remove();
+        $('<div id="snackbar"></div>').appendTo('body');
+        var x = document.getElementById("snackbar");
+        x.innerHTML = key;
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    }
+
+    function disabledModal() {
+        $('#modalTitle').html('Info');
+        $('#modalBody').html('Your account is disabled. Kindly contact your administrator');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+
+        $("#errorSpan").html('');
+        $("#errorSpan").attr('style', 'display:none');
+    }
+
+    function failureModal() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Invalid Username or Password');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+
+        $("#errorSpan").html('');
+        $("#errorSpan").attr('style', 'display:none');
+    }
+    $("#email").on('keyup', function () {
+        $("#errorSpan").html('');
+        $("#errorSpan").attr('style', 'display:none');
+    });
+
+    $("#password").on('keyup', function () {
+        $("#errorSpan").html('');
+        $("#errorSpan").attr('style', 'display:none');
+    });
+
+    $("#loginBtn").on('click', function (e) {
+        e.preventDefault();
+        var userName = $("#email").val();
+        var passWord = $("#password").val();
+
+        if (!passWord || !userName) {
+            $("#errorSpan").html('Kindly fill both fields');
+            $("#errorSpan").removeAttr('style');
+            return false;
+        }
+
+        var model = { UserName: userName, Password: passWord };
+
+        $.ajax({
+            type: 'POST',
+            url: "/Login/Login",
+            data: JSON.stringify(model),
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (data) {
+                if (data.UserId > 0) {
+                    if (data.IsActive == true) {
+                        if (data.UserType == 'Design' || data.UserType == 'Design Admin') {
+                            var url = "/Enquiry/EnquiryList";
+                            window.location.replace(url);
+                        }
+                        else {
+                            var url = "/TenderEnquiry/CreateEnquiry";
+                            window.location.replace(url);
+                        }
+                    }
+                    else {
+                        disabledModal();
+                    }
+                }
+                else if (data.UserId == -1) {
+                    disabledModal();
+                }
+                else failureModal();
+            },
+            error: function (err) {
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        // $('#LoginForm input').attr('autocomplete', 'off');
+        $('#password').keypress(function (e) {
+            if (e.which === 13)
+                // ShowSnackBar('hi');
+                $("#loginBtn").click();
+        });
+
+    });
+
+</script>

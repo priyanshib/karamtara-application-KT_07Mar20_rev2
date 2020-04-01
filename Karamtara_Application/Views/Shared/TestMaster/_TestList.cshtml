@@ -1,0 +1,41 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+
+@{ 
+    int count = 1;
+}
+<div class="TestMasterdetails tableBlock">
+    <div class="row">
+        <table class="table TestMaterialTable ">
+            <tr>
+                <th class="srNo">Sr. NO.</th>
+                <th class="testType">Test Name</th>
+                <th class="testDes">Description of Test</th>
+                <th class="testType">Type</th>
+                <th class="testLine">kV Line</th>
+                <th class="testUTS">UTS</th>
+                <th class="testBundle">Bundle</th>
+                <th class="testSummary">Summary</th>
+            </tr>
+            @foreach (var test in Model.TestList)
+            {
+            <tr>
+                <td>@count</td>
+                <td>@test.TestName</td>
+                <td class="testDesTD">@test.TestDescription</td>
+                <td>@test.Type</td>
+                <td>@test.KVLine</td>
+                <td>@test.UTS</td>
+                <td>@test.Bundle</td>
+                <td class="text-center">
+                    <span class="tooltipHover c-pointer ">
+                       <img src="../Assets/images/assebleSummary.png" />
+                        <span class="tooltipShow testingListtooltips"> @test.Summary</span>
+                    </span>
+                 </td>
+            </tr>
+                count++;
+            }
+        </table>
+
+    </div>
+</div>

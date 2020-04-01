@@ -1,0 +1,946 @@
+﻿@using Karamtara_Application.Models.Tender
+@model IntFreightModel
+@using System.Dynamic;
+@{
+    /**/
+
+    decimal value = 0;
+    TenderPortDetails portDetails = null;
+    TenderPortNames portNames = null;
+    IntTenderDetails tndDetails = null;
+    decimal packingPercentage = decimal.Zero;
+}
+
+<div class="BomRefDtls intfreightTabs">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        FREIGHT DISTRIBUTION
+    </div>
+
+    @if (Model.TenderPortNames != null && Model.TenderPortNames.Any())
+    {
+        using (Html.BeginForm("SaveFreightCharges", "IntTenderPricing", FormMethod.Post, new { @id = "SeaFreightForm", @autocomplete = "off" }))
+        {
+            <div class="col-sm-12 row BomRefItem m-0 " id="dollarsPerCont">
+                <div class="col-sm-8 ">
+                    <div class="row addMarkInput">
+                        @{
+                            packingPercentage = decimal.Zero;
+                            tndDetails = new IntTenderDetails();
+                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                            {
+                                tndDetails = Model.IntTndValues.Where(x => x.Description == "PackingPercentage").FirstOrDefault() ?? new IntTenderDetails();
+                                packingPercentage = tndDetails.Value;
+                                if (packingPercentage > 0) { packingPercentage = (packingPercentage - 1) * 100; }
+                            }
+                        }
+                        @*<div class="col-sm-4">
+                                Dollars Per 40Ft Container
+                                @{
+                                    value = 0;
+                                    tndDetails = new IntTenderDetails();
+                                    if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                    {
+                                        tndDetails = Model.IntTndValues.Where(x => x.Description == "RsPerContainer").FirstOrDefault() ?? new IntTenderDetails();
+                                    }
+                                }
+                                <p class="d-flex align-items-center mt-1"><input name="RsPerContainer" onblur="SetFrtValues()" value="@tndDetails.Value" type="number" id="RsPerContainer" /></p>
+                            </div>
+                            <div class="col-sm-4">
+                                Dollars Per 20Ft Container
+                                @{
+                                    value = 0;
+                                    tndDetails = new IntTenderDetails();
+                                    if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                    {
+                                        tndDetails = Model.IntTndValues.Where(x => x.Description == "RsPer20FtContainer").FirstOrDefault() ?? new IntTenderDetails();
+                                    }
+                                }
+                                <p class="d-flex align-items-center mt-1"><input name="RsPer20FtContainer" onblur="SetFrtValues()" value="@tndDetails.Value" type="number" id="RsPer20FtContainer" /></p>
+                            </div>*@
+                    </div>
+                </div>
+                <div class="col-sm-4 text-right">
+                </div>
+            </div>
+            <div class="col-sm-12 row BomRefItem m-0 pb-0 pt-0">
+                <div class="col-sm-8 ">
+                    <div class="row addMarkInput portTabHeadingContainer">
+                        @{
+                            foreach (var item in Model.TenderPortNames)
+                            {
+                                <div class="col-sm-2 pb-2 pt-2 pl-0 pr-0 text-center c-pointer activePort" currencyvalue="@item.CurrencyValue" currencyname="@item.CurrencyName" onclick="SetActiveTab(this)">
+                                    @item.PortName
+                                </div>
+                            }
+                            <div class="col-sm-2 pb-2 pt-2 pl-0 pr-0 text-center c-pointer activePort" onclick="SetFinalFrtContent(this)">
+                                Freight Total
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="submitEnq closeModal revisionBtn" onclick="closeModal()">Cancel</button>
+                    <button type="button" id="btnSubmitFreight" class="submitEnq publishBtn">Submit</button>
+                </div>
+            </div>
+
+            <input type="hidden" name="tndId" id="frtTndId" />
+            <input type="hidden" name="tndRevId" id="frtTndRevId" />
+
+            foreach (var item in Model.TenderPortNames)
+            {
+                <input type="hidden" name="PortId" value="@item.Id" />
+                <div class="portTabs" style="display:none" portid="@item.Id">
+
+                    <div class="col-sm-12 row BomRefHeader m-0">
+
+                    </div>
+                    <div class="col-sm-12 BomRefHeader d-flex align-items-center m-0 p-2 " style="color:#000">
+                        <div class="row w-100">
+                            <div class="col-sm-9 d-flex  align-items-center">
+                                Sea Freight 20 FT
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <div class="d-flex frightUSD align-items-center">
+                                    <input type="number" id="SeaFreight" onblur="SetOceanFreight(this)" value="@item.SeaFreight" name="SeaFreight" />
+                                    <p class="ml-1"> @item.CurrencyName</p>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-9 d-flex  align-items-center">
+                                Sea Freight 40FT Container
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <div class="d-flex frightUSD align-items-center">
+                                    <input type="number" id="SeaFreightFortyFT" onblur="SetOceanFreight(this)" value="@item.SeaFreightFortyFT" name="SeaFreightFortyFT" />
+                                    <p class="ml-1"> @item.CurrencyName</p>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-9 d-flex  align-items-center mt-2">
+                                Packing material weight as Percentage
+                            </div>
+                            <div class="col-sm-3 text-right mt-2">
+                                <div class="d-flex frightUSD align-items-center PackingPercentage">
+                                    <input name="PackingPercentage" onblur="SetFrtValues()" value="@packingPercentage" type="number" id="PackingPercentage" readonly />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tableBlock TenderDtlModelTable frightTableModal">
+                        <table class="table m-0 ">
+                            <tr>
+                                <th class="FreightchargeDtls" colspan="3">Estimated Charges 20 Feet Container</th>
+                                <th class="frightPrice">@item.CurrencyName</th>
+                                <th class="frightPriceINR" colspan="2">Rupees</th>
+                            </tr>
+                            <tr>
+                                <td class="FreightchargeDtls" colspan="3">Ocean Frt/Mt</td>
+                                <td class="frightPrice"><input type="text" id="OceanFrtPerMt" readonly="readonly" /></td>
+                                @*name="OceanFrtPerMt"*@
+                                <td class="frightPriceINR" colspan="2"><input type="text" id="OceanFrtPerMtRs" readonly="readonly" /></td>
+                                @*name="OceanFrtPerMt"*@
+                            </tr>
+                            <tr class="totalFrightPrc">
+                                <td class="FreightchargeDtls" colspan="3">Total in RS</td>
+                                <td class="frightPrice"></td>
+                                <td class="frightPriceINR" colspan="2"><input type="text" id="TotalPrice" readonly /></td>
+                                @*name="TotalPrice"*@
+                            </tr>
+
+                            <tr>
+                                <th class="FreightchargeDtls" colspan="3">Estimated Charges 40 Feet Container</th>
+                                <th class="frightPrice">@item.CurrencyName</th>
+                                <th class="frightPriceINR" colspan="2">Rupees</th>
+                            </tr>
+                            <tr>
+                                <td class="FreightchargeDtls" colspan="3">Ocean Frt/Mt</td>
+                                <td class="frightPrice"><input type="text" id="OceanFrtPerMtFortyFT" readonly="readonly" /></td>
+                                @*name="OceanFrtPerMt"*@
+                                <td class="frightPriceINR" colspan="2"><input type="text" id="OceanFrtPerMtRsFortyFT" readonly="readonly" /></td>
+                                @*name="OceanFrtPerMt"*@
+                            </tr>
+                            <tr class="totalFrightPrc">
+                                <td class="FreightchargeDtls" colspan="3">Total in RS</td>
+                                <td class="frightPrice"></td>
+                                <td class="frightPriceINR" colspan="2"><input type="text" id="TotalPriceFortyFT" readonly /></td>
+                                @*name="TotalPrice"*@
+                            </tr>
+
+                            <tr>
+                                <th class="markSrNo">S.NO.</th>
+                                <th class="frightDes">Description</th>
+                                <th class="FrightData">Data</th>
+                                <th class="FreightTotal  text-center">Total Cost</th>
+                                <th class="FreightRemark">Remarks</th>
+                            </tr>
+                            <tr class="subHeadingTH">
+                                <td class="markSrNo"></td>
+                                <td class="frightDes"></td>
+                                <td class="FrightData"></td>
+                                <td class="FreightTotalINR  text-center">INR</td>
+                                <td class="FreightRemark"></td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "TotalWeightAbc").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">1</td>
+                                <td class="frightDes">Total weight(MT)</td>
+                                <td class="FrightData"><input type="number" name="TotalWeight" id="TotalWeight" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR"><input type="number" name="TotalWeight" id="TotalWeightRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'TotalWtRmks')" class="" />
+                                        <input type="hidden" class="TotalWtRmks" name="TotalWeight" value="@portDetails.Remarks" />
+                                        <span class="tooltipShow TotalWtRmks" name="TotalWeight">@portDetails.Remarks</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "SupplyByContainer").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">2</td>
+                                <td class="frightDes">Supply by container(MT)</td>
+                                <td class="FrightData"><input type="number" name="SupplyByContainer" id="SupplyByContainer" value="4.36" readonly /></td>
+                                @*value="@portDetails.Data"*@
+                                <td class="FreightTotalINR  text-center"><input type="number" name="SupplyByContainer" value="@portDetails.Cost" id="SupplyByContainerRs" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'SupplyByCntrRmks')" />
+                                        <span class="tooltipShow SupplyByCntrRmks" name="SupplyByContainer">@portDetails.Remarks</span>
+                                        <input type="hidden" class="SupplyByCntrRmks" name="SupplyByContainer" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "SupplyByAir").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">3</td>
+                                <td class="frightDes">Supply by Air (MT)</td>
+                                <td class="FrightData"><input type="number" name="SupplyByAir" id="SupplyByAir" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="SupplyByAir" value="@portDetails.Cost" id="SupplyByAirRs" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'SupplyByAirRmks')" />
+                                        <span class="tooltipShow SupplyByAirRmks" name="SupplyByAir">@portDetails.Remarks</span>
+                                        <input type="hidden" class="SupplyByAirRmks" name="SupplyByAir" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "CostEstimates").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">4</td>
+                                <td class="frightDes">Cost Estimates</td>
+                                <td class="FrightData"><input type="number" name="CostEstimates" id="CostEstimates" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="CostEstimates" value="@portDetails.Cost" id="CostEstimatesRs" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'CostEstimatesRmks')" />
+                                        <span class="tooltipShow CostEstimatesRmks" name="CostEstimates">@portDetails.Remarks</span>
+                                        <input type="hidden" class="CostEstimatesRmks" name="CostEstimates" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="GreyHeadRow">
+                                <td class="markSrNo"></td>
+                                <td class="frightDes">Containers</td>
+                                <td class="FrightData"></td>
+                                <td class="FreightTotalINR  text-center"></td>
+                                <td class="FreightRemark"></td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "NoOfFtContainers").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">a</td>
+                                <td class="frightDes">No of 20 Ft Containers: @@16 MT / Container</td>
+                                <td class="FrightData"><input type="number" name="NoOfFtContainers" id="NoOfFtContainers" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="NoOfFtContainers" id="NoOfFtContainersRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'NoOfFtContainersRmks')" />
+                                        <span class="tooltipShow NoOfFtContainersRmks" name="NoOfFtContainers">@portDetails.Remarks</span>
+                                        <input type="hidden" class="NoOfFtContainersRmks" name="NoOfFtContainers" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "NoOfFtContainersOverridden").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">a</td>
+                                <td class="frightDes">Override No of 20 Ft Containers: @@16 MT / Container</td>
+                                <td class="FrightData"><input type="number" name="NoOfFtContainersOverridden" id="NoOfFtContainersOverridden" onblur="AutoCalcContainer(this)" value="@portDetails.Data" class="whiteBgInput" /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="NoOfFtContainersOverridden" id="NoOfFtContainersRsOverridden" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'NoOfFtContainersOverriddenRmks')" />
+                                        <span class="tooltipShow NoOfFtContainersOverriddenRmks" name="NoOfFtContainersOverridden">@portDetails.Remarks</span>
+                                        <input type="hidden" class="NoOfFtContainersOverriddenRmks" name="NoOfFtContainersOverridden" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "SeaFrtPerContainer").FirstOrDefault() ?? new TenderPortDetails();
+
+                                    }
+                                }
+                                <td class="markSrNo">b</td>
+                                <td class="frightDes">sea freight per 20'ft container</td>
+                                <td class="FrightData"><input type="number" name="SeaFrtPerContainer" id="SeaFrtPerContainer" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="SeaFrtPerContainer" id="SeaFrtPerContainerRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'SeaFrtPerContainerRmks')" />
+                                        <span class="tooltipShow SeaFrtPerContainerRmks" name="SeaFrtPerContainer">@portDetails.Remarks</span>
+                                        <input type="hidden" class="SeaFrtPerContainerRmks" name="SeaFrtPerContainer" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "NoOfFortyFtContainers").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">a</td>
+                                <td class="frightDes">No of 40 Ft Containers: @@23 MT / Container</td>
+                                <td class="FrightData"><input type="number" name="NoOfFortyFtContainers" id="NoOfFortyFtContainers" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="NoOfFortyFtContainers" id="NoOfFortyFtContainersRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'NoOfFortyFtContainersRmks')" />
+                                        <span class="tooltipShow NoOfFortyFtContainersRmks" name="NoOfFortyFtContainers">@portDetails.Remarks</span>
+                                        <input type="hidden" class="NoOfFortyFtContainersRmks" name="NoOfFortyFtContainers" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "NoOfFortyFtContainersOverridden").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">a</td>
+                                <td class="frightDes">Override No of 40 Ft Containers: @@23 MT / Container</td>
+                                <td class="FrightData"><input type="number" name="NoOfFortyFtContainersOverridden" id="NoOfFortyFtContainersOverridden" onblur="AutoCalcContainer(this)" value="@portDetails.Data" class="whiteBgInput" /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="NoOfFortyFtContainersOverridden" id="NoOfFortyFtContainersRsOverridden" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'NoOfFortyFtContainersOverriddenRmks')" />
+                                        <span class="tooltipShow NoOfFortyFtContainersOverriddenRmks" name="NoOfFortyFtContainersOverridden">@portDetails.Remarks</span>
+                                        <input type="hidden" class="NoOfFortyFtContainersOverriddenRmks" name="NoOfFortyFtContainersOverridden" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "SeaFrtPerFortyFtContainer").FirstOrDefault() ?? new TenderPortDetails();
+
+                                    }
+                                }
+                                <td class="markSrNo">b</td>
+                                <td class="frightDes">sea freight per 40'ft container</td>
+                                <td class="FrightData"><input type="number" name="SeaFrtPerFortyFtContainer" id="SeaFrtPerFortyFtContainer" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="SeaFrtPerFortyFtContainer" id="SeaFrtPerFortyFtContainerRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'SeaFrtPerFortyFtContainerRmks')" />
+                                        <span class="tooltipShow SeaFrtPerFortyFtContainerRmks" name="SeaFrtPerFortyFtContainer">@portDetails.Remarks</span>
+                                        <input type="hidden" class="SeaFrtPerFortyFtContainerRmks" name="SeaFrtPerFortyFtContainer" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "SeaFrtPerMT").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">c</td>
+                                <td class="frightDes">sea freight per Mt</td>
+                                <td class="FrightData"><input type="number" name="SeaFrtPerMT" id="SeaFrtPerMT" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="SeaFrtPerMT" id="SeaFrtPerMT" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'SeaFrtPerMTRmks')" />
+                                        <span class="tooltipShow SeaFrtPerMTRmks" name="SeaFrtPerMT">@portDetails.Remarks</span>
+                                        <input type="hidden" class="SeaFrtPerMTRmks" name="SeaFrtPerMT" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "SeaFrtPerMTRound").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">d</td>
+                                <td class="frightDes">sea freight per Mt (Rounded-UP)</td>
+                                <td class="FrightData"><input type="number" name="SeaFrtPerMTRound" id="SeaFrtPerMTRound" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="SeaFrtPerMTRound" id="SeaFrtPerMTRoundRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'SeaFrtPerMTRoundRmks')" />
+                                        <span class="tooltipShow SeaFrtPerMTRoundRmks" name="SeaFrtPerMTRound">@portDetails.Remarks</span>
+                                        <input type="hidden" class="SeaFrtPerMTRoundRmks" name="SeaFrtPerMTRound" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="font-weight-bold">
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "TotalSeaFreight").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo"></td>
+                                <td class="frightDes">Total Sea Freight</td>
+                                <td class="FrightData"><input type="number" name="TotalSeaFreight" id="TotalSeaFreight" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="TotalSeaFreight" id="TotalSeaFreightRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark">
+                                    <input type="hidden" class="TotalSeaFreightRmks" name="TotalSeaFreight" value="@portDetails.Remarks" />
+                                </td>
+                            </tr>
+                            <tr class="GreyHeadRow">
+                                <td class="markSrNo"></td>
+                                <td class="frightDes">Air Freight Cost</td>
+                                <td class="FrightData">@*<input type="text" name="AirFreightCost" value="" />*@</td>
+                                <td class="FreightTotalINR  text-center"></td>
+                                <td class="FreightRemark"></td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "FreightToAirport").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">a</td>
+                                <td class="frightDes">Freight to Destination airport</td>
+                                <td class="FrightData"><input type="number" name="FreightToAirport" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="FreightToAirport" id="FreightToAirportRs" value="@portDetails.Cost" onblur="SetTotalCostAir()" class="whiteBgInput" /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'FreightToAirportRmks')" />
+                                        <span class="tooltipShow FreightToAirportRmks" name="FreightToAirport">@portDetails.Remarks</span>
+                                        <input type="hidden" class="FreightToAirportRmks" name="FreightToAirport" value="@portDetails.Remarks" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "FreightPerKg").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo">b</td>
+                                <td class="frightDes">Freight per Kg</td>
+                                <td class="FrightData"><input type="number" name="FreightPerKg" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="FreightPerKg" id="FreightPerKgRs" value="@portDetails.Cost" onblur="SetTotalCostAir()" class="whiteBgInput" /></td>
+                                <td class="FreightRemark  text-center">
+                                    <span class="tooltipHover c-pointer">
+                                        <img src="../../Assets/images/assebleSummary.png" onclick="SubmitRemarks(@item.Id,'FreightPerKgRmks')" />
+                                        <input type="hidden" class="FreightPerKgRmks" name="FreightPerKg" value="@portDetails.Remarks" />
+                                        <span class="tooltipShow FreightPerKgRmks" name="FreightPerKg">@portDetails.Remarks</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="font-weight-bold">
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "TotalCostAir").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo"></td>
+                                <td class="frightDes">Total Cost (Air)</td>
+                                <td class="FrightData"><input type="number" name="TotalCostAir" id="TotalCostAir" value="@portDetails.Data" readonly /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="TotalCostAir" id="TotalCostAirRs" value="@portDetails.Cost" readonly /></td>
+                                <td class="FreightRemark">
+                                    <input type="hidden" class="TotalCostAirRmks" name="TotalCostAir" value="@portDetails.Remarks" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="tableBlock frghtChargBlk">
+                        <table class="table m-0">
+                            <tr class="bgBlue">
+                                @{
+                                    portDetails = new TenderPortDetails();
+                                    if (Model.TenderPortDetails != null && Model.TenderPortDetails.Any())
+                                    {
+                                        portDetails = Model.TenderPortDetails.Where(x => x.PortId == item.Id && x.Description == "OverallTotal").FirstOrDefault() ?? new TenderPortDetails();
+                                    }
+                                }
+                                <td class="markSrNo" style="color:transparent">S.NO.</td>
+                                <td class="OverAllCost">Over All Total</td>
+                                <td class="FrightData"><input type="number" name="OverallTotal" value="@portDetails.Data" readonly class="text-white" /></td>
+                                <td class="FreightTotalINR  text-center"><input type="number" name="OverallTotal" id="OverallTotalRs" value="@portDetails.Cost" readonly class="text-white" /></td>
+                                <td class="FreightRemark">
+                                    <input type="hidden" class="OverallTotalRmks" name="OverallTotal" value="@portDetails.Remarks" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            }
+            <div class="portTabs" style="display:none">
+                <div class="tableBlock TenderDtlModelTable frightTableModal">
+                    <table class="table m-0 ">
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Description</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>No of 20FT Containers</td>
+                            <td id="totalContainers"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>No of 40FT Containers</td>
+                            <td id="totalFortyFTContainers"></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Overall Total</td>
+                            <td id="finalFrtTotal"></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="d-flex align-center p-5">Please add port(s) to assign freight charges</div>
+    }
+</div>
+<script>
+    var activePortHeading, activePortTab;
+
+    //$(document).ready(function () {
+
+    if (intTenderType == 1) {
+        $("#dollarsPerCont").hide();
+    }
+
+
+    $("#frtTndId").val($("#tndId").val());
+    $("#frtTndRevId").val($("#tndRevId").val());
+
+    var elements = $(".intfreightTabs").find('.portTabs');
+    $.each(elements, function (index, ele) {
+        activePortHeading = $(".portTabHeadingContainer").find('.activePort').eq(index);
+        activePortTab = ele;
+        SetFrtValues();
+        var seaFrtElement = $(activePortTab).find("#SeaFreight");
+        SetOceanFreight(seaFrtElement);
+        seaFrtElement = $(activePortTab).find("#SeaFreightFortyFT");
+        SetOceanFreight(seaFrtElement);
+    });
+
+    activePortHeading = $(".portTabHeadingContainer").find('.activePort').eq(0);
+    activePortTab = $(".intfreightTabs").find('.portTabs').eq(0);
+    $(activePortHeading).css("border-bottom", "3px solid #4CB684");
+    $(activePortTab).removeAttr("style");
+
+    $('.FreightRemark img').hover(function () {
+        console.log($(this).siblings('input').val());
+        if ($(this).siblings('input').val().length == 0) {
+            console.log('no value');
+            $(this).parent().removeClass('tooltipHover');
+        }
+
+    })
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $(".bgBlue").find(".whiteBgInput").css("color", "#fff");
+        //$(".bgBlue").find(".whiteBgInput").css("font-weight","bold");
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").not(".closeModal,.close").hide();
+        $("input[type='button']").hide();
+        $("select").attr("disabled", true);
+    }
+    //});
+
+    function SetFrtValues() {
+
+        //$(".PackingPercentage").text($("#PackingPercentage").val());
+
+        $(activePortTab).find("#SupplyByContainer").val($("#finalWeighttMt").val());
+        $(activePortTab).find("#TotalWeight").val($(activePortTab).find("#SupplyByContainer").val());
+
+        //var NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 16);
+        //$(activePortTab).find("#NoOfFtContainers").val(NoOfContainer.toFixed(0));
+
+
+        //var totalPrice = Number($(activePortTab).find("#TotalPrice").val()).toFixed(3);
+        //$(activePortTab).find("#SeaFrtPerContainerRs").val(totalPrice);
+
+        //$(activePortTab).find("#TotalSeaFreightRs").val(Number(NoOfContainer * totalPrice).toFixed(3));
+
+        var totCostAir = Number($(activePortTab).find("#FreightToAirportRs").val()) + Number($(activePortTab).find("#FreightPerKgRs").val());
+        $(activePortTab).find("#TotalCostAirRs").val(totCostAir.toFixed(3));
+
+    }
+
+    function SetActiveTab(element) {
+        activePortHeading = element;
+        activePortTab = $(".intfreightTabs").find('.portTabs').eq($(element).index());
+        $('.portTabs').css("display", "none");
+        $(".activePort").css("border-bottom", "none");
+        $(element).css("border-bottom", "3px solid #4CB684");
+        $(activePortTab).removeAttr("style");
+        SetFrtValues();
+    }
+
+    function SubmitRemarks(portId, inputId) {
+        $("#testmasterDtls").css('display', "block");
+        var text = $("div[portid=" + portId + "]").find("." + inputId).closest("input").val();
+
+        text = $.trim(text);
+        text = text == "-" ? "" : text;
+        var html =
+            '< div id = "myModal" class="modal fade" role = "dialog" >' +
+            ' <div class="modal-dialog modal-dialog-centered ">' +
+            '<div class="modal-content">' +
+            ' <div class="modal-body">' +
+            '<div class="BomRefDtls">' +
+            '<div class="col-sm-12 row BomRefHeader m-0">' +
+            '<div class="col-sm-12 text-right">' +
+            '<button type="button" class="submitEnq revisionBtn" onclick="CloseRemarkModal()" data-dismiss="modal">Cancel</button>' +
+            '<button type="button" class="submitEnq publishBtn" onclick="SetRemark(' + portId + ',&quot;' + inputId + '&quot;)" data-dismiss="modal">Submit</button>' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-sm-12 row BomRefHeader m-0 testMasterheader d-flex align-items-center">' +
+            'Add Remarks:    <input type="text" id="txtRemark" value="' + text + '" class="whiteBgInput ml-2 w-100">' +
+            '</div>' +
+            '</div>' +
+            '</div></div></div></div>';
+
+        $("#testmasterDtls").html(html);
+        $("#testmasterDtls").modal('show');
+    }
+
+    function SetRemark(portId, inputId) {
+        $("div[portid=" + portId + "]").find("span." + inputId).text($("#txtRemark").val());
+        $("div[portid=" + portId + "]").find("input." + inputId).val($("#txtRemark").val());
+        $("#testmasterDtls").css('display', "none");
+        $('.FreightRemark img').parent().addClass('tooltipHover');
+    }
+
+    function CloseRemarkModal() {
+        $("#testmasterDtls").css('display', "none");
+    }
+
+    function SetOceanFrt(element) {
+        var value, oceanFrtPerMtRs, NoOfContainer, containerType, pckPercentage;
+        pckPercentage = (Number($("#PackingPercentage").val()) + 100) / 100;
+        value = Number($(element).val()) * pckPercentage;
+        oceanFrtPerMtRs = value * Number($(activePortHeading).attr("currencyvalue"));
+        containerType = $(element).attr("name");
+
+
+        if (containerType == "SeaFreightFortyFT") {
+            //NoOfContainer = Number($(activePortTab).find("#NoOfFortyFtContainers").val());
+
+            NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 23);
+            $(activePortTab).find("#NoOfFortyFtContainers").val(NoOfContainer.toFixed(0));
+
+            if (Number($(activePortTab).find("#NoOfFortyFtContainersOverridden").val()) <= 0) {
+                NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 23);
+            }
+            else {
+                NoOfContainer = Number($(activePortTab).find("#NoOfFortyFtContainersOverridden").val());
+            }
+
+            $(activePortTab).find("#OceanFrtPerMtFortyFT").val(value.toFixed(3));
+            $(activePortTab).find("#OceanFrtPerMtRsFortyFT").val(oceanFrtPerMtRs.toFixed(3));
+            $(activePortTab).find("#TotalPriceFortyFT").val(oceanFrtPerMtRs.toFixed(3));
+            $(activePortTab).find("#SeaFrtPerFortyFtContainerRs").val(oceanFrtPerMtRs.toFixed(3));
+        }
+        else {
+            debugger;
+            NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 16);
+            $(activePortTab).find("#NoOfFtContainers").val(NoOfContainer.toFixed(0));
+
+            if (Number($(activePortTab).find("#NoOfFtContainersOverridden").val()) <= 0) {
+                NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 16);
+            }
+            else {
+                NoOfContainer = Number($(activePortTab).find("#NoOfFtContainersOverridden").val());
+            }
+
+            $(activePortTab).find("#OceanFrtPerMt").val(value.toFixed(3));
+            $(activePortTab).find("#OceanFrtPerMtRs").val(oceanFrtPerMtRs.toFixed(3));
+            $(activePortTab).find("#TotalPrice").val(oceanFrtPerMtRs.toFixed(3));
+            $(activePortTab).find("#SeaFrtPerContainerRs").val(oceanFrtPerMtRs.toFixed(3));
+        }
+        SetTotalSeaFreightRs();
+        SetOverallTotal();
+    }
+
+    function SetSeaFrtPerContainer() {
+        SetTotalSeaFreightRs();
+        SetOverallTotal();
+    }
+
+    function SetTotalSeaFreightRs() {
+
+        var noOfContainer, noOfFortyFtContainer, totalSeaFrt;
+
+        if (Number($(activePortTab).find("#NoOfFtContainersOverridden").val()) <= 0) {
+            noOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 16);
+        }
+        else {
+            noOfContainer = Number($(activePortTab).find("#NoOfFtContainersOverridden").val());
+        }
+
+        if (Number($(activePortTab).find("#NoOfFortyFtContainersOverridden").val()) <= 0) {
+            noOfFortyFtContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 23);
+        }
+        else {
+            noOfFortyFtContainer = Number($(activePortTab).find("#NoOfFortyFtContainersOverridden").val());
+        }
+
+        //noOfFortyFtContainer = Number($(activePortTab).find("#NoOfFortyFtContainersOverridden").val());
+
+        totalSeaFrt = ($(activePortTab).find("#OceanFrtPerMtRsFortyFT").val() * noOfFortyFtContainer) + ($(activePortTab).find("#OceanFrtPerMtRs").val() * noOfContainer);
+        $(activePortTab).find("#TotalSeaFreightRs").val(Number(totalSeaFrt).toFixed(3));
+    }
+
+    function SetTotalCostAir() {
+        var totCostAir = Number($(activePortTab).find("#FreightToAirportRs").val()) + Number($(activePortTab).find("#FreightPerKgRs").val());
+        $(activePortTab).find("#TotalCostAirRs").val(totCostAir.toFixed(3));
+        SetOverallTotal();
+    }
+
+    function SetOverallTotal() {
+        var total = Number($(activePortTab).find("#TotalCostAirRs").val()) + Number($(activePortTab).find("#TotalSeaFreightRs").val());
+        $(activePortTab).find("#OverallTotalRs").val(total.toFixed(3))
+    }
+
+    function SetFinalFrtContent(element) {
+        var overallTotal = 0, noOfContainers = 0, noOfFortyFTContainers = 0;
+        var elements = $(".intfreightTabs").find('.portTabs');
+        $.each(elements, function (index, ele) {
+            debugger;
+            //if (Number($(ele).find("#NoOfFtContainersOverridden").val()) <= 0) {
+            //    noOfContainers += isNaN(Math.ceil(Number($(ele).find("#SupplyByContainer").val()) / 16)) ? 0 : Math.ceil(Number($(ele).find("#SupplyByContainer").val()) / 16);
+            //}
+            //else {
+            //    noOfContainers += isNaN(Number($(ele).find("#NoOfFtContainersOverridden").val())) ? 0 : Number($(ele).find("#NoOfFtContainersOverridden").val());
+            //}
+            //noOfFortyFTContainers += isNaN(Number($(ele).find("#NoOfFortyFtContainers").val())) ? 0 : Number($(ele).find("#NoOfFortyFtContainers").val());
+
+            if (Number($(ele).find("#NoOfFtContainersOverridden").val()) == 0 && Number($(ele).find("#NoOfFortyFtContainersOverridden").val()) == 0) {
+                noOfContainers += isNaN(Math.ceil(Number($(ele).find("#NoOfFtContainers").val()))) ? 0 : Math.ceil(Number($(ele).find("#NoOfFtContainers").val()));
+                noOfFortyFTContainers += isNaN(Number($(ele).find("#NoOfFortyFtContainers").val())) ? 0 : Number($(ele).find("#NoOfFortyFtContainers").val());
+            }
+            else {
+                noOfContainers += isNaN(Math.ceil(Number($(ele).find("#NoOfFtContainersOverridden").val()))) ? 0 : Math.ceil(Number($(ele).find("#NoOfFtContainersOverridden").val()));
+                noOfFortyFTContainers += isNaN(Number($(ele).find("#NoOfFortyFtContainersOverridden").val())) ? 0 : Number($(ele).find("#NoOfFortyFtContainersOverridden").val());
+            }
+
+            overallTotal += isNaN(Number($(ele).find("#OverallTotalRs").val())) ? 0 : Number($(ele).find("#OverallTotalRs").val());
+        });
+        $("#totalContainers").text(noOfContainers.toFixed(0));
+        $("#totalFortyFTContainers").text(noOfFortyFTContainers.toFixed(0));
+        $("#finalFrtTotal").text(overallTotal.toFixed(3));
+        SetActiveTab(element);
+    }
+
+    $("#btnSubmitFreight").click(function () {
+        jQuery(".intfreightTabs").find("input").not("input[class$='Rmks'],input[class$='Rmks ']").filter(function () {
+            return this.value == "";
+        }).val(0);
+
+        jQuery(".intfreightTabs").find("input[class$='Rmks'],input[class$='Rmks ']").filter(function () {
+            return $(this).val() == "";
+        }).val("-");
+
+        var form = $("#SeaFreightForm").serialize();
+
+        $.ajax({
+            type: "post",
+            url: '/IntTenderPricingKT/SaveFreightCharges',
+            dataType: "json",
+            data: form,
+            async: false,
+            success: function (data) {
+                debugger;
+                if (data) {
+                    $(".modal").modal('hide');
+                    successModal();
+                    window.location.reload();
+                }
+                else {
+                    //failureModal();
+                }
+            },
+            error: function (courses) {
+                //failureModal();
+            }
+        });
+    })
+
+
+
+    function SetOceanFreight(element) {
+        var value, oceanFrtPerMtRs, NoOfContainer40ft = 0, NoOfContainer20ft = 0, pckPercentage, RemWgt, ContSupply = 0;
+        pckPercentage = (Number($("#PackingPercentage").val()) + 100) / 100;
+        value = Number($(element).val()) * pckPercentage;
+        oceanFrtPerMtRs = value * Number($(activePortHeading).attr("currencyvalue"));
+        ContSupply = Number($(activePortTab).find("#SupplyByContainer").val());
+
+        if (ContSupply > 16) {
+            NoOfContainer40ft = Math.floor(ContSupply / 23);
+
+            if (ContSupply % 23 != 0) {
+                RemWgt = ContSupply % 23;
+
+                if (RemWgt < 16)
+                    NoOfContainer20ft += Math.ceil(ContSupply / 16);
+                else
+                    NoOfContainer40ft += Math.ceil(ContSupply / 23);
+            }
+        }
+        else {
+            NoOfContainer20ft += Math.ceil(ContSupply / 16);
+        }
+
+        $(activePortTab).find("#NoOfFortyFtContainers").val(NoOfContainer40ft);
+        $(activePortTab).find("#NoOfFtContainers").val(NoOfContainer20ft);
+
+        $(activePortTab).find("#OceanFrtPerMtFortyFT").val(value.toFixed(3));
+        $(activePortTab).find("#OceanFrtPerMtRsFortyFT").val(oceanFrtPerMtRs.toFixed(3));
+        $(activePortTab).find("#TotalPriceFortyFT").val(oceanFrtPerMtRs.toFixed(3));
+        $(activePortTab).find("#SeaFrtPerFortyFtContainerRs").val(oceanFrtPerMtRs.toFixed(3));
+
+
+        SetTotalSeaFreightRs();
+        SetOverallTotal();
+    }
+
+    function AutoCalcContainer(element) {
+        var noOfContainer, noOfFortyFtContainer, containerType, value40Ft, value20Ft, maxValue40ft, maxValue20ft;
+        var ContSupply = Number($(activePortTab).find("#SupplyByContainer").val());
+        maxValue20ft = Math.ceil(ContSupply / 16);
+        maxValue40ft = Math.ceil(ContSupply / 23);
+        value40Ft = Number($(element).val());
+        value20Ft = Number($(element).val());
+
+        containerType = $(element).attr("name");
+
+        if (containerType == "NoOfFortyFtContainersOverridden" && value40Ft >= 0) {
+            if (value40Ft > maxValue40ft) {
+                $(activePortTab).find("#NoOfFortyFtContainersOverridden").val(maxValue40ft);
+                $(activePortTab).find("#NoOfFtContainersOverridden").val(0);
+            }
+            else {
+                var capacity = value40Ft * 23;
+
+                if (ContSupply > capacity) {
+                    noOfContainer = Math.ceil((ContSupply - capacity) / 16);
+                    $(activePortTab).find("#NoOfFtContainersOverridden").val(noOfContainer);
+                }
+                else if (ContSupply < capacity) {
+                    $(activePortTab).find("#NoOfFtContainersOverridden").val(0);
+                }
+                else if (ContSupply == capacity) {
+                    $(activePortTab).find("#NoOfFtContainersOverridden").val(0);
+                }
+            }
+
+        }
+        else {
+            if (value20Ft >= 0) {
+                if (value20Ft > maxValue20ft) {
+                    $(activePortTab).find("#NoOfFtContainersOverridden").val(maxValue20ft);
+                    $(activePortTab).find("#NoOfFortyFtContainersOverridden").val(0);
+                }
+                else {
+                    var capacity = value20Ft * 16;
+
+                    if (ContSupply > capacity) {
+                        noOfFortyFtContainer = Math.ceil((ContSupply - capacity) / 23);
+                        $(activePortTab).find("#NoOfFortyFtContainersOverridden").val(noOfFortyFtContainer);
+                    }
+                    else if (ContSupply < capacity) {
+                        $(activePortTab).find("#NoOfFortyFtContainersOverridden").val(0);
+                    }
+                    else if (ContSupply == capacity) {
+                        $(activePortTab).find("#NoOfFortyFtContainersOverridden").val(0);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+</script>

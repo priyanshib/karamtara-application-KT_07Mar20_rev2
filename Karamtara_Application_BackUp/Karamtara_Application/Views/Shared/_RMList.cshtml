@@ -1,0 +1,17 @@
+﻿@model Karamtara_Application.Models.RMMasterModel
+
+<table class="table mt-4 RawMaterialTable" id="tblRMList">
+    <tr>
+        <th class="materNm">Raw Material Name</th>
+        <th class="materID">Material Group</th>
+        @*<th class="materCode">Material Type</th>*@
+    </tr>
+    @foreach (var item in Model.RawMaterialList)
+    {
+        <tr>
+            <td>@item.MaterialDesc</td>
+            <td>@item.Material</td>
+            @*<td>@item.MaterialType</td>*@
+        </tr>
+    }
+</table>

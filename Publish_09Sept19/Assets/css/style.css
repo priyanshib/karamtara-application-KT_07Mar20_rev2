@@ -1,0 +1,2024 @@
+﻿html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+.background-white{background:#fff}
+.background-transparent {
+    background-color: transparent !important;
+}
+
+body {
+    line-height: 1;
+    font-family: 'Open Sans', sans-serif;
+    background: #fff;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+.bold{
+    font-weight:700;
+}
+
+.boldGray {
+    color: #484949;
+    font-weight: 700;
+}
+
+.regular{
+    font-weight:normal;
+}
+.mr-10{
+    margin-right:10px;
+}
+.ml-10 {
+    margin-left: 10px;
+}
+
+.mr-20 {
+    margin-right: 20px;
+}
+
+.mr-30 {
+    margin-right: 30px;
+}
+.pt-10{
+    padding-top:10px;
+}
+.pl-10{
+    padding-left:10px;
+}
+.pr-10{
+    padding-right:10px;
+}
+.c-pointer{cursor:pointer}
+.is-focused .form-control {
+    background-image: none;
+    border-bottom: 1px solid #0b1d65;
+}
+.tableBlock .vertical-align-bottom {
+    vertical-align: bottom;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+span.bmd-form-group {
+    padding-top: 2px;
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+
+/*input:focus, select:focus {
+    /*font-size:14px;
+}*/
+input::-webkit-input-placeholder {
+    font-size: 11px;
+}
+    input::-moz-placeholder { /* Firefox 19+ */
+    font-size: 11px;
+}
+
+input:-ms-input-placeholder { /* IE 10+ */
+    font-size: 11px;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+    font-size: 11px;
+}
+input:focus {
+    outline: none;
+}
+
+.bmd-form-group input::placeholder {
+    font-size: 11px;
+}
+input{height:100%}
+/**** customised css  ***/
+.mainContentPaddingBtm {
+    padding-bottom: 43px;
+}
+.activiesList img {
+    height: 38px;
+}
+
+.LoginUser {
+    margin: 10px 0;
+}
+
+.logOut {
+    font-size: 14px;
+}
+
+.username {
+    font-size: 14px;
+    display: inline-flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+    .username img {
+        margin: 0 5px;
+    }
+
+.loginForm {
+    width: 100%;
+    margin-top: 80px;
+}
+
+.brand-logo img {
+    width: 140px;
+    height: auto;
+    margin: 10px 0 0;
+}
+
+.blueHorizLine {
+    background: #0b1d65;
+    height: 17px;
+}
+
+.loginBlock {
+    margin: 20px auto;
+    width: 30%;
+}
+
+
+.signupBlock {
+    margin: 10px auto;
+    width: 30%;
+}
+
+    .signupBlock span {
+        text-align: center;
+        width: 100%;
+        font-size: 23px;
+        color: #0b1d65;
+        font-weight: 400;
+        line-height: 34px;
+        margin-top: 25px;
+    }
+
+    .loginBlock span {
+        text-align: center;
+        width: 100%;
+        font-size: 23px;
+        color: #0b1d65;
+        font-weight: 400;
+        line-height: 34px;
+        margin-top: 34px;
+    }
+
+.loginBtn button {
+    width: 254px;
+    height: 35px;
+    margin: 52px auto 0px;
+    text-align: center;
+    background: #0b1d65;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 14px;
+}
+
+.loginBtn, .forgetPassBtn, .signup {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+}
+
+    .forgetPassBtn button, .signup button {
+        width: 254px;
+        color: #0b1d65;
+        font-family: "Open Sans";
+        font-size: 14px;
+    }
+
+.selectedActivies .activities {
+    display: flex;
+    align-items: center;
+}
+
+.activities, .actListHeader {
+    text-transform: uppercase;
+    color: #0b1d65;
+    font-size: 10px;
+}
+
+.activiesList {
+    background: #f5f5f5;
+    padding: 15px 0;
+}
+
+.selectedActivies {
+    font-weight: bold;
+}
+
+.tableBlock table td.tdheader {
+    font-weight: 700;
+    /*padding: 15px 10px;*/
+    font-size:10px;
+}
+
+.addRowBtn {
+    padding: 0px 0;
+    margin: 0 5px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    /* line-height: 12px; */
+    vertical-align: middle;
+}
+
+.addRowBtnYellow {
+    padding: 10px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    background: #ecc509;
+    /* line-height: 12px; */
+    vertical-align: middle;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.collapseTR {
+    display: none;
+}
+
+.activiesList .fullscreen img {
+    height: 18px;
+    cursor: pointer;
+}
+/*floating label */
+.bmd-label-floating {
+    color: #060606;
+    font-family: "Open Sans";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 15px;
+}
+
+.is-focused [class*=" bmd-label"], .is-focused [class^=bmd-label] {
+    color: #0b1d65;
+}
+
+.custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
+    background-image: linear-gradient(0deg,#0b1d65 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
+}
+
+.f-15{
+    font-size:15px;
+}
+.f-14 {
+    font-size: 14px;
+}
+.f-13 {
+    font-size: 13px;
+}
+.f-12 {
+    font-size: 12px;
+}
+
+/*floating label */
+.typeDOM {
+    color: #2e28ff;
+    font-weight: bold;
+}
+
+.typeINTL {
+    color: #05c2c0;
+    font-weight: bold;
+}
+
+.statusOpen, .statusDraft {
+    color: #d0021b;
+    font-weight: bold;
+}
+
+.statusHold {
+    color: #f5a623;
+    font-weight: bold;
+}
+
+.statusProcess {
+    color: #0c4da2;
+    font-weight: bold;
+}
+.statusNew {
+    color: #2e28ff;
+    font-weight: bold;
+}
+
+.statusDone {
+    color: #4cb684;
+    font-weight: bold;
+}
+
+.revision {
+    color: #43acab;
+    font-weight: bold;
+}
+
+.selectedRow {
+    background: #fffde0;
+}
+
+.ActnActivities {
+    position: absolute;
+    background: #0c4da2;
+    color: #fff;
+    text-align: left;
+    right: 65px;
+    display: none;
+    top: 15px;
+    z-index: 1;
+    width: 178px;
+}
+
+    .ActnActivities li {
+        padding: 10px;
+        border-bottom: 1px solid;
+        cursor: pointer;
+        font-size: 11px;
+    }
+
+.statuBtn {
+    background: url('../images/openStatus.png') no-repeat;
+    /*box-shadow: 1px 2px 2px 0px #bfbcbc;  */
+    color: transparent;
+    width: 200px;
+    padding: 4px 4px 12px 45px;
+    border-radius: 4px;   
+}
+
+/* .table, .table .table { */
+    /* background: #fff; */
+/* } */
+
+.tableBlock table td.Status {
+    cursor: pointer;
+}
+
+.tableBlock.createTable table td {
+    border-style: solid;
+    text-align: left;
+    text-transform: capitalize;
+}
+
+.tableTH {
+    font-weight: bold;
+    width: 165px;
+}
+
+.tableBlock.createTable table .calImg {
+    padding-right: 5px;
+    padding-left: 5px;
+    text-align: center;
+}
+
+.GreyBg {
+    background: #f5f5f5;
+}
+
+.createTable .GreyBg select {
+    font-weight: bold;
+}
+
+.TDtitle {
+    color: #0c4da2;
+    font-weight: bold;
+}
+
+td.calImg {
+    width: 40px;
+}
+
+.tableBlock.createTable table td.summaryTD,
+.tableBlock.createTable table td.textAreaTd,
+.tableBlock.createTable table td.InputTd {
+    padding: 0;
+}
+
+    .tableBlock.createTable table td.InputTd input {
+        text-align: left;
+        padding: 0 5px
+    }
+
+.summaryTD textarea,
+.textAreaTd textarea,
+.InputTd input {
+    width: 100%;
+    background: #fafafa;
+    box-shadow: inset 0 0 6px #969393;
+    height: 100%;
+    text-align: left;
+    padding: 5px;
+}
+
+.submitEnq, .createBomBtn, .submitBomBtn, .createProdBtn, .createComponent, .clearFilters {
+    width: 67px;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 5px;
+}
+.commonBtn {
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+}
+.createBomBtn {
+    width: 110px;
+}
+.clearFilters {
+    width: 120px
+}
+.createProdBtn{width:158px}
+.createComponent {
+    width: 180px
+}
+.submitBomBtn {
+    width: 120px;
+}
+    .cancelEnq, .revisionBtn {
+        background: #a4a4a4
+    }
+
+.sucessEnq, .publishBtn, .ViewBtn, .EditProdSaveButton {
+    background: linear-gradient(153deg, #009688, #4CB684);
+    color: #fff;
+}
+.saveBtn {
+    background: #ecc509
+}
+
+.blueBtn {
+    background: #09c3ec
+}
+
+.attachmentBtn {
+    background: transparent;
+    width: auto;
+}
+
+    .attachmentBtn img {
+        margin-right: 5px;
+        position: relative;
+        top: 5px;
+    }
+
+
+
+/**common css for table*/
+.tableBlock table td, .tableBlock table th {
+    border: 1px solid #d1d1d1;
+    /*border-style: dashed;*/
+    border-bottom: 1px solid rgba(0,0,0,.09);
+}
+
+.tdheader {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.tableBlock table th {
+    font-weight: bold;
+    font-size: 11px;
+    background: #f5f5f5;
+    color: #000;
+    text-transform: capitalize;
+    text-align: left;
+}
+
+.tableBlock table td {
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: left;
+    position: relative;
+    vertical-align: middle;
+    padding: 0 12px;
+    height: 38px;
+}
+
+    .tableBlock table td input {
+        border: none;
+        background: transparent;
+        text-align: left;
+        width:100%;
+    }
+
+.DeptNo {
+    /*width: 225px;*/
+    width:390px;
+}
+
+.Type {
+    width: 55px;
+}
+
+.ProjName {
+    text-align: left;
+    width: 485px
+}
+
+.ProjNameTD {
+    width: 485px;
+}
+/*.EndCustName{width:162px;}*/
+.DueDt {
+    width: 180px;
+}
+.EndCustName {
+    width: 150px;
+}
+
+.Status {
+    width: 171px;
+}
+
+.DtStatus {
+    width: 141px;
+}
+.ExDate, .DtEnquiry {
+    width: 141px;
+}
+th.srNo {
+    width: 60px;
+}
+.DeptSrNo {
+    width: 33px;
+}
+.Options {
+    width: 135px;
+}
+
+
+.tableBlock table td.ProjNameTD, .tableBlock table td.createBomDescTd {
+    border-right: none;
+}
+
+.tableBlock table td.attachmentTD, .tableBlock table td.createBomImg {
+    border-left: 0;
+}
+
+.collapseTable {
+    font-weight: bold;
+}
+
+.tableBlock table.collapseTable th {
+    background: #d9d9d9;
+}
+.createBomDescTd {
+    width: 400px;
+}
+td.UnitDtl {
+    color: #e57560;
+}
+.SrNoDtl{font-weight:700;width:64px;}
+/** modal popup customization*/
+.modal-dialog .close {
+    position: absolute;
+    top: -5px;
+    right: 3px;
+    background: #000;
+    padding: 3px 8px;
+    border-radius: 50px;
+    opacity: 1;
+    color: #fff;
+    border: 3px solid;
+    font-weight: normal;
+}
+
+.modal-content {
+    background: #f3f3f3;
+}
+
+    .modal-content .modal-body {
+        padding: 0;
+    }
+
+.Modal-Header {
+    border-top: 1px solid #e2e2e2;
+    border-bottom: 1px solid #e2e2e2;
+    padding: 15px 24px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0);
+    max-width: 700px;
+}
+
+.Modal-subHeader {
+    padding: 15px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e2e2;
+    font-size: 11px;
+}
+
+.modal-title {
+    color: #0c4da2;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.AssigneeDtl table th {
+    background: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.AssigneeDtl table td, .AssigneeDtl table th {
+    border: 1px solid #d1d1d1;
+    border-style: dashed;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.AssigneeDtl table td {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.modalCancel {
+    background: #ecc509;
+    color: #000;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.modalAssignee {
+    background: linear-gradient(153deg, #009688, #4CB684);
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.modal-content .modal-footer .btn {
+    margin: 0 5px;
+}
+
+
+/** modal popup customization*/
+#CreateEnqDiv {
+    display: none;
+}
+
+#createEnq {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+}
+/*.SelectTD:before {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #000;
+    position: absolute;
+    content: '';
+    top: 5px;
+    margin: 0 -14px;
+    z-index: 0;
+    right: 0;
+}*/
+.SelectTD {
+    position: relative;
+    max-width: 100%;
+}
+
+.createTable select:focus,
+.enquiryTable select:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.createTable select, .enquiryTable select {
+    background-color: transparent;
+    width: 100%;
+    border: none;
+   padding:5px !important;
+    z-index: 1;
+    /*min-width: 100px;*/
+}
+
+.borderTopBlue {
+    border-top: 2px solid #0c4da2;
+}
+
+.borderBottomBlue {
+    border-bottom: 2px solid #0c4da2;
+}
+
+
+.addSubAsmbl {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    color: #9b9b9b;
+    font-size: 12px;
+    font-style: italic;
+    cursor: pointer;
+}
+
+/*.PkgTDAppend {
+    height: 166px;
+    overflow-y: auto;
+}*/
+
+.assmbleNm {
+    width: 450px;
+}
+
+.assmbleId {
+    width: 180px;
+}
+
+.summary {
+    width: 50px;
+}
+/**calender CSS*/
+.calenderInput .gj-datepicker {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.calenderInput .calenderClass {
+    border-left: 1px solid #d1d1d1;
+}
+
+.calenderInput button.btn.btn-outline-secondary,
+.btn.btn-outline-secondary.active, .btn.btn-outline-secondary.focus, .btn.btn-outline-secondary:active, .btn.btn-outline-secondary:focus,
+secondary:not(:disabled):not(.disabled):active:focus {
+    border-color: #fff;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.btn-outline-secondary:not(:disabled):not(.disabled):active {
+    background-color: transparent;
+    border-color: transparent;
+    color: #6c757d;
+}
+
+.is-focused .form-control {
+    background-image: none;
+}
+
+.form-control, input {
+    font-size: 12px;
+}
+/**calender CSS*/
+
+.hiddenPkgTR {
+    display: none;
+}
+.CreateNotfn {
+    background: #3f51b5;
+    color: #fff;
+    font-size: 16px;
+    padding: 22px 15px;
+    display: flex;
+    align-items: center;
+	position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 78px;
+}
+    .CreateNotfn img, .ProdNmBlock  img{
+        margin-right: 15px;
+    }
+    .CreateNotfn .notificationBtn {
+        width: 80px;
+        background: transparent;
+        border: 1px solid #fff;
+        color: #fff;
+        height: 31px;
+        border-radius: 3px;
+        margin: 0 10px;
+        cursor: pointer;
+    }
+.prjNmBlock, .ProdNmBlock {
+    padding: 12px 10px;
+    color: #0c4da2;
+    font-weight: 700;
+    font-size: 14px;
+    border-bottom: 1px solid #e9e9e9;
+}
+.assmMasterBlock {
+    padding: 15px 10px;
+    /*color: #0c4da2;*/
+    /*font-weight: 700;*/
+    /*font-size: 14px;*/
+}
+.prjNmBlock .col-sm-8 span{color:#000;text-transform:uppercase;}
+.AddOptnDtl {
+    padding: 12px 10px;
+    align-self: center;
+    font-size: 14px;
+    border-bottom: 1px solid #e9e9e9;
+    font-weight:700;
+}
+.AddOptn {
+    line-height: 20px;
+    align-self: auto;
+    display: flex;
+    font-size:12px;
+    cursor:pointer;
+}
+.AddOptn  img{margin-right:5px;}
+.footerStatus {
+    position: fixed;
+    bottom: 0;
+    box-shadow: 0px -1px 10px rgba(0,0,0,0.2);
+    width: 100%;
+    padding: 10px;
+    height: 40px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0b1d65;
+    display: flex;
+    align-items: center;
+	background:#fff;
+}
+.left-footer .footerStatus {
+    width: 41.66667%;
+}
+.right-footer .footerStatus {
+    background: #3f51b5;
+    height: 43px;
+    width: 58.33333%;
+    margin:0;
+}
+
+    .footerStatus button {
+        background: #0b1d65;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        margin: 0 5px;
+        height: 23px;
+        cursor:pointer;
+    }
+    .footerStatus button img{margin-right:5px;}
+	.uniWeght {    width: 88px;}
+	.BOMdetails .table{box-shadow: -5px 1px 8px -2px #a8a6a6;margin-bottom: 84px;}
+	.tableBlock table td.BOMHeader {
+    text-align: left;
+    font-weight: 700;}
+	.srNo {
+    font-weight: bold;
+}
+.BOMdetails.tableBlock table td input,
+.createBomDtls.tableBlock table td.createBomImg,
+.tableBlock table .txtCenterTD input 
+{
+    text-align: center;
+}
+.saveBOMdtls, .saveProddtls {
+    width: 58%;
+    /* background: #fff; */
+    position: fixed;
+    bottom: 46px;
+    text-align: right;
+}
+    .saveProddtls{bottom:5px;}
+    .techAsemblyNm {
+        width: 410px;
+    }
+.asemblyId {
+    width: 115px;
+}
+.createBomDtls.tableBlock table td,
+.createProdDtls.tableBlock table td,
+.TestMasterDesc.tableBlock table .textCenterTD,
+.TestMasterDtls.tableBlock table .textCenterTD,
+.tableBlock table .descTest {
+    text-align: left;
+}
+.createBomDescTd input,
+.Tenddesc  input
+{
+    font-weight: 700;
+}
+.modal-title span{color:#000;font-size:10px;}
+/* .tooltip { */
+    /* display:inline-block; */
+    /* position:relative; */
+    /* border-bottom:1px dotted #666; */
+    /* text-align:left; */
+/* } */
+
+.BomRefHeader {
+    font-size: 14px;
+    color: #0c4da2;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px;
+	border-bottom:1px solid #e9e9e9;
+}
+.BomRefSubHead,.BomRefItem {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 12px;
+    border-bottom: 1px solid #e9e9e9;
+	align-items: center;
+}
+.BomRefItem span {
+    color: #59bb8d;
+    margin-right: 5px;
+}
+.BomRefTable {
+    width: 100%;
+    overflow: auto;
+}
+.IntTendTable {
+    width: 100%;
+    overflow: hidden;
+}
+    .BomRefTable .table, .IntTendTable .table, .tableLayout {
+        table-layout: fixed;
+    }
+.BOMSrNo{width:50px;}
+.BomItemNm{width:200px;}
+.BomCatNon{width:110px;}
+.BomSapNo,.BomSize{width:150px}
+.BomMatType,.BomUnit{width:100px;}
+.BomQty,.BomRemark{width:70px;}
+.BomTotalWt{width:90px;}
+.modal.show .modal-dialog.pgScreeModal {
+    max-width: 60%;
+}
+.modal.show .modal-dialog.fullscreenModal{max-width:90%;}
+.modal.show .modal-dialog.halfScreenModal {
+    max-width: 50%;
+}
+.tableBlock table .tableFooter td {
+    background: #3f51b5;
+    color: #fff;
+}
+.BomRefDtls {
+    box-shadow: -5px 1px 8px -2px #a8a6a6;
+    background: #f3f3f3;
+}
+.BomRefTable.tableBlock table th {
+    background: #fff;
+}
+.categoryList ul {
+    background: #f5f5f5;
+    padding: 18px 0;
+}
+    .categoryList ul li {
+        font-size: 12px;
+        padding:  13px;
+        cursor:pointer;
+    }
+        .categoryList ul li:hover, .selctedCatg {
+            border-bottom: 3px solid #0c4da2;
+        }
+.srNo {
+    width: 50px;
+}
+.catNo {
+    width: 195px;
+}
+.createDt {
+    width: 180px;
+}
+.productNm {
+    width: 400px;
+}
+.compoentNm {
+    width: 350px;
+}
+.rawMater {
+    width: 150px;
+}
+.prodNo {
+    width: 45px;
+}
+.prodUnit {
+    width: 115px;
+}
+.tableBlock table .catDtlsHead td input,
+.tableBlock table .catDtlsTotal td input {
+    font-weight: 700;
+}
+.CreateCatDiv {
+    padding: 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+    .CreateCatDiv input, .tableBlock table td input.whiteBgInput, .whiteBgInput {
+        /*width: 82%;*/
+        height: 30px;
+        border: none;
+        border-bottom: 2px solid #0b1d65;
+        background: transparent;
+        padding: 0 0px;
+        font-size: 12px;
+        box-shadow: 0px 0px 1px -2px #0b1d65;
+        margin: 10px 0;
+    }
+.modal-body .CreateCatDiv input{
+    width:100%;
+}
+.prodNo {
+    width: 78px;
+}
+.ui-autocomplete {
+    background: #fff;
+    z-index: 1100;
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    max-height: 200px;
+    overflow: auto;
+    height: 100%;
+    position:absolute !important;
+}
+
+
+    .ui-autocomplete li {
+        padding: 5px 0;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+.ui-helper-hidden-accessible {
+    display: none
+}
+
+.addRawMateHead {
+    color: #0b1d65;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase
+}
+
+.createRawMater,
+.RawMasterdetails,
+.createTestMaster {
+    padding: 30px;
+}
+
+.addMaterForm label,
+.TestMaterForm label {
+    font-size: 12px;
+    color: #4a4a4a;
+    width: 100%;
+}
+
+.addMaterForm input[type="text"],
+.addMaterForm select,
+.TestMaterForm input[type="text"],
+.TestMaterForm textarea,
+.addRawMateHead input[type="text"] {
+    box-shadow: inset 0px 1px 3px rgba(0,0,0,0.5);
+    height: 40px;
+    width: 90%;
+    margin: 16px 0;
+    border: none;
+}
+    .addRawMateHead input[type="text"]{width:50%;margin-left:10px;padding:0 5px;color:#4a4a4a;}
+    .TestMaterForm textarea {
+        height: 60px;
+    }
+
+.textLabel {
+    font-size: 12px;
+    color: #4a4a4a;
+    margin-top: -8px;
+}
+
+.RawMasterdetails.tableBlock {
+    border-left: 1px solid #d1d1d1;
+}
+
+.tableBlock table td.testDesTD {
+    text-align: left;
+    line-height: 1.6;
+}
+
+.TestMasterdetails.tableBlock table td {
+    line-height: 1.6
+}
+
+.TestMaterForm .form-check-input,
+.TestMasterDtls .form-check-input,
+.InputStyle .form-check-input {
+    height: 18px;
+    width: 18px;
+    margin: 16px 0;
+}
+
+.TestMasterDtls .form-check-inline {
+    margin: 0;
+}
+
+.TestMaterForm .form-check-label {
+    margin-left: 5px;
+    font-weight: 700;
+}
+
+.rightBorder {
+    border-right: 1px solid #d1d1d1;
+}
+
+.HeadTD {
+    font-weight: bold;
+}
+
+.TestMasterHeading {
+    font-weight: bold
+}
+
+    .TestMasterHeading span {
+        color: #0c4da2;
+        text-transform: uppercase;
+        margin-right: 5px;
+    }
+/** css for toast*/
+#snackbar-container {
+    bottom: 40%;
+    text-align: center;
+}
+
+.snackbar.toast .snackbar-content {
+    border-radius: 20px;
+}
+
+.snackbar-content {
+    background-color: #0b1d65;
+}
+/** css for toast*/
+.SearchBtn {
+    background: transparent;
+    /* box-shadow: 0px 1px 3px rgba(0,0,0,0.5); */
+    position: absolute;
+    right: -8px;
+    top: 17px;
+    z-index: 1;
+}
+.removeButton {
+    color: #fff;
+    background: #ff3d3d;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    height: 12px;
+    width: 12px;
+    line-height: 11px;
+    position: absolute;
+    right: -1px;
+    top: -3px;
+    font-size: 7px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 1;
+}
+.attachFilenm {
+    position: relative;
+    margin: 5px auto;
+    color: #969696;
+    padding: 5px 5px 5px 11px;
+    width: 100%;
+    float: left;
+}
+.attachImg {
+    width: 14px;
+    text-align: right;
+    float: right;
+    position: absolute;
+    top: 3px;
+    z-index: 0;
+    right: 5px;
+}
+.error {
+    color: red;
+    font-size: 10px !important;
+    font-weight: normal;
+    text-align: right;
+    width: 150px;
+    padding: 5px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+.calenderInput  .gj-datepicker-bootstrap [role="right-icon"] button .gj-icon {
+    top: 4px;
+}
+.calenderClass {
+    padding-left: 10px;
+}
+.validateError{display:none;}
+.closeMenu {
+    position: absolute;
+    top: -10px;
+    right: -5px;
+    z-index:1;
+   
+}
+    .closeMenu button {
+        color: #fff;
+        background-color: #000;
+        opacity: 1;
+        padding: 5px 8px;
+        border-radius: 20px;
+        font-size: 16px;
+    }
+    .closeMenu .close:hover {
+        opacity: 0.8;
+        color: #fff;
+    }
+.optionSpan {display:block;width:100%;}
+.attFileDtls label {
+    font-size: 10px;
+    cursor: pointer;
+}
+.fileName {
+    width: 50px;
+    float: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 10px;
+}
+    .fileName.othrfileName{width:70px;}
+.fileName.ProfileName{width:100px;}
+.tableBlock table td.tenderNo {
+    text-align: left;
+}
+.tableBlock.enquiryTable table td, .tableBlock.enquiryTable table th{padding:8px;}
+
+@media (max-width:1440px) {
+    .Options {
+        width: 95px;
+    }
+
+    .DtStatus {
+        width: 97px;
+    }
+
+    .ExDate, .DtEnquiry {
+        width: 130px;
+    }
+}
+@media (max-width:1280px) {
+    .Options {
+        width: 81px;
+    }
+
+    .DtStatus {
+        width: 81px;
+    }
+
+    .ExDate, .DtEnquiry {
+        width: 126px;
+    }
+}
+/**css for tooltip**/
+.tooltipShow {
+    display: none;
+    position: absolute;
+    background: rgba(0,0,0,0.7);
+    border-radius: 4px;
+    color: #fff;
+    padding: 5px;
+    top: 6px;
+    right: -109px;
+    font-size: 10px;
+    font-weight: normal;
+    width: 110px;
+    line-height: 1.38;
+    z-index: 1;
+}
+.tooltipHover:hover .tooltipShow {
+    display: block;
+}
+.tooltipShow:after {
+    content: '';
+    position: absolute;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid rgba(0,0,0,0.7);
+    left: -6px;
+    top: 15%;
+}
+/**end css for tooltip**/
+
+/***Domestic Flow CSS***/
+.CustId {
+    width: 90px;
+}
+.tendDeptNo {
+    width: 135px;
+}
+.ProjNm {
+    width: 412px;
+}
+.enqDt, .dueDt, .expDt {
+    width: 85px;
+}
+.cust {
+    width: 225px;
+}
+.Revi {
+    width: 60px;
+}
+.workStatus {
+    width: 95px;
+}
+.viewBlock {
+    width: 75px;
+}
+.bgColor {
+    background: #3f51b5;
+    border-right: 1px solid #fff;
+    color:#fff;
+    text-align:center;
+}
+.Tenddesc {
+    width: 480px;
+}
+.unit {
+    width: 15px;
+}
+.qtyWt {
+    width: 60px;
+}
+.uniFirm {
+    width: 90px;
+}
+.uniInsu {
+    width: 90px;
+}
+.uniCost {
+    width: 60px;
+}
+.uniWt {
+    width: 60px;
+}
+.lastBlankTD {
+    width: 150px;
+}
+.TenderDtlTable td{text-align:center}
+.TenderDtlTable .Tenddesc{text-align:left;}
+.ModelFooter.tableBlock td {
+    background: #d8d8d8;
+    border: none;
+    font-weight: bold;
+}
+.TenderDtlModelTable {
+    max-height: 300px;
+    overflow: auto;
+}
+.TendSrNo {
+    width: 55px;
+}
+.itemNm {
+    width: 60px;
+}
+.itemCat {
+    width: 116px;
+}
+.Uom {
+    width: 80px;
+}
+.TendPrc {
+    width: 118px;
+}
+.Tendcost {
+    width: 80px;
+}
+.addMarkInput input {
+    width: 100px;
+}
+.markSrNo {
+    width: 55px;
+}
+.itemPerc {
+    width: 80px;
+}
+.tableBlock table .MatkUp, .tableBlock table .frghtDes {
+    text-align: left;
+}
+.subTotalTR, .frghtLoctnTR {
+    background: #d8d8d8;
+    font-weight: bold;
+}
+.otherTotalBlock, .avgFrghtTR {
+    background: #e9e9e9;
+    font-weight: bold;
+}
+.ModelFooter.tableBlock.makUpFooter td {
+    background: #0c4da2;
+    border: none;
+    font-weight: bold;
+    color: #fff;
+    border: 1px dotted;
+}
+.modal-body .tableBlock table th {
+    background: #fff;
+}
+.addMoreLoctn {
+    color: #9b9b9b;
+}
+.addMoreLoctn span{line-height:30px;font-style:italic;}
+.addMoreLoctn img{float:right;}
+.tableBlock .bgBlue td {
+    background: #0c4da2;
+    color: #fff;
+}
+.frghtChargBlk .frghtData {
+    width: 117px;
+}
+.frghtData {
+    width: 100px;
+}
+.frghtDisbtn {
+    width: 135px;
+}
+.priceItem, .priceDesc {
+    width: 115px;
+}
+.abtAuditTrialDt, .abtAuditTrial {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+}
+.abtAuditTrialDt img, .abtAuditTrial span{
+    margin-right:5px;
+}
+.abtAuditTrial {
+    border-right: 1px solid #ccc;
+    justify-content: center;
+}
+.tableBlock.addTestChargModel table td input {
+    background: #fff;
+    height: 30px;
+    margin: 5px 0;
+    box-shadow: inset 1px 2px 4px 1px #ccc;
+}
+.overCharg {
+    width: 100px;
+}
+.testCharg {
+    width: 92px;
+}
+.uomTest {
+    width: 90px;
+}
+.descTest {
+    width: 346px;
+}
+.tableBlock .bgBlue td.testCharg {
+    width: 117px;
+}
+.qtyWt.bgColor, .uniWt.bgColor {
+    width: 94px;
+}
+.uniFirm.bgColor, .uniInsu.bgColor {
+    width: 136px;
+}
+.uniCost.bgColor{width:91px;}
+.lastBlankTD.bgColor{width:228px;}
+.InputStyle span{color:#000;}
+.savePubBtn{width:78px;}
+.Tenddesc {
+    width: 480px;
+}
+.costSale {
+    width: 95px;
+}
+.saprem {
+    width: 80px;
+}
+.indCost {
+    width: 80px;
+}
+.IntuniWt {
+    width: 90px;
+}
+.IntunitFrght, .IntunitPrc {
+    width: 150px;
+}
+.IntqtyWt {
+    width: 70px;
+}
+.Intunit {
+    width: 60px;
+}
+.sellPrc {
+    width: 120px;
+}
+.tableLayout{table-layout:fixed;}
+.viewAudit{width:605px;}
+.bgBlue {
+    background: #3f51b5;
+    color: #fff;
+}
+.RawTendPrc {
+    width: 70px;
+}
+.RawitemNm {
+    width: 490px;
+}
+.creatProdModel{width:42%;text-align:right;}
+.createProdModel {
+    height: 600px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+/***Domestic Flow CSS***/
+
+.collapseHide{display:none;}
+.collpaseClose {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+.enquiryTd{display:none;}
+.titleHead {
+    font-size: 14px;
+    color: #0c4da2;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform:capitalize;
+    /*margin-left: 10px;*/
+}
+.inputSpanGrp span.bmd-form-group {
+    padding: 0;
+}
+.opacityBtnyelow:hover {
+    background: #ecc509;
+    color: #4a4a4a;
+}
+
+.opacityBtnyelow {
+    background: rgba(236, 197, 9,0.8);
+    color: rgba(0,0,0,0.8);
+}
+.opacityBtngreen {
+    background: rgba(76, 182, 132, 0.8)
+}
+.opacityBtngreen:hover {
+    background: linear-gradient(153deg, #009688, #4cb684);
+    color:#fff;
+}
+.masterType1, .masterType2, .masterType3, .masterType4 {
+    float: right;
+    padding: 10px;
+    position: relative;
+    top: -3px;
+}
+.masterType1{
+    background:url('../images/addBtn.png') no-repeat;
+}
+.searchBlock {
+    display: flex;
+    align-items: center;
+}
+.inputSerachBlok {
+    width: 94%;
+}
+.btn-clear {
+    background: transparent;
+    border: none;
+}
+.searchClear {
+    position: absolute;
+    top: 11px;
+    right: 56px;
+    cursor: pointer;
+}
+.serachBtn {
+    background: #ecc509;
+    border: none;
+    border-radius: 2px;
+    padding: 7px 10px;
+}
+.inputSerachBlok .bmd-form-group{padding:0}
+.serachInput {
+    height: 35px;
+}
+.saveAssblProd{width:66%;}
+
+.savePgNewBtn {
+    width: 58%;
+}
+
+/***css for custom radio buttons*/
+.container {
+    display: block;
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    text-align: left;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    /* Hide the browser's default radio button */
+    .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+/* Create a custom radio button start*/
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #ddd;
+    border-radius: 50%;
+}
+/* Create a custom checkbox */
+.checkbox .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #ddd;
+    border-radius: 0;
+}
+.checkbox{left:18px;}
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+    background-color: #08154B;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+    top: 4px;
+    left: 4px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: white;
+}
+
+/* Style the checkmark/indicator */
+.checkbox .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    background: transparent;
+    border-radius: 0;
+}
+
+
+/* Create a custom radio button end*/
+
+.assmRow:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+.CreateCatDiv .bmd-form-group {
+    padding: 0;
+}
+
+.galReq {
+    width: 85px;
+}
+.galMat {
+    width: 135px;
+}
+
+.editBtn,.delBtn{background : transparent; border:none;padding:2px;cursor:pointer}
+.editDelTR{width:83px;}
+.editBtn img {
+    position: relative;
+    top: -2px;
+}
+.techQueryView{background:#fff;}
+.ansDiv {
+    display: flex;
+    align-items: center;
+    color: #a09797;
+    font-weight: normal;
+}
+.qutnLabel{
+    display: flex;
+    align-items: center;
+}
+.downloadExcel {
+    width: auto;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    /* box-shadow: 1px 2px 3px 1px #ccc; */
+    color: #007732;
+    /* height: 44px; */
+    padding: 5px;
+    /* text-align: center; */
+    float: right;
+    font-size: 14px;
+}
+.downloadExcel:hover{
+    text-decoration:underline;
+}
+.exceldowntable {
+    box-shadow: 1px 3px 4px 2px #ccc;
+}
+.viewBom {
+    width: 100px;
+}
+.bomRev {
+    width: 140px;
+}
+.bomId {
+    width: 100px;
+}
+.enqId {
+    width: 100px;
+}
+.editMat {
+    width: 80px;
+}
+.matGrid {
+    width: 70px;
+}
+.drawNo {
+    width: 70px;
+}
+.unitNet, .UnitGross {
+    width: 120px;
+}
+.compoQty {
+    width: 85px;
+}
+.CompoSize {
+    width: 200px;
+}
+.rawMater {
+    width: 500px;
+}
+.selectionRow:hover{
+    font-weight:bold;
+    cursor:pointer;
+}
+.grpType {
+    width: 120px;
+}
+/*.tableBlock table td input.whiteBgInput{
+    background:#fff;border:1px solid #ccc
+}*/
+.NoBorderTableModel .tableBlock table td,
+.NoBorderTableModel .tableBlock table th {
+    border: none;
+}
+.overflowModel {
+    overflow-x: hidden;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+.createUserTxt {
+    font-size: 15px;
+    color: #0b1d65
+}
+.AddUserImg{position:relative;top:10px;}
+.userDivider {
+    margin-top: 20px;
+    border-top: 1px solid #0b1d65
+}
+.userDivider {
+    margin: 40px 0;
+    border-top: 2px solid #0b1d65;
+    opacity: 0.2;
+}
+.userInput {
+    padding-top: 17px;
+}
+.creteEnqSearch .serachInput {
+    border: 1px solid #ccc;
+    margin-top: 1px;
+}
+}
+.epcCust {
+    font-weight: bold;
+    color: #0b1d65;
+}
+.modal-body.tableBlock table th {
+    background: #fff;
+}
+.bmd-form-group .bmd-label-static {
+    color: #797575;
+    font-weight: bold;
+}
+.compSize {
+    width: 120px;
+}
+.bomEdit {
+    width: 10px;
+}
+.bomView {
+    width: 10px;
+}
+.bomStatus {
+    width: 100px;
+}
+.bomRevi {
+    width: 150px;
+}
+.bomCtry {
+    width: 150px;
+}
+.bomEnq {
+    width: 120px;
+}
+.testBundle {
+    width: 150px;
+}
+.testUTS, .testLine {
+    width: 120px;
+}
+.testDes {
+    width: 250px;
+}
+.testType {
+    width: 150px;
+}
+.testName {
+    width: 150px;
+}
+.collapseShowSide{display:none}
+.FullCollapse.col-sm-12 .saveAssblProd {
+    width: 100%;
+}
+.MaterialGrid {
+    width: 120px;
+}
+.drawNo {
+    width: 50px;
+}
+.galMatrl {
+    width: 80px;
+}
+.galRequrd {
+    width: 74px;
+}
+.unNetwt {
+    width: 70px;
+}
+.unitGrwt {
+    width: 60px;
+}
+.compSize {
+    width: 120px;
+}
+.ComNo {
+    width: 100px;
+}
+.comName {
+    width: 150px;
+}
+.btn:disabled:hover, .btn[disabled], .btn[disabled]:focus, .btn[disabled]:hover {
+    background: #c7c3c3;
+    color: #000;
+}
+.fileNameDtl {
+    width: 67px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    float: left;
+}
+.closesTD {
+    width: 30px
+}
+
+.lableMsg {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.modelHeader {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    justify-content: center
+}
+
+.modalMsgTitle {
+    font-size: 25px;
+}
+.inputSerachDiv input {
+    width: 100% !important;
+}
+.inputSerachDiv {
+    width: 50%;
+}
+.proDrawno {
+    width: 259px;
+}
+.proSumary {
+    width: 304px;
+}
+.proGrpNm {
+    width: 392px;
+}
+.proGrpCode {
+    width: 414px;
+}
+.proItm {
+    width: 200px;
+}
+.proTotalnet, .proTotalgr, .proUninet, .proUnigr, .proQty {
+    width: 80px;
+}
+.publishNo {
+    font-weight: bold;
+    font-size: 14px;
+    color: #0b1d65;
+    margin-right: 10px;
+    text-transform: capitalize !important
+}
+.createBomDescTd:hover {
+    background: #ececec;
+}
+.w-40{width:40px;}
+.errorBlcok {
+    width: 80%;
+    margin: 2% auto;
+    text-align: center;
+}
+
+.errorMsg {
+    font-size: 30px;
+    color: #0b1d65;
+    margin: 30px 0;
+}
+#loginBtn a{color:#fff;}
+#loginBtn a:hover{text-decoration:none}

@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+<style>
+
+.navLi a:hover,.navLi.show a {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+	text-decoration:none;
+}
+
+.nav-tabs>li .active, .nav-tabs>li .active:focus, .nav-tabs>li .active:hover,.nav-tabs>li .firstOpen {
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+}
+
+.nav-tabs>li>a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+}
+.nav>li>a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+.nav-tabs {
+    border-bottom: 1px solid #ddd;
+}
+.nav-tabs>li {
+    float: left;
+    margin-bottom: -1px;
+}
+.nav>li {
+    position: relative;
+    display: block;
+}	
+.tenderRow {
+    width: 1000px;
+    margin: 30px auto;
+}
+</style>
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="row tenderRow ">
+                <div class="col-sm-12 ">
+                     <ul class="nav nav-tabs tabList">
+						<li class=" navLi "><a data-toggle="tab" href="#lines" class="firstOpen" >Lines</a></li>
+						<li class="navLi"><a data-toggle="tab" href="#lots" class="tabClick">Lots</a></li>
+						<li class="navLi"><a data-toggle="tab" href="#packages" class="tabClick">Packages</a></li>
+                        <li class="navLi"><a data-toggle="tab" href="#DtlStrt" class="tabClick">Details Structute</a></li>
+					  </ul>
+
+                     <div class="tab-content">
+                         <div id="lines" class="tab-pane fade in active show">
+                             <div class="TestMaterForm ">
+                                 <div class="col-sm-9">
+                                     <div class="form-group">
+                                         <label>Number Of Lines</label>
+                                         <input type="text" placeholder="enter no of lines" class="p-2" />
+                                     </div>
+                                 </div>
+
+                                 <div class="col-sm-12 NumberOfRow">
+                                     <div class="row">
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Lines</label>
+                                                 <input type="text" placeholder="enter name of lines" class="p-2" />
+                                             </div>
+                                         </div>
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Lines</label>
+                                                 <input type="text" placeholder="enter name of lines" class="p-2" />
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+
+                                 <div class="col-sm-12 NumberOfRow">
+                                     <div class="row">
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Lines</label>
+                                                 <input type="text" placeholder="enter name of lines" class="p-2" />
+                                             </div>
+                                         </div>
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Lines</label>
+                                                 <input type="text" placeholder="enter name of lines" class="p-2" />
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+
+
+
+                             </div>
+                         </div>
+                         <div id="lots" class="tab-pane fade">
+                             <div class="TestMaterForm ">
+                                 <div class="col-sm-9">
+                                     <div class="form-group">
+                                         <label>Number Of Lots</label>
+                                         <input type="text" placeholder="enter no of lots" class="p-2" />
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-12 NumberOfRow">
+                                     <div class="row">
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Lots</label>
+                                                 <input type="text" placeholder="enter name of lots" class="p-2" />
+                                             </div>
+                                         </div>
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Lots</label>
+                                                 <input type="text" placeholder="enter name of lots" class="p-2" />
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+
+                             </div>
+                         </div>
+                         <div id="packages" class="tab-pane fade">
+                             <div class="TestMaterForm ">
+                                 <div class="col-sm-9">
+                                     <div class="form-group">
+                                         <label>Number Of Packages</label>
+                                         <input type="text" placeholder="enter no of packages" class="p-2" />
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-12 NumberOfRow">
+                                     <div class="row">
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Packages</label>
+                                                 <input type="text" placeholder="enter name of packages" class="p-2" />
+                                             </div>
+                                         </div>
+                                         <div class="col-sm-6">
+                                             <div class="form-group">
+                                                 <label>Name Of Packages</label>
+                                                 <input type="text" placeholder="enter name of packages" class="p-2" />
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+
+                             </div>
+                         </div>
+                         <div id="DtlStrt" class="tab-pane fade">
+                             <div class="TestMaterForm ">
+                                 <div class="col-sm-12 mt-5">
+                                     <div class="tableBlock">
+                                         <table class="table">
+                                             <tr>
+                                                 <th class="DtlLine">Details of Line</th>
+                                                 <th class="DtlLot">Details of Lots</th>
+                                                 <th class="Dtlpack">Details of Packages</th>
+                                             </tr>
+                                             <tr>
+                                                 <td>Line 1</td>
+                                                 <td>
+                                                     <select class="selectDrpdwn">
+                                                         <option>Lots 1</option>
+                                                         <option>Lots 2</option>
+                                                         <option>Lots 3</option>
+                                                         <option>Lots 4</option>
+                                                     </select>
+                                                 </td>
+                                                 <td>
+                                                     <select class="selectDrpdwn">
+                                                         <option>package 1</option>
+                                                         <option>package 2</option>
+                                                         <option>package 3</option>
+                                                         <option>package 4</option>
+                                                     </select>
+                                                 </td>
+                                             </tr>
+                                             <tr>
+                                                 <td>Line 1</td>
+                                                 <td>
+                                                     <select class="selectDrpdwn">
+                                                         <option>Lots 1</option>
+                                                         <option>Lots 2</option>
+                                                         <option>Lots 3</option>
+                                                         <option>Lots 4</option>
+                                                     </select>
+                                                 </td>
+                                                 <td>
+                                                     <select class="selectDrpdwn">
+                                                         <option>package 1</option>
+                                                         <option>package 2</option>
+                                                         <option>package 3</option>
+                                                         <option>package 4</option>
+                                                     </select>
+                                                 </td>
+                                             </tr>
+                                         </table>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+
+                     </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    
+
+
+</body>
+</html>
+<script>
+$(document).ready(function(){
+
+$(".tabClick").click(function(){
+$(".navLi a").removeClass("firstOpen");
+})
+})
+  
+</script>

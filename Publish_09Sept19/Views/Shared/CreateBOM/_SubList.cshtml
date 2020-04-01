@@ -1,0 +1,18 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+
+@*<script type="text/javascript">
+        @{ var rowNum=0;}
+    </script>*@
+
+
+<table class="table m-0" id="">
+    @foreach (var item in Model.AssemblyList)
+    {
+        <tr>
+            <td class="createBomDescTd" onclick="SubAssemblyList(@item.AssemblyId)">
+            @*<td class="createBomDescTd" onclick="assmDetails(this)">*@
+                @item.AssemblyName
+            </td>
+        </tr>
+    }
+</table>

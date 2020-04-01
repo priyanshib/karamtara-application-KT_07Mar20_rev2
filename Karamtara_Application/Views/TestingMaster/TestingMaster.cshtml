@@ -1,0 +1,207 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+
+@{
+    ViewBag.Title = "TestingMaster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form id="testMasterForm">
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="row ProdNmBlock p-2">
+                    <div class="col-sm-8 align-items-center d-flex">
+                        <img src="../Assets/images/testMaster.svg" height="24px">  TESTING MASTER
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4 rightBorder">
+                <div class="createTestMaster tableBlock">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="addRawMateHead">ADD NEW TEST</div>
+                            <div class="TestMaterForm mt-2">
+                                <div class="form-group">
+                                    <label class="textLabel">Test Name</label>
+                                    @Html.TextBoxFor(x => x.TestName, new {@class="p-2" })
+                                </div>
+                                <div class="form-group">
+                                    <label class="textLabel">Test Description</label>
+                                    @Html.TextBoxFor(x => x.TestDescription, new { @class = "p-2" })
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <div class="textLabel">Test Type</div>
+                                                <div class="multiselectDiv">
+                                                    @Html.DropDownListFor(x => x.TypeId, new SelectList(Model.TypeList, "Id", "ProductGroupType"), new { @id = "pType", @multiple = "multiple", @class = "chkveg", @required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <div class="textLabel">Select kV line</div>
+                                                <div class="multiselectDiv">
+                                                    @Html.DropDownListFor(x => x.KvLineId, new SelectList(Model.KVLineList, "Id", "LineVoltage"), new { @id = "kvLine", @multiple = "multiple", @class = "chkveg", @required = "required" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <div class="textLabel">Select UTS</div>
+                                                <div class="multiselectDiv">
+                                                    @Html.DropDownListFor(x => x.UtsId, new SelectList(Model.UtsList, "Id", "UtsValue"), new { @id = "utsVal", @multiple = "multiple", @class = "chkveg" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group m-0">
+                                                <div class="textLabel">Select Bundle</div>
+                                                <div class="multiselectDiv">
+                                                    @Html.DropDownListFor(x => x.BundleId, new SelectList(Model.BundleList, "Id", "BundleType"), new { @id = "bType", @multiple = "multiple", @class = "chkveg" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="textLabel">Summary</div>
+                                    @Html.TextAreaFor(x => x.TestComments, new { @class = "p-2" })
+                                </div>
+                                <div class="saveRawMater">
+                                    <span class="errorSpanMsg float-none m-1" style="display:none" id="validationMessage">
+                                        Error Message is displayed here
+                                    </span>
+                                    <div>
+                                        <button type="submit" class="submitBomBtn saveBtn" id="saveBtn">Add</button>
+                                        <button type="button" class="submitBomBtn publishBtn" id="cancelButton" onclick="clearAllInputs();">Clear </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-8" id="testList">
+                @Html.Partial("~/Views/Shared/TestMaster/_TestList.cshtml", Model)
+            </div>
+        </div>
+    </div>
+</form>
+
+<div id="snackbar"></div>
+
+<script>
+
+    function clearAllInputs() {
+
+        $("#TestName").val('');
+        $("#TestDescription").val('');
+        $("#TestComments").val('');
+
+        $('#pType option:selected').each(function () {
+            $(this).prop('selected', false);
+        });
+        $('#pType').multiselect('refresh');
+
+        $('#bType option:selected').each(function () {
+            $(this).prop('selected', false);
+        });
+        $("#bType").multiselect('refresh');
+
+        $('#kvLine option:selected').each(function () {
+            $(this).prop('selected', false);
+        });
+        $("#kvLine").multiselect('refresh');
+
+        $('#utsVal option:selected').each(function () {
+            $(this).prop('selected', false);
+        });
+        $("#utsVal").multiselect('refresh');
+    }
+
+    function successQuery() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Test added successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failQuery() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while saving Test. Please try again"
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    }
+
+    function sameNameQuery(){
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Test with same name already exists"
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    }
+
+
+    $("#saveBtn").on('click', function () {
+
+        var testName = $("#TestName").val();
+        var description = $("#TestDescription").val();
+        var summary = $("#TestComments").val();
+        var type = $("#pType").val();
+        var bundle = $("#bType").val();
+        var line = $("#kvLine").val();
+        var uts = $("#utsVal").val();
+
+
+        if (!testName || !description || !summary || !(type && type.length) || !(bundle && bundle.length) || !(line && line.length) || !(uts && uts.length)) {
+
+            $("#validationMessage").html("Please fill all fields");
+            $("#validationMessage").attr("style", "");
+            return false;
+        };
+
+        var form = $("#testMasterForm").serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: "/TestingMaster/CreateTests",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+                if (data.Status == 1) {
+                    $("#testList").html(data.AjaxReturn);
+                    successQuery();
+                    clearAllInputs();
+                }
+                else if (data.Status == -1) {
+                    sameNameQuery();
+                }
+                else {
+                    failQuery();
+                }
+            },
+            error: function (err) {
+                failQuery();
+            }
+        });
+
+    });
+
+    $(function () {
+        $('.chkveg').multiselect({
+            includeSelectAllOption: true
+        });
+
+        $('#btnget').click(function () {
+            //ShowSnackBar($('.chkveg').val());
+        })
+    });
+</script>
+

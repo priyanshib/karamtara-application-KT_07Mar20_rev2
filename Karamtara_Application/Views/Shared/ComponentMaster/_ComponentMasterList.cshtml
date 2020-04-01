@@ -1,0 +1,178 @@
+﻿@model Karamtara_Application.Models.ComponentModel
+@{
+    ViewBag.Title = "ComponentMaster";
+    Layout = null;
+}
+
+
+@*<div class="searchBlock pb-3">
+    <div class="inputSerachBlok ">
+        <input type="text" id="txtSearch" class="input-group serachInput f-13" />
+        <button type="button" id="btnClear" class="btn-clear searchClear"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+    </div>
+    <button type="button" id="btnSearch" class="serachBtn"><img src="~/Assets/images/search.svg" width="20px" />search</button>
+</div>*@
+<div class="col-sm-12 p-0">
+    <div class="tableBlock">
+        <table class="table m-0 modalTable">
+            <tr>
+                <th class="catNo">Catalogue No</th>
+                <th class="compoentNm">Component </th>
+                <th class="rawMater">Raw Material</th>
+                <th class="CompoSize">Size</th>
+                @*<th class="compoQty">Quantity</th>*@
+                <th class="UnitGross text-center"> Unit Gross Weight <span class="position-relative float-left w-100" style="top:5px">(Kg)</th>
+                <th class="unitNet text-center">Unit Net Weight <span class="position-relative float-left w-100" style="top:5px">(Kg)</th>
+                <th class="galReq">GAL. REQ.</th>
+                <th class="galReq">GAL. Type</th>
+                <th class="drawNo">Drawing Number</th>
+                <th class="matGrid">Material Grade</th>
+                <th class="matGrid">Unit</th>
+                <th class="editMat"> </th>
+            </tr>
+            @foreach (var item in Model.ComponentList)
+            {
+                <tr>
+                    <td class="catNo">@Html.TextBoxFor(m => @item.CatalogueNo, new { @readonly = "readonly", @id = "ComponentId" + @item.CatalogueNo }) </td>
+                    <td class="compoentNm">
+                        <span class="tooltipHover c-pointer">
+                            @Html.TextBoxFor(m => @item.ComponentName, new { @readonly = "readonly", @id = "ComponentName" + @item.ComponentId, @class = "rawMater  c-pointer" })
+                            <span class="tooltipShow">@item.ComponentName</span>
+                        </span>
+                    </td>
+                    <td class="rawMater">
+                        <span class="tooltipHover c-pointer">
+                            @Html.TextBoxFor(m => @item.RawMaterial, new { @readonly = "readonly", @id = "RawMaterial" + @item.ComponentId, @class = " c-pointer" })
+                            <span class="tooltipShow">@item.RawMaterial</span>
+                        </span>
+                    </td>
+                    <td class="CompoSize">
+                        <span class="tooltipHover c-pointer">
+                            @Html.TextBoxFor(m => @item.Size, new { @readonly = "readonly", @id = "Size" + @item.ComponentId, @class = " c-pointer" })
+                            <span class="tooltipShow">@item.Size</span>
+                        </span>
+                    </td>
+                    @*<td class="compoQty">@Html.TextBoxFor(m => @item.Qty, new { @readonly = "readonly", @id = "Qty" + @item.ComponentId, @class = "text-center" })</td>*@
+                    <td class="UnitGross">@Html.TextBoxFor(m => @item.UnitGrWt, item.UnitGrWt.ToString("N3"), new { @readonly = "readonly", @id = "UnitGrWt" + @item.ComponentId, @class = "text-center" })</td>
+                    <td class="unitNet">@Html.TextBoxFor(m => @item.UnitNetWt, item.UnitNetWt.ToString("N3"), new { @readonly = "readonly", @id = "UnitNetWt" + @item.ComponentId, @class = "text-center" })</td>
+                    <td class="galReq">@Html.TextBoxFor(m => @item.GalvanizedRequired, (item.GalvanizedRequired ? "Yes" : "No"), new { @readonly = "readonly", @id = "GalvanizedRequired" + @item.ComponentId, @class = "text-center" })</td>
+                    <td class="galReq"> @Html.TextBoxFor(m => @item.GalvanizedMaterial, new { @readonly = "readonly", @id = "GalvanizedMaterial" + @item.ComponentId, @class = "text-center" })</td>
+                    <td class="drawNo">
+                        <span class="tooltipHover c-pointer">
+                            @Html.TextBoxFor(m => @item.DrawingNo, new { @readonly = "readonly", @id = "DrawingNo" + @item.ComponentId, @class = "text-center c-pointer" })
+                            <span class="tooltipShow">@item.DrawingNo</span>
+                        </span>
+                    </td>
+                    <td class="matGrid">
+                        <span class="tooltipHover c-pointer">
+                            @Html.TextBoxFor(m => @item.MaterialGrade, new { @readonly = "readonly", @id = "MaterialGrade" + @item.ComponentId, @class = "text-center c-pointer" })
+                            <span class="tooltipShow">@item.MaterialGrade</span>
+                        </span>
+                    </td>
+                    <td class="matGrid">@Html.TextBoxFor(m => @item.Unit, new { @readonly = "readonly", @id = "Unit" + @item.ComponentId, @class = "text-center" }) </td>
+                    <td class="editMat">
+                        <div class="editDelDiv  d-flex justify-content-center">
+                            <button type="button" class="commonBtn" id="Editbtn'+@item.ComponentId+'" onclick="EditBtnClick(@item.ComponentId);"><img src="/Assets/images/editPensil.svg" width="16px" class="mr-1"></button>
+                            @*<button type="button" class="commonBtn" id="Editbtn'+@item.ComponentId+'" onclick="DeleteBtnClick(@item.ComponentId);"><img src="/Assets/images/delete.svg" width="20px" class="mr-1"></button>*@
+                        </div>
+                    </td>
+                </tr>@*@item.UnitGrWt,@item.UnitNetWt,@item.DrawingNo,@item.Size,@item.MaterialGrade,@item.RawMaterialId,@item.GalvanizedRequired
+                    <button type="button" name="saveButton" class="saveBtn" id="Savebtn'+@item.ComponentId+'" onclick="SaveBtnClick(@item.ComponentId);">Save</button>*@
+            }
+        </table>
+        @*<div class="text-right m-2">
+                <button type="button" class="submitBomBtn saveBtn AddRow" id="AddRowsButtonId" onclick="AddRowsModal();">Add More Rows</button>
+                <button type="button" class="createComponent sucessEnq" id="createCompoSubmit" data-toggle="modal">Submit</button>
+            </div>*@
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var isValid = true;
+
+    document.querySelectorAll(".validateField").forEach(x => {
+        x.addEventListener("keyup", function () {
+            if (x.type == "number") {
+                if (countDecimals(x.value) > 3) {
+                    x.classList.add('invalid');
+                    x.setAttribute('style', 'border-bottom:2px solid red');
+                    $("#errorSpan").attr('style', 'display:block');
+                    $("#errorSpan").html('Only 3 decimal places are allowed in Weight Columns')
+                }
+                else {
+                    x.classList.remove('invalid');
+                    x.removeAttribute('style');
+                    $("#errorSpan").attr('style', 'display:none');
+                    $("#errorSpan").html('')
+                }
+            }
+            else {
+                x.removeAttribute('style');
+            }
+        });
+    });
+
+    //$('#txtSearch').keypress(function (e) {
+    //    var key = e.which;
+    //    if (key == 13) {
+    //        $('#btnSearch').click();
+    //        return false;
+    //    }
+    //});
+
+    //$("#btnSearch").click(function () {
+    //    var value = $("#txtSearch").val();
+    //    if (value) {
+    //        $.ajax({
+    //            type: "get",
+    //            url: "/ComponentMaster/GetComponentMasterList/",
+    //            dataType: "html",
+    //            data: { searchText: value },
+    //            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+    //            success: function (data) {
+    //                $('#CompMasterList').html(data);
+    //                $("#txtSearch").val(value);
+    //            },
+    //            error: function (data) { }
+    //        });
+    //    };
+    //});
+
+    //$("#btnClear").click(function () {
+    //    var data = $("#txtSearch").val();
+    //    if (data) {
+    //        ClearSearch();
+    //    }
+    //    //$("#btnSearch").click();
+    //});
+    //function ClearSearch(id) {
+    //    $("#txtSearch").val('');
+    //    $.ajax({
+    //        type: "get",
+    //        url: "/ComponentMaster/GetComponentMasterList/",
+    //        dataType: "html",
+    //        data: { searchText: "", clearResult: true },
+    //        contentType: "application/x-www-form-urlencoded;charset=utf-8",
+    //        success: function (data) {
+    //            $('#CompMasterList').html(data);
+    //            $("#txtSearch").val(value);
+    //        },
+    //        error: function (data) { }
+    //    });
+    //}
+
+    $(document).ready(function () {
+
+        $('input').each(function (index) {
+            if ($(this).val().length == 0) {
+                // ShowSnackBar("valute is 0");
+                $(this).closest(".tooltipHover").remove();
+            }
+        });
+
+    });
+
+</script>
+

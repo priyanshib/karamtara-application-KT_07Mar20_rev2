@@ -1,0 +1,310 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+
+@{
+    ViewBag.Title = "TestingMaster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row ProdNmBlock p-2">
+                <div class="col-sm-8 align-items-center d-flex">
+                    <img src="../Assets/images/testMaster.png" height="20px">  TESTING MASTER
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-sm-4">
+            <div class="createTestMaster tableBlock">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="addRawMateHead">ADD NEW TEST</div>
+                        <div class="TestMaterForm">
+                            <div class="form-group">
+                                <label>Test Name</label>
+                                <input type="text" id="txtSearch" class="autoCompSearch" onclick="AutoComp();" />
+                            </div>
+                            <div class="form-group">
+                                <div class="textLabel">Select Bundle</div>
+                                <input type="text" id="selectedText" class="autoCompSearch" readonly="readonly" />
+                                <input type="hidden" id="selectedId" class="autoCompId" />
+                                <input type="hidden" id="selectedType" class="autoCompType" />
+                                <input type="hidden" id="selectedBOMId" class="autoCompBOMId" />
+                                
+                            </div>
+                            @*<div class="saveRawMater">
+                                <button type="button" class="submitBomBtn saveBtn">Add</button>
+                                <button type="button" class="submitBomBtn publishBtn">Cancel </button>
+                            </div>*@
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-8">
+            <div class="TestMasterdetails tableBlock ">
+                <div class="row" id="testid">
+                    <div class="col-sm-12 text-right mt-2 mb-2">
+                        <input type="button" id="addTestBtn" value="Add New Test" class="createProdBtn saveBtn" onclick="addNewTest();" />
+                    </div>
+                    
+                    <table class="table TestMaterialTable ">
+                        <tr>
+                            <th class="srNo">Sr. NO.</th>
+                            <td class="testId" style="display:none;">TestId</td>
+                            <th class="testDes">Description of Test</th>
+                            <th class="testType">Type</th>
+                            <th class="testLine">kV Line</th>
+                            <th class="testUTS">UTS</th>
+                            <th class="testBundle">Bundle</th>
+                            @*<th class="testSummary">Summary</th>*@
+                        </tr>
+                        @for (int i = 0; i < Model.TestList.Count; i++)
+                        {
+                        <tr>
+                            @*<td>@(i + 1)</td>*@
+                            <td>
+                                <label class="container checkbox">
+                                    <input type="checkbox" name="checkbox" value="0" id="chbox">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </td>
+                            <td class="testDesId" style="display:none;" name="TestId">@Model.TestList[i].Id</td>
+                            <td class="testDesTD">@Model.TestList[i].TestDescription</td>
+                            <td>@Model.TestList[i].Type</td>
+                            <td>@Model.TestList[i].KVLine</td>
+                            <td>@Model.TestList[i].UTS</td>
+                            <td>@Model.TestList[i].Bundle</td>
+                            @*<td><img src="../Assets/images/assebleSummary.png" /></td>*@
+
+                        </tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-sm-12 text-right">
+                    <input type="button" id="btnSave" value="Save" class="createProdBtn saveBtn" onlick="saveData();" />
+                    <input type="button" id="btnCancel" value="Cancel" class="createProdBtn cancel" onclick="cancelData();" />
+                </div>               
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addTestMasterModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body tableBlock overflowModel" id="addTestMasterDataModel">
+                @using (Html.BeginForm("CreateTests", "TestingMaster", FormMethod.Post, new { @id = "CreateTestForm" }))
+                {
+                    <table class="table m-0 modalTable" id="newTestTable">
+                        <thead>
+                            <tr>
+                                @*<th scope="col" class="TestId">Test Id</th>*@
+                                <th scope="col" class="testName">Name</th>
+                                <th scope="col" class="testDes">Description</th>
+                                <th scope="col" class="testType"> Type</th>
+                                <th scope="col" class="testLine">KVLine</th>
+                                <th scope="col" class="testUTS">UTS</th>
+                                <th scope="col" class="testBundle">Bundle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                @*<td class="TestId">@Html.TextBox("TestId", null)</td>*@
+                                <td class="testName">@Html.TextBox("Name", null,new { @class= "whiteBgInput" })</td>
+                                <td class="testDes">@Html.TextBox("Disciption", null, new { @class = "whiteBgInput" })</td>
+                                <td class="testType">@Html.TextBox("Type", null, new { @class = "whiteBgInput" })</td>
+                                <td class="testLine">@Html.TextBox("KVLine", null, new { @class = "whiteBgInput" })</td>
+                                <td class="testUTS">@Html.TextBox("UTS", null, new { @class = "whiteBgInput" })</td>
+                                <td class="testBundle">@Html.TextBox("Bundle", null, new { @class = "whiteBgInput" }) </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+                    @*@Html.Partial("~/Views/Shared/SubAssemblyMaster/_EditComponents.cshtml", Model)*@
+                    @*jahsdjahsjdhjh*@
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn AddRow" id="AddRowsButtonId" onclick="AddRowsModal();">Add More Rows</button>
+                <button type="button" class="createComponent sucessEnq" id="addTestSubmit" data-toggle="modal">Submit</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function AddRows() {
+        //alert('ok');
+        $.each(new Array(10), function (i) {
+            $('.TestMaterialTable tr:last')
+                .after('<tr><td></td>' + '<td></td>' + '<td></td>' + '<td></td>' + '<td></td>' + '<td></td>' + '<td></td>' +  '</tr>');
+
+           });
+    }
+    window.onload = AddRows;
+
+    var autoData = null;
+    function AutoComp() {
+        $(".autoCompSearch").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/TestingMaster/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+
+                return false;
+            },
+            minLength: 2
+        });
+    };
+
+    function AutoFillSelectedRow(num, objectId, type) {
+        let obj = autoData.find(x => x.Id == objectId && x.MasterType == type);
+
+        $("#selectedText").val(obj.Name + '( ' + obj.CatalogueNo + ' )');
+        $("#txtSearch").val("");
+        $("#selectedId").val(objectId);
+        $("#selectedType").val(type);
+        $("#selectedBOMId").val(obj.BOMId);
+    };
+
+    $("#btnSave").click(function (event) {
+        var ProductId = $('#selectedId').val();
+        var Type = $('#selectedType').val();
+        var BOMId = $('#selectedBOMId').val();
+        $('#textsave').val(Type);
+        var values = new Array();
+        
+        $.each($("input[name='checkbox']:checked").closest("td").siblings("td"),
+            function () {
+                values.push($(this).text());
+                
+            });
+        //alert("val---" + values.join("~! "));
+
+        $.ajax({
+            type: 'POST',
+            url: "/TestingMaster/SubmitTest",
+            data: { ProductId: ProductId, Type: Type, BOMId: BOMId, values: values },
+            dataType: 'json',
+            success: function (data) {
+                if (data == 0)
+                {
+                    alert("Error while submitting test"); 
+                    $("#selectedText").val("");
+                    $('input[name=checkbox]').prop('checked', false);
+                    //$("input[name='checkbox']:checked").closest("tr").hide();
+                }
+                else {
+                    alert("Test Sbmitted Successfully");
+                    $("#selectedText").val("");
+                    $('input[name=checkbox]').prop('checked', false);
+                    //$("input[name='checkbox']:checked").closest("tr").hide();
+                }
+            },
+            error: function (err) {
+                alert("Error while submitting test"); 
+                $("#selectedText").val("");
+                $("input[name='checkbox']:checked").closest("tr").hide();
+            }
+        });
+    }); 
+
+    function addNewTest()
+    {
+        $("#addTestMasterModal").modal('show');
+
+        if ($(".modalTable tr").length < 5) {
+            AddRowsModal();
+        }
+    }
+
+    function AddRowsModal() {
+
+         $.each(new Array(5), function (index) {
+              index++;
+              $('.modalTable tr:last')
+                  .after('<tr> <td class="Name"> <input type="text" name="Name" id="Name_' + index + '" class="whiteBgInput"> </td>' +
+                        '<td class="Disciption"> <input class="whiteBgInput" type="text" name="Disciption" id="Disciption_' + index + '"> </td>' +
+                        '<td class="Type"> <input class="whiteBgInput" type="text" name="Type" id="Type_' + index + '"> </td>' +
+                        '<td class="KVLine"> <input class="whiteBgInput" type="text" name="KVLine" id="KVLine_' + index + '"> </td>' +
+                        '<td class="UTS"> <input class="whiteBgInput" type="text" name="UTS" id="UTS_' + index + '"> </td>' +
+                        '<td class="Bundle"> <input class="whiteBgInput" type="text" name="Bundle" id="Bundle_' + index + '"> </td> </tr>');
+         });
+    };
+
+    $("#addTestSubmit").on('click', function () {
+
+        $('.modalTable input[type=text]').each(function () {
+            var getText = $(this).val() + '~!';
+            $(this).val(getText);
+        });
+        var formSerialized = $("#CreateTestForm").serialize();
+
+        $('.modalTable input[type=text]').each(function () {
+            var getText = $(this).val().replace('~!', '');
+            $(this).val(getText);
+        });
+
+
+        $.ajax({
+            type: 'POST',
+            url: "/TestingMaster/CreateTests",
+            data: formSerialized,
+            dataType: "json",
+            success: function (data) {
+                if (data == true || data == "true") {
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                    alert("Tests created successfully");   
+                }
+                else
+                    alert("There was some issue while creating the tests");
+
+                $("#addTestMasterModal").modal('hide');
+                //$('#createComponentModal').find('input:text').val('');
+            },
+            error: function (response) {
+            }
+        });
+    });
+
+    function cancelData() {
+        //alert("hi");
+        $("#selectedText").val("");
+        $('input[name=checkbox]').prop('checked', false);
+        //$("input[name='checkbox']:checked").closest("tr").hide();
+    }
+</script>
+

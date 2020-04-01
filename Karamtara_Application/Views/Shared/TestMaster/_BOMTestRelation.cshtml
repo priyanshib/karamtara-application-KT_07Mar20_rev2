@@ -1,0 +1,97 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+
+@{
+    int count = 1;
+}
+
+@using (@Html.BeginForm("SubmitTestRelation", "TestingMaster", FormMethod.Post, new { @class = "formClass", @id = "bomTestRelationForm" }))
+{
+    <div class="TestMasterDtls tableBlock">
+    <div class="row">
+        <table class="table">
+            <tr>
+                @Html.HiddenFor(x => x.ProductId)
+                @Html.HiddenFor(x => x.BomId)
+                @Html.HiddenFor(x => x.RevNo)
+                @Html.HiddenFor(x => x.ComponentId)
+                @Html.HiddenFor(x => x.SubAssemblyId)
+                @Html.HiddenFor(x => x.AssemblyId)
+                @Html.HiddenFor(x => x.ProductGroupId)
+                @Html.HiddenFor(x => x.ProdType)
+                <td colspan="4" class="TestMasterHeading textCenterTD">
+                    <span>SELECT TEST FOR :</span>@Model.ProductName
+                </td>
+            </tr>
+            <tr>
+                <th class="srNo" style="width:20px"></th>
+                <th> Name of Test</th>
+                <th class="typeDes">Description of Test</th>
+                <th class="selectType">Select</th>
+            </tr>
+
+            @for(int i =0; i < Model.TestList.Count; i++)
+            {
+                <tr>
+                    <td>@count</td>
+                    <td class="textCenterTD">@Model.TestList[i].TestName</td>
+                    <td class="textCenterTD">@Model.TestList[i].TestDescription</td>
+                    <td class="selectType">
+                        <label class="container checkbox">
+                            @Html.CheckBoxFor(x => Model.TestList[i].IsSelected, new { @class = "form-check-input" })   
+                            <span class="checkmark"></span>
+                        </label>
+                       
+                    </td>
+                    @Html.HiddenFor(m => Model.TestList[i].Id)
+                    @Html.HiddenFor(m => Model.TestList[i].TestName)
+                    @Html.HiddenFor(m => Model.TestList[i].TestDescription)
+                    @Html.HiddenFor(m => Model.TestList[i].UTS)
+                    @Html.HiddenFor(m => Model.TestList[i].KVLine)
+                    @Html.HiddenFor(m => Model.TestList[i].Bundle)
+                    @Html.HiddenFor(m => Model.TestList[i].Summary)
+                    @Html.HiddenFor(m => Model.TestList[i].Type)
+                </tr>
+                count++;
+            }
+        </table>
+    </div>
+    <div>
+        <button type="button" class="submitBomBtn saveBtn" id="saveBtn">Submit</button>
+        <button type="button" class="submitBomBtn publishBtn" id="cancelButton">Cancel</button>
+    </div>
+    </div>
+}
+
+<script>
+
+    $("#saveBtn").on('click', function () {
+        var form = $("#bomTestRelationForm").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "/TestingMaster/SubmitTestRelation",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+                if (data > 0) {
+                    successQuery();
+                }
+                else {
+                    failQuery();
+                }
+            },
+            error: function (err) {
+                failQuery();
+            }
+        });
+    });
+
+    $("#cancelButton").on('click', function () {
+
+        $("#testDetailsView").empty();
+        $(".colorClass").each(function () {
+            $(this).removeAttr('style');
+        });
+    });
+    
+
+</script>

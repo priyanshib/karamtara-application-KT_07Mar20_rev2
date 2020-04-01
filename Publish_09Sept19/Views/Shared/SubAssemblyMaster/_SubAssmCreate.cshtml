@@ -1,0 +1,166 @@
+﻿@model Karamtara_Application.Models.SubAssemblyMasterModel
+
+@using (Html.BeginForm("CreateSubAssembly", "SubAssemblyMaster", FormMethod.Post, new { @id = "SubAssemlyMasterForm" }))
+{
+    <div class="Catgdetails tableBlock">
+        <div class="row">
+            <table class="table m-0 mb-5" id="CreateSubAssemblyTable">
+                <tr>
+                    <th class="catNo">Cat. No</th>
+                    <th class="productNm">Sub Assembly</th>
+                    <th class="compoentNm">Component </th>
+                    <th class="rawMater">Raw Material</th>
+                    <th class="prodNo">Drawing No</th>
+                    <th class="rawMater">Material Grade</th>
+                    <th class="rawMater">Size</th>
+                    <th class="prodNo">Quantity</th>    
+                    <th class="prodUnit"> Unit Gross Weight<br />(KG)</th>
+                    <th class="prodUnit">Unit Net Weight<br />(KG)</th>
+
+                </tr>
+                @*<tr>
+                        <td colspan="7"></td>
+                    </tr>*@
+                <tr>
+                    <td class="catNo">@Html.TextBox("SumAssmCatNo", null, new { @placeholder = "Catalogue No", @id = "SumAssmCatNo", @class = "ProdCatNum bold" })</td>
+                    <td class="productNm">@Html.TextBox("SumAssmName", null, new { @placeholder = "Name", @id = "SumAssName", @class = "ProdName bold" })</td>
+                    <td class="compoentNm"></td>
+                    <td class="rawMater"></td>
+                    <td class="prodNo">@Html.TextBox("DrawingNoMaster", null, new { @placeholder = "Drawing No", @id = "DrawingNoId", @class = "ProdName bold" })</td>
+                    <td class="rawMater"></td>
+                    <td class="rawMater"></td>
+                    <td class="prodNo"></td>
+                    <td class="prodUnit"></td>
+                    <td class="prodUnit"></td>
+
+                </tr>
+            </table>
+            <div class="col-sm-12 text-right">
+                <button type="button" class="submitBomBtn publishBtn" id="btnSaveSubAssm">save </button>
+                <button type="button" class="addRowBtnYellow" id="AddRow">Add More Rows</button>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    var availableTags = JSON.parse('@Html.Raw(Json.Encode(Model.ComponenetList))');
+
+    $("#btnSaveSubAssm").click(function () {
+        $('input[type=text]').each(function () {
+            var getText = $(this).val() + '~!'; //here you can set your pattern superseded 88
+            $(this).val(getText);
+        });
+
+        var form = $("#SubAssemlyMasterForm").serialize();
+            
+        $.ajax({
+            type: 'POST',
+            url: "/SubAssemblyMaster/CreateSubAssembly",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+                if (data > 0) {
+                    $('input[type=text]').each(function () {
+                        $(this).val('');
+                    });
+                    createSuccess(data);
+                }
+                else {
+                    $('input[type=text]').each(function () {
+                        var temp = $(this).val().replace('~!', '');
+                        $(this).val(temp);
+                    });
+                    createFailure();
+                }
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        //$(function () {
+        //    $('.submitBomBtn').on("click", function () {
+        //        $('input[type=text]').each(function () {
+        //            var getText = $(this).val() + '~!'; //here you can set your pattern superseded 88
+        //            $(this).val(getText);
+        //        });
+        //    });
+        //});
+        AddRows();
+    });
+
+    $("#AddRow").on('click', function () {
+        AddRows();
+    })
+
+    function AddRows() {
+        var lastIndex = $('#CreateSubAssemblyTable tr').length - 1;
+        $.each(new Array(5), function (index) {
+            var temp = lastIndex + index;
+            $('#CreateSubAssemblyTable tr:last')
+                .after('<tr><td class="catNo"></td>' + '<td class="productNm"></td>' + '<td class="componentNm">' +
+                    '<input type="text" name="CompName" class="CompName autocomp invalid whiteBgInput" id="compNameAuto_' + temp + '"  data-val="' + temp + '" >' +
+                    '</td>  <input type="hidden" id="componentId_' + temp + '" name="ComponentId">' +
+                '<td class="rawMater"> <input type="text" name="RM" id="RawMaterial_' + temp + '" readonly="readonly" >' + '</td>' +
+                '<td class="rawMater"> <input type="text" name="DrawingNo" id="DrawingNo_' + temp + '" readonly="readonly" >' + '</td>' +
+                '<td class="rawMater"> <input type="text" name="Grade" id="Grade_' + temp + '" readonly="readonly" >' + '</td>' +
+                '<td class="rawMater"> <input type="text" name="Size" id="Size_' + temp + '" readonly="readonly" >' + '</td>' +
+                    '<td class="prodNo"> <input type = "text" name = "Qty" id = "Quantity_' + temp + '"> </td> ' +
+                    '<td class="prodUnit"> <input type="text" name="GrossWt" id="GrossWt_' + temp + '" readonly="readonly">' + '</td>' +
+                '<td class="prodUnit"> <input type="text" name="NetWt" id="NetWt_' + temp + '" readonly="readonly">' + '</td>');
+        });
+        AutoComp();
+    };
+
+    function AutoComp() {
+
+        var sourceArray = $.map(availableTags, function (item) {
+            return { label: item.ComponentName, value: item.ComponentId }
+        });
+
+        $(".autocomp").autocomplete({
+            minlength: 0,
+            source: sourceArray,
+            select: function (event, ui) {
+                var dataAttrib = $(this).attr('data-val');
+                var subId = ui.item.value;
+                $(this).val(ui.item.label);
+                AutoFillSelectedRow(dataAttrib, subId);
+                $(this).removeClass('invalid');
+                return false;
+            },
+            change: function (event, ui) {
+                if (ui.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var dataAttrib = $(this).attr('data-val');
+                    ClearRow(dataAttrib);
+                }
+            }
+        }).focus(function () {
+            $(this).autocomplete("search", "");
+        });
+
+        function AutoFillSelectedRow(num, subId) {
+            var data = JSON.parse('@Html.Raw(Json.Encode(Model.ComponenetList))');
+            let obj = data.find(x => x.ComponentId == subId);
+            $("#RawMaterial_" + num).val(obj.RawMaterial);
+            $("#Size_" + num).val(obj.Size);
+            $("#GrossWt_" + num).val(obj.UnitGrWt);
+            $("#NetWt_" + num).val(obj.UnitNetWt);
+            $("#componentId_" + num).val(subId);
+            $("#DrawingNo_" + num).val(obj.DrawingNo);
+            $("#Grade_" + num).val(obj.MaterialGrade);
+        };
+
+        function ClearRow(num) {
+            $("#RawMaterial_" + num).val("");
+            $("#Size_" + num).val("");
+            $("#GrossWt_" + num).val("");
+            $("#NetWt_" + num).val("");
+            $("#componentId_" + num).val("");
+            $("#DrawingNo_" + num).val("");
+            $("#MaterialGrade_" + num).val(obj.DrawingNo);
+        };
+        }
+
+</script>

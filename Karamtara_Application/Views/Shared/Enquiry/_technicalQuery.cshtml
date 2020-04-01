@@ -1,0 +1,341 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+@{
+    string answer = "";
+    string date = "";
+    string ResponseAttachment = "";
+}
+<div>
+    @if (Model.TechQueryList != null && Model.TechQueryList.Count > 0)
+    {
+        @*<input type="hidden" value="@Model.TechQueryList.FirstOrDefault().EnquiryId" id="IP" name="EnquiryId" />*@
+        foreach (var x in Model.TechQueryList)
+        {
+            using (Html.BeginForm("SubmitTechQuery1", "Enquiry", FormMethod.Post, new { @id = "techQueryForm_" + x.Id, enctype = "multipart/form-data", @class = "techQueryFormClass" }))
+            {
+                <input type="hidden" value="@Model.TechQueryList.FirstOrDefault().EnquiryId" id="IP_@x.Id" name="EnquiryId" />
+                <div class="CreateCatDiv border-bottom">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <table class="table m-0">
+                                @if (string.IsNullOrEmpty(x.QueryAttachment))
+                                {
+                                    <tr class="qtnRow">
+                                        <td class="labelDiv border-0 pb-0">
+                                            <label class="qutnLabel"><img src="~/Assets/images/qutnIcon.svg" width="30px" class="mr-2" />@x.Query</label>
+                                        </td>
+                                        <td class="border-0 pb-0"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-0 pb-0 pt-0"><span class="senderInfo">@x.AskedBy | @x.QueryDate.ToString("dd MMMM yyyy hh:mm tt")</span></td>
+                                        @*@if (!string.IsNullOrEmpty(x.AskedBy))
+                                            {
+
+                                            }*@
+                                        @*<td class="fileDiv border-0 pb-0"><img src="~/Assets/images/AllFile.svg" class="mr-1" width="20px" onclick="location.href='@Url.Action("DownloadAttachDocs", "TenderEnquiry", new {enquiryId = @Model.TechQueryList.FirstOrDefault().EnquiryId, file = x.QueryAttachment })'" /></td>*@
+                                        @*@if (string.IsNullOrEmpty(x.Answer))
+                                            {*@
+                                        <td class="replyDiv border-0 pb-0 c-pointer pt-0" id="replyMsg_@x.Id" onclick="reply(@x.Id);"><img src="~/Assets/images/reply.svg" width="15px" class="mr-1 c-pointer" />Reply</td>
+                                        @*}*@
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="qtnRow">
+                                        <td class="labelDiv border-0 pb-0">
+                                            <label class="qutnLabel"><img src="~/Assets/images/qutnIcon.svg" width="30px" class="mr-2" />@x.Query</label>
+                                        </td>
+                                        <td class="border-0 pb-0"> </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-0 pb-0 pt-0"><span class="senderInfo">@x.AskedBy | @x.QueryDate.ToString("dd MMMM yyyy hh:mm tt")</span></td>
+                                        <td class="fileDiv border-0 pb-0 pt-0"><img src="~/Assets/images/AllFile.svg" class="mr-1" width="20px" onclick="location.href='@Url.Action("DownloadAttachDocs", "TenderEnquiry", new {enquiryId = @Model.TechQueryList.FirstOrDefault().EnquiryId, file = x.QueryAttachment })'" /></td>
+                                        @*@if (string.IsNullOrEmpty(x.Answer))
+                                            {*@
+                                        <td class="c-pointer replyDiv border-0 pb-0" id="replyMsg_@x.Id" onclick="reply(@x.Id);"><img src="~/Assets/images/reply.svg" width="15px" class="mr-1 c-pointer" />Reply</td>
+                                        @*}*@
+                                    </tr>
+                                }
+                                @*@if (!string.IsNullOrEmpty(x.Answer))
+                                    {*@
+                                <tr class="replo" style="display:none" id="replyBlockSec_@x.Id">
+                                    <td class="labelDiv border-0 pb-0">
+                                        <div class="ansBlock d-flex align-items-center">
+                                            <img src="~/Assets/images/answerIcon.svg" width="30px" class="mr-2" /> @Html.TextBox("reply.Answer", null, new { @class = "tpClass answerClass", id = "answer_" + x.Id })<input type="hidden" name="x.Id" value="@x.Id" />
+                                        </div>
+                                    </td>
+                                    <td class="attchDiv border-0 pb-0 pl-0 pr-0" colspan="1">
+                                        <div class="d-flex align-items-center" style="padding-top: 7px;">
+                                            <input type="file" name="" id="file_@x.Id" class="inputfile" />
+                                            <label for="file_@x.Id" class="inputfileLable"><img src="~/Assets/images/attachment.png" class="mr-1" /> <span>Attachment</span></label>
+                                        </div>
+                                    </td>
+                                    <td class="SubmitDiv border-0 pb-0 pl-0 pr-0">
+                                        <button type="button" id="querySubmit_@x.Id" class="submitBomBtn publishBtn" onclick="QuerySubmit('@x.Id','@Model.TechQueryList.FirstOrDefault().EnquiryId','@x.Query');" style="width:60px">Submit</button>
+                                    </td>
+                                </tr>
+
+
+                                
+                                @{
+                                    var replyModel = x.Answers.FirstOrDefault();
+
+                                    if (replyModel != null)
+                                    {
+                                        answer = replyModel.Answer;
+                                        date = replyModel.ReplyDate.ToString("dd MMMM yyyy hh:mm tt");
+                                        ResponseAttachment = replyModel.ResponseAttachment;
+                                        x.Answers.RemoveAt(0);
+                                    }
+                                    else
+                                    {
+                                        answer = "";
+                                        date = "";
+                                        ResponseAttachment = "";
+                                    }
+                                }
+                                @if (answer != "")
+                                {
+                                    <tr class="ansRow">
+                                        <td class="labelDiv border-0 pb-0 pt-0">  <div class="ansDiv"> <img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2" /> @answer </div></td>
+                                        <td class="border-0 pb-0 pt-0"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-0 pb-0 pt-0"><span class="senderInfo">@date</span></td>
+                                        <td class="attachDiv border-0 pb-0 pt-0" colspan="2">
+                                            @if (ResponseAttachment != "")
+                                            {
+                                                <div class="d-flex align-items-center justify-content-end" onclick="location.href='@Url.Action("DownloadAttachTechDocs", "TenderEnquiry", new { enquiryId = @Model.TechQueryList.FirstOrDefault().EnquiryId, file = ResponseAttachment })'">
+                                                    <img src="~/Assets/images/AllFile.svg" class="mr-1" width="20px" />
+                                                    @*<label for="createEnq" class="c-pointer d-flex align-items-center">@x.ResponseFileName</label>*@
+                                                </div>
+                                            }
+
+                                        </td>
+                                    </tr>
+                                }
+                                @if (x.Answers.Count > 0)
+                                {
+                                    <tr class="moreAnsw">
+                                        <td class="border-0 c-pointer font-italic font-weight-light p-1 pl-5 moreAnsTd">
+                                            <span onclick="moreAns(@x.Id)">+ @x.Answers.Count() More Anwers</span>
+                                        </td>
+                                    </tr>
+                                }
+
+                                <tr class='@("AnwRowTbale" + x.Id) d-none'>
+                                    <td>
+                                        <div class="answrTableOverFlow">
+                                            <table class="table bg-transparent">
+                                                @foreach (var reply in x.Answers)
+                                                {
+                                                    //if (!string.IsNullOrEmpty(reply.Answer))
+                                                    //{
+                                                    <tr class="ansRow">
+                                                        <td class="labelDiv border-0 pb-0 pt-0">  <div class="ansDiv"> <img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2" /> @reply.Answer </div></td>
+                                                        <td class="border-0 pb-0 pt-0"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="border-0 pb-0 pt-0"><span class="senderInfo">@reply.ReplyBy | @reply.ReplyDate.ToString("dd MMMM yyyy hh:mm tt")</span></td>
+                                                        @if (!string.IsNullOrEmpty(reply.ResponseAttachment))
+                                                        {
+                                                            <td class="attachDiv border-0 pb-0 pt-0" colspan="2">
+                                                                <div class="d-flex align-items-center justify-content-end" onclick="location.href='@Url.Action("DownloadAttachTechDocs", "TenderEnquiry", new { enquiryId = @Model.TechQueryList.FirstOrDefault().EnquiryId, file = reply.ResponseAttachment })'">
+                                                                    <img src="~/Assets/images/AllFile.svg" class="mr-1" width="20px" />
+                                                                    @*<label for="createEnq" class="c-pointer d-flex align-items-center">@x.ResponseFileName</label>*@
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+
+                                                        }
+                                                    </tr>
+
+                                                    @*<tr class="ansRow">
+                                                            <td class="labelDiv border-0 pb-0 pt-0">  <div class="ansDiv"> <img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2" /> @reply.Answer </div></td>
+                                                            <td class="border-0 pb-0 pt-0"></td>
+                                                        </tr>*@
+                                                    @*<tr>
+                                                            <td class="border-0 pb-0 pt-0"><span class="senderInfo">@reply.ReplyBy | @reply.ReplyDate.ToString("dd MMMM yyyy hh:mm tt")</span></td>
+                                                            @if (!string.IsNullOrEmpty(reply.ResponseAttachment))
+                                                            {
+                                                                <td class="attachDiv border-0 pb-0 pt-0" colspan="2">
+                                                                    <div class="d-flex align-items-center justify-content-end" onclick="location.href='@Url.Action("DownloadAttachTechDocs", "TenderEnquiry", new { enquiryId = @Model.TechQueryList.FirstOrDefault().EnquiryId, file = reply.ResponseAttachment })'">
+                                                                        <img src="~/Assets/images/AllFile.svg" class="mr-1" width="20px" />
+                                                                        @*<label for="createEnq" class="c-pointer d-flex align-items-center">@x.ResponseFileName</label>
+                                                                    </div>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+
+                                                            }
+                                                        </tr>*@
+                                                    @*}
+                                                        else
+                                                        {*@
+
+                                                    //}
+                                                }
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>
+<div class="loaderGif" style="display:none">
+    <img src="~/Assets/images/loader2.gif" style="width:80px; height:80px" />
+</div>
+
+<script>
+    function moreAns(id) {
+        $(".AnwRowTbale" + id).toggleClass('d-none');
+        if ($('.AnwRowTbale' + id).hasClass('d-none')) {
+            $('.moreAnsTd').removeClass('pb-4');
+        }
+        else {
+            $('tr[class^="AnwRowTbale"]').not(".AnwRowTbale" + id).addClass('d-none');
+            $('.moreAnsTd').addClass('pb-4');
+        }
+    }
+    /*** upload file styleing */
+    'use strict';
+
+    (function (document, window, index) {
+        var inputs = document.querySelectorAll('.inputfile');
+        Array.prototype.forEach.call(inputs, function (input) {
+            var label = input.nextElementSibling,
+                labelVal = label.innerHTML;
+
+            input.addEventListener('change', function (e) {
+                var isValid = ValidateFile(this);
+                if (isValid) {
+                    var fileName = '';
+                    if (this.files && this.files.length > 1)
+                        fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+                    else
+                        fileName = e.target.value.split('\\').pop();
+
+                    if (fileName)
+                        label.querySelector('span').innerHTML = fileName;
+                    else
+                        label.innerHTML = labelVal;
+                }
+            });
+
+            // Firefox bug fix
+            input.addEventListener('focus', function () { input.classList.add('has-focus'); });
+            input.addEventListener('blur', function () { input.classList.remove('has-focus'); });
+        });
+    }(document, window, 0));
+
+    function reply(id) {
+        $('.replo').each(function () {
+            $(this).slideUp(200);
+        });
+
+        $("#replyBlockSec_" + id).slideDown(200);
+    }
+
+    function successSnackBar() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Reply submitted successfully"
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failureSnackbar() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed in sending response. Please try again"
+        x.className = "snackBarshow";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    }
+
+    $(document).ready(function () {
+        $('.techQueryFormClass').each(function () {
+            $(this).validate({
+            });
+        });
+
+        $('.answerClass').each(function () {
+            $(this).keypress(function (e) {
+                var keycode = (e.keyCode ? e.keyCode : e.which);
+                if (keycode == '13') {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                    };
+                };
+            });
+
+            $('#techQueryForm').validate({
+            });
+        });
+    });
+
+    function QuerySubmit(id, enquiryId, query) {
+        $('#techQueryForm').validate({
+        });
+        var answer = $('#answer_' + id).val();
+
+        if (!answer) {
+            $('#answer_' + id).attr('placeholder', 'Please enter response before submitting');
+        }
+        else {
+            var formData = new FormData();
+            //var fileInput = document.getElementById('image_' + id);
+            //var file = fileInput.files[0];
+
+            var file = $('#file_' + id).prop('files')[0];
+            if (file != null && file != undefined) {
+                formData.append('file', file);
+            }
+
+            formData.append('id', id);
+            formData.append('Answer', answer);
+            formData.append('EnquiryId', enquiryId);
+            formData.append('Query', query);
+
+            $.ajax({
+                type: "post",
+                url: "/Enquiry/SubmitTechQuery",
+                enctype: 'multipart/form-data',
+                dataType: "json",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $('.loaderGif').show();
+                },
+                success: function (data)  {
+                    if (data.Status > 0) {
+                        $("#techQueryView").load('@Url.Action("GetTechQuery", "Enquiry")' + '?enqId=' + enquiryId)
+                        successSnackBar();
+                        $("#enquirytxtSearch").val('');
+
+                        if (data.AllAnswered == true) {
+                            $("#commentIcon_" + enquiryId).attr("src", "/Assets/images/flashBulp.gif");
+                        }
+                    }
+                    else {
+                        failureSnackbar();
+                        $("#enquirytxtSearch").val('');
+                    }
+                },
+                complete: function () {
+                    $('.loaderGif').hide();
+                },
+                error: function (data) {
+                    failureSnackbar();
+                }
+            });
+        }
+    };
+</script>

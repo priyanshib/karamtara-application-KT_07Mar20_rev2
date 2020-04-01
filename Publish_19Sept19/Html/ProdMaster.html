@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="row ProdNmBlock">
+                        <div class="col-sm-8 align-items-center d-flex">
+                            <img src="../Assets/images/prodMaster.png" height="28px">  Product Master
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button type="button" class="createProdBtn revisionBtn" data-toggle="modal" data-target="#createCatModal">Create New category</button>
+                            <button type="button" class="createProdBtn saveBtn">create new product</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12">
+                    <div class="row categoryList">
+                        <ul class="list-group d-inline">
+                            <li class="list-group-item d-inline">Fastners</li>
+                            <li class="list-group-item d-inline">Plate  </li>
+                            <li class="list-group-item d-inline selctedCatg">Arching</li>
+                            <li class="list-group-item d-inline">Suspension Clamp</li>
+                            <li class="list-group-item d-inline">Dead End for Panther</li>
+                            <li class="list-group-item d-inline">MSCJ</li>
+                            <li class="list-group-item d-inline"> Repair Sleeves</li>
+                            <li class="list-group-item d-inline">Vibration Damper</li>
+                            <li class="list-group-item d-inline">Tension Clamp</li>
+                            <li class="list-group-item d-inline">Grade CC.</li>
+                            <li class="list-group-item d-inline">PAR</li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="col-sm-4">
+                    <div class="createProdDtls tableBlock">
+                        <div class="row">
+                            <table class="table">
+                                <tr>
+                                    <th class="CatNo">Cat. No</th>
+                                    <th class="" colspan="2">Product</th>
+                                </tr>
+                                <tr>
+                                    <td>KCFC-1b</td>
+                                    <td>SUSPENSION CLAMP -  (MOOSE)</td>
+                                </tr>
+                                <tr>
+                                    <td>KAGS-4</td>
+                                    <td>SUSPENSION CLAMP - AGS PANTHER</td>
+                                </tr>
+                                <tr>
+                                    <td>KAGS-2</td>
+                                    <td>SUSPENSION CLAMP - AGS (MOOSE)</td>
+                                </tr>
+                                <tr>
+                                    <td>KFCS-1</td>
+                                    <td>SUSPENSION CLAMP for PANTHER</td>
+                                </tr>
+                                <tr>
+                                    <td>KAGS-1</td>
+                                    <td>AGS Clamp for Zebra Cond.</td>
+                                </tr>
+                                <tr>
+                                    <td>KENV-1</td>
+                                    <td> SUSPENSION CLAMP for 132 kv panther </td>
+                                </tr>
+                                <tr>
+                                    <td>KENV-2</td>
+                                    <td>SUSPENSION CLAMP for 220 kV  Twin Moose</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="Catgdetails tableBlock">
+                        <div class="row">
+                            <table class="table">
+                                <tr>
+                                    <th class="catNo">Cat. No</th>
+                                    <th class="productNm">Product</th>
+                                    <th class="compoentNm">Component </th>
+                                    <th class="rawMater">Raw Material</th>
+                                    <th class="prodNo">Numbers</th>
+                                    <th class="prodUnit"> Unit Weight<br />(KG)</th>
+                                    <th class="prodUnit">Finish Weight<br />(KG)</th>
+                                </tr>
+                                <tr>
+                                    <td colspan="7"></td>
+                                </tr>
+                                <tr class="catDtlsHead">
+                                    <td><input type="text" value="KCFC-1b" /></td>
+                                    <td><input type="text" value="SUSPENSION CLAMP -  (MOOSE)" /></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><input type="text" value="CLAMP BODY" /></td>
+                                    <td><input type="text" value="Al.Casting" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="1" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="2.000" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="0.950" /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><input type="text" value="KEEPER" /></td>
+                                    <td><input type="text" value="Al.Casting" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="1" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="2.000" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="0.220" /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td><input type="text" value="Nut - SS//M12" /></td>
+                                    <td><input type="text" value="SS Bolts-Nuts/U-Bolt" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="1" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="0.017" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="0.017" /></td>
+
+                                </tr>
+                                <tr class="catDtlsTotal">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="txtCenterTD"><input type="text" value="Total" /></td>
+                                    <td class="txtCenterTD"><input type="text" value="1.48" /></td>
+
+                                </tr>
+                            </table>
+                            <div class="saveProddtls">
+                                <button type="button" class="submitBomBtn saveBtn">edit</button>
+                                <button type="button" class="submitBomBtn publishBtn">save </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="createCatModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Process to create a bom</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn saveBtn " data-dismiss="modal">Cancel</button>
+                    <button type="button" class="submitBomBtn publishBtn ">Assignee</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
+<script>
+    $(document).ready(function () {      
+      $("#notificationClose").click(function(){
+		
+		$(".CreateNotfn").slideUp(1000);	
+	  });
+
+    });
+</script>

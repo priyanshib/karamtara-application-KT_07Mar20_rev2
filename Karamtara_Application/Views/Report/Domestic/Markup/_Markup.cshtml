@@ -1,0 +1,323 @@
+﻿@using System.Data
+@model DataTable
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    List<dynamic> list = (List<dynamic>)TempData["TenderLineValues"];
+    decimal value = 0;
+}
+
+        <table class="table m-0 markupListItems parentTable tableLayout">
+            @{
+                string colName = "";
+                <tr>
+                    <th class="markSrNo"></th>
+                </tr>
+                <tr>
+                    <th class="markSrNo"></th>
+                </tr>
+                <tr>
+                    <th class="markSrNo">S.NO.</th>
+                </tr>
+                int i = 1;
+
+                string lineId = "";
+                foreach (DataRow row in Model.Rows)
+                {
+                    <tr>
+                        <td class="TendSrNo">@i </td>
+                    </tr>
+                    i = i + 1;
+                }
+            }
+
+            <tr class="subTotalTR">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr class="font-weight-bold" id="testingCharge">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr class="font-weight-bold" id="testingChargeOverride">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr class="font-weight-bold" id="testingOverrideRemarks">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+
+            <tr id="travelCharge">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr id="devCharge">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr class="otherTotalBlock">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr class="lineUnitCostBlock">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr class="unitCostBlock">
+                <td class="TendSrNo"></td>
+            </tr>
+            <tr class="finalTotal">
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+            <tr>
+                <td class="markSrNo" style="color:transparent">S.NO.</td>
+            </tr>
+        </table>
+    
+    @*<div class="ModelFooter tableBlock makUpFooter ">
+            <table class="table m-0">
+                <tr class="finalTotal">
+                    <td class="markSrNo" style="color:transparent">S.NO.</td>
+                    <td class="SubMatkUp">SUB TOTAL</td>
+                    @{
+                        line = "";
+                        foreach (DataColumn col in Model.Columns)
+                        {
+                            line = col.ColumnName.Substring(col.ColumnName.LastIndexOf("_") + 1);
+                            if (col.ColumnName != "Description" && col.ColumnName != "MarkupId")
+                            {
+                                <td class="MarkUpPrc" lineid="@line">80.40</td>
+                            }
+                        }
+                    }
+                </tr>
+                <tr>
+                    <td class="markSrNo" style="color:transparent">S.NO.</td>
+                    <td class="MatkUp">MARGIN</td>
+                    @{
+                        line = "";
+                        foreach (DataColumn col in Model.Columns)
+                        {
+                            line = col.ColumnName.Substring(col.ColumnName.LastIndexOf("_") + 1);
+                            if (col.ColumnName != "Description" && col.ColumnName != "MarkupId")
+                            {
+                                if (list != null && list.Any())
+                                {
+                                    dynamic = new ExpandoObject();
+                                    dynamic = list.Where(x => x.LineId == Convert.ToInt32(line) && x.Description == "Margin").FirstOrDefault();
+                                    if (dynamic != null)
+                                    {
+                                        value = dynamic.Value;
+                                    }
+                                    else
+                                    {
+                                        value = 0;
+                                    }
+                                }
+                                <td class="itemPerc" lineid="@line">@Html.TextBox(col.ColumnName, value, new { @type = "number", @lineId = line, @onchange = "setMargin(this)", @class = "whiteBgInput p-1 marginInput" })</td>
+                            }
+                        }
+                    }
+                </tr>
+            </table>
+        </div>*@
+
+
+<script>
+    var markupArray = [], marginArray = [], finalTotalArray = [], percToUnitCostArray = [], developement = [], travelLB = [], testing = [], testingRemarks = [];
+    function setMarkupPricing(element) {
+        //
+        var markupId = $(element).attr("markupid");
+        var lineId = $(element).attr("lineid");
+        var value = $(element).val();
+        var index = markupArray.findIndex(x => x.lineId === lineId && x.markupId == markupId);
+        if (index != -1)
+            markupArray.splice(index, 1);
+        markupArray.push({ lineId: lineId, markupId: markupId, value: value });
+        setTotal();
+    }
+
+    function setMargin(element) {
+
+        var lineId = $(element).attr("lineid");
+        var value = $(element).val();
+        //if (Number(value) >= 100) {
+        //    $(element).val(0);
+        //    var x = document.getElementById("snackbar");
+        //    x.innerHTML = "Margin should be less than 100";
+        //    x.className = "snackBarshow";
+        //    setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+        //    return false;
+        //}
+
+        var index = markupArray.findIndex(x => x.lineId === lineId);
+        if (index != -1)
+            markupArray.splice(index, 1);
+        marginArray.push({ lineId: lineId, margin: value });
+    }
+
+    $("#btnSubmitMarkup").click(function () {
+        var flag = false;
+        var elements = $(".marginInput");
+        //
+        $.each(elements, function (index, ele) {
+            var value = $(ele).val();
+            if (Number(value) >= 100) {
+                $(ele).val(0);
+                var x = document.getElementById("snackbar");
+                x.innerHTML = "Margin should be less than 100";
+                x.className = "snackBarshow";
+                setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+                flag = true;
+                return false;
+            }
+        });
+
+        if (flag)
+            return false;
+
+        var obj = {};
+        var array = JSON.stringify(markupArray);
+        obj.values = array;
+        obj.marginValues = JSON.stringify(marginArray);
+        obj.bomId = $("#bomId").val();
+        obj.revId = $("#revisionId").val();
+        obj.tndId = $("#tndId").val();
+        obj.tndRevNo = $("#tndRevId").val();
+        obj.developement = JSON.stringify(developement);
+        obj.finalTotalArray = JSON.stringify(finalTotalArray);
+        obj.percToUnitCostArray = JSON.stringify(percToUnitCostArray);
+        obj.testingRemarks = JSON.stringify(testingRemarks);
+        obj.travelLB = JSON.stringify(travelLB);
+        obj.testing = JSON.stringify(testing);
+        obj.interestRate = Number($("#intRate").val());
+        obj.finSalesDays = Number($("#finSalesDays").val());
+        obj.finMfgDays = Number($("#finMfgDays").val());
+        obj.intSavingAdvDays = Number($("#intSavingAdvDays").val());
+        obj.intSavingAdvMnths = Number($("#intSavingAdvMnths").val());
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/SaveMarkupPricing',
+            data: obj,
+            success: function (data) {
+                if (data) {
+                    $(".modal").modal('hide');
+                    successModal();
+                    window.location.reload();
+                }
+                else {
+                    failureModal('creation');
+                }
+            },
+            error: function (courses) {
+                // failureModal();
+            }
+        });
+    })
+
+    $(document).ready(function () {
+        $(".MarkupPricingModal").find("td").filter(function () {
+            return $.trim($(this).text().toLowerCase()) == 'pbg';
+        }).nextAll().find("input").attr('readonly', 'readonly').removeClass("whiteBgInput");
+
+        setTotal();
+
+        if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+            $("input").attr('readonly', true);
+            $(".ModelFooter").find(".whiteBgInput").css("font-weight", "bold");
+            $(".ModelFooter").find(".whiteBgInput").css("color", "#fff");
+            $("input").removeClass("whiteBgInput");
+            $("input").removeClass("p-1");
+            $("button").hide();
+            $("input[type='button']").hide();
+        }
+    });
+
+    function setTotal() {
+
+        var sum = 0, percToUnitCost = 0, subTotalSum = 0, finalTotal = 0, lineUnitCost = 0, remark = "";
+        unitCost = $("#tndUnitCost").val();
+        percToUnitCostArray = [];
+        finalTotalArray = [];
+        developement = [];
+        travelLB = [];
+        testing = [];
+        testingRemarks = [];
+
+        $("#finSalesDays").closest("tr").find("input").not("#finSalesDays").attr("readonly", "readonly").removeClass("whiteBgInput");
+        $("#finMfgDays").closest("tr").find("input").not("#finMfgDays").attr("readonly", "readonly").removeClass("whiteBgInput");
+        $("#intSavingAdvDays").closest("tr").find("input").not("#intSavingAdvDays,#intSavingAdvMnths").attr("readonly", "readonly").removeClass("whiteBgInput");
+
+        var value = Number((((Number($("#intRate").val()) / 100) / 360) * Number($("#finSalesDays").val())) * 100);
+        $("#finSalesDays").closest("tr").find("input").not("#finSalesDays").val(value.toFixed(3));
+
+        value = Number((((Number($("#intRate").val()) / 100) / 360) * Number($("#finMfgDays").val())) * 100);
+        $("#finMfgDays").closest("tr").find("input").not("#finMfgDays").val(value.toFixed(3));
+
+        value = Number((((Number($("#intSavingAdvDays").val()) * (Number($("#intRate").val()) / 100)) / 12) * Number($("#intSavingAdvMnths").val())) * 100);
+        $("#intSavingAdvDays").closest("tr").find("input").not("#intSavingAdvDays,#intSavingAdvMnths").val(value.toFixed(3));
+
+        var elements = $(".subTotalTR").find("td[lineid]");
+        $.each(elements, function (index, ele) {
+            var lineId = $(ele).attr("lineid");
+            var lineElements = $(".markupListItems").find("input[lineid='" + lineId + "']");
+            $(lineElements).each(function () {
+                //var match = isDecimal.exec($(this).val());
+                var value = $(this).val();
+                if (!isNaN(value) && value != "") {
+                    subTotalSum += parseFloat(parseFloat(value).toFixed(2));
+                }
+            });
+            $(ele).text(subTotalSum.toFixed(3));
+            sum = 0;
+
+            num = $("#testingChargeOverride").find("td[lineid='" + lineId + "'] input").val();
+
+            remark = $("#testingOverrideRemarks").find("td[lineid='" + lineId + "'] input").val();
+
+            if (!isNaN(num) && num != "") {
+                if (num > 0) {
+                    sum += parseFloat(parseFloat(num).toFixed(2));
+                    testing.push({ lineId: lineId, value: num });
+                    testingRemarks.push({ lineId: lineId, value: remark });
+                }
+                else {
+                    num = $("#testingCharge").find("td[lineid='" + lineId + "']").text();
+                    if (!isNaN(num) && num != "")
+                        sum += parseFloat(parseFloat(num).toFixed(2));
+                }
+            }
+            else {
+                num = $("#testingCharge").find("td[lineid='" + lineId + "']").text();
+                if (!isNaN(num) && num != "")
+                    sum += parseFloat(parseFloat(num).toFixed(2));
+            }
+
+            num = $("#devCharge").find("td[lineid='" + lineId + "'] input").val();
+
+            if (!isNaN(num) && num != "")
+                sum += parseFloat(parseFloat(num).toFixed(2));
+
+            developement.push({ lineId: lineId, value: num });
+
+            num = $("#travelCharge").find("td[lineid='" + lineId + "'] input").val();
+            if (!isNaN(num) && num != "")
+                sum += parseFloat(parseFloat(num).toFixed(2));
+
+            travelLB.push({ lineId: lineId, value: num });
+
+            $(".otherTotalBlock").find("td[lineid='" + lineId + "']").text(sum.toFixed(3));
+
+            lineUnitCost = $(".lineUnitCostBlock").find("td[lineid='" + lineId + "']").text();
+
+            if (lineUnitCost != 0 && lineUnitCost != "")
+                percToUnitCost = (sum / lineUnitCost) * 100;
+
+            percToUnitCostArray.push({ lineId: lineId, value: percToUnitCost });
+
+            $(".unitCostBlock").find("td[lineid='" + lineId + "']").text(percToUnitCost.toFixed(4));
+
+            finalTotal = 1 + (subTotalSum + percToUnitCost) / 100;
+
+            finalTotalArray.push({ lineId: lineId, value: finalTotal });
+
+            $(".finalTotal").find("td[lineid='" + lineId + "']").text(finalTotal.toFixed(4));
+
+            sum = 0;
+            subTotalSum = 0;
+        });
+    }
+</script>

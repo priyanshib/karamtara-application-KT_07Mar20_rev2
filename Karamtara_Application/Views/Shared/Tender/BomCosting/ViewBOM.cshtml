@@ -1,0 +1,352 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+@{
+    /**/
+
+    ViewBag.Title = "ViewBOM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="Catgdetails tableBlock" id="divProdEdit">
+    <div class="row mt-2">
+        <div class="col-sm-8 align-self-center">
+            <div class="col-sm-12">
+                <span class="mr-2 publishNo">Project :</span>@Model.ProjectName
+            </div>
+            <div class="col-sm-12 mt-3">
+                <span class="mr-2 publishNo">Customer Name :</span>@Model.CustomerName
+            </div>
+            <div class="col-sm-12 mt-3">
+                <span class="mr-2 publishNo">Reference T Number:</span>@Model.TNumber
+            </div>
+            @if ((Model.AssignedToNames != null))
+            {
+                <div class="col-sm-12 mt-3">
+                    <span class="mr-2 publishNo">Assigned To:</span>@Model.AssignedToNames
+                </div>
+            }
+            <div class="col-sm-12 mt-3">
+                <span class="mr-2 publishNo">Published By:</span>@Model.PublishedBy
+            </div>
+            <div class="col-sm-12 mt-3">
+            </div>
+        </div>
+        <div class="col-sm-4 text-right align-self-center">
+            @{ 
+                var display = Model.IsEdit ? "block" : "none";
+            }
+            <button type="button" class="submitBomBtn publishBtn " id="auditTrialBtn" onclick="GetAuditTrial(@Model.BomId)">Audit Trial</button>
+            <button type="button" class="createProdBtn saveBtn" data-target="#viewBomSum" data-toggle="modal">View BOM Summary</button>
+            @*<button class="submitBomBtn downloadExcel" type="button" id="excelDownload" onclick='location.href="@Url.Action("DownloadExcel","BOMRevision",new { bomId=Model.BomId, revNo=Model.RevisionNo, enqId=Model.EnquiryId})"'> Download Excel <img src="~/Assets/images/downloadExcel.svg" width="19px" class="ml-1" /></button>*@
+        </div>
+        <div class="col-sm-12">
+            @using (Html.BeginForm("DownloadExcel", "BOMRevision", FormMethod.Post, new { @id = "excelDownloadForm" }))
+            {
+                @Html.HiddenFor(x => x.RevisionNo);
+                @Html.HiddenFor(x => x.BomId);
+                <table class="table prodDetails exceldowntable" id="prodTbl2">
+                    <tr>
+                        <th class="srNo">Sr.No</th>
+                        <th class="catNo">Catalogue No/Code</th>
+                        <th class="productNm">Item Name</th>
+                        <th class="rawMater">Raw Material</th>
+                        <th class="CompoSize">Size</th>
+                        <th class="qtyWt text-center">Quantity <span class="position-relative" style="top:5px">(Nos)</span></th>
+                        <th class="proUnigr text-center">Unit Gross Weight <span class="position-relative float-left w-100" style="top:5px">(Kg)</span></th>
+                        <th class="proUnigr text-center editableFields">Wastage Percentage</th>
+                        <th class="proUnigr text-center editableFields">Calculated Gr. Wt. </th>
+                        <th class="proUninet text-center">Unit Net Weight <span class="position-relative float-left w-100" style="top:5px">(Kg)</span></th>
+                        <th class="proTotalgr text-center">Total Unit Gross Weight <span class="position-relative float-left w-100" style="top:5px">(Kg)</span></th>
+                        <th class="proTotalnet text-center">Total Unit Net Weight <span class="position-relative float-left w-100" style="top:5px">(Kg)</span></th>
+                        <th class="proTotalnet text-center">Cost/Pcs <span class="position-relative float-left w-100" style="top:5px">(Rs)</span></th>
+                        <th class="proTotalnet text-center">Black Cost <span class="position-relative float-left w-100" style="top:5px">(Rs)</span></th>
+                        <th class="proTotalnet text-center">Gal. Cost <span class="position-relative float-left w-100" style="top:5px">(Rs)</span></th>
+                        @*<th class="prodNo">Type</th>*@
+                    </tr>
+                    @{
+                        int foreachCount = 1;
+                        int charCount = 97;
+                        int capCount = 65;
+                    }
+                    @foreach (var item in Model.MasterList)
+                    {
+                        if (item.IsRelated)
+                        {
+                    <tr>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.SrNo" readonly="readonly" class="prods bold c-pointer" name="srno" />
+                                <span class="tooltipShow">@item.SrNo</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@(string.IsNullOrEmpty(item.CatalogueNo) ? item.Code:item.CatalogueNo)" readonly="readonly" class="prods bold c-pointer" name="editCatNo" />
+                                <span class="tooltipShow">@(string.IsNullOrEmpty(item.CatalogueNo) ? item.Code : item.CatalogueNo)</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Name" readonly="readonly" class="prods bold  c-pointer" name="editProdName" />
+                                <span class="tooltipShow">@item.Name</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Material" readonly="readonly" class="prods bold c-pointer" name="editRM">
+                                <span class="tooltipShow">@item.Material</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Size" readonly="readonly" class="prods bold c-pointer" name="Size">
+                                <span class="tooltipShow">@item.Size</span>
+                            </span>
+                        </td>
+                        <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods bold" name="editQty" /></td>
+                        <td><input type="text" value="@(item.UnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        <td><input type="text" value="@(item.UnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                        <td><input type="text" value="@(item.TotalUnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                        <td><input type="text" value="@(item.TotalUnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        @*<td><input type="text" value="@item.Type" readonly="readonly" class="prods bold" name="editQty" /></td>*@
+                    </tr>
+                            foreachCount++;
+                            capCount = 65;
+                            charCount = 97;
+                        }
+                        else if (item.Type == 2)
+                        {
+                    <tr>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.SrNo" readonly="readonly" class="prods boldGray c-pointer" name="srno" />
+                                <span class="tooltipShow">@item.SrNo</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Code" readonly="readonly" class="prods boldGray c-pointer" name="editCatNo" />
+                                <span class="tooltipShow">@item.Code</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Name" readonly="readonly" class="prods boldGray c-pointer" name="editProdName" />
+                                <span class="tooltipShow">@item.Name</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Material" readonly="readonly" class="prods boldGray" name="editRM">
+                                <span class="tooltipShow">@item.Material</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Size" readonly="readonly" class="prods boldGray" name="Size">
+                                <span class="tooltipShow">@item.Size</span>
+                            </span>
+                        </td>
+                        <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods boldGray" name="editQty" /></td>
+                        <td><input type="text" value="@(item.UnitGrWt.ToString("N3"))" readonly="readonly" class="prods boldGray" name="editUnitGr" /></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        <td><input type="text" value="@(item.UnitNetWt.ToString("N3"))" readonly="readonly" class="prods boldGray" name="editUnitNet" /></td>
+                        @*<td><input type="text" value="@item.Type" readonly="readonly" class="prods boldGray" name="editQty" /></td>*@
+                        <td><input type="text" value="@(item.TotalUnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                        <td><input type="text" value="@(item.TotalUnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                    </tr>
+                            capCount++;
+                            charCount = 97;
+                        }
+                        else if (item.Type == 3)
+                        {
+                    <tr>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.SrNo" readonly="readonly" class="prods c-pointer" name="srno" />
+                                <span class="tooltipShow">@item.SrNo</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.CatalogueNo" readonly="readonly" class="prods c-pointer" name="editCatNo" />
+                                <span class="tooltipShow">@item.CatalogueNo</span>
+                            </span>
+                        </td>
+                        <td><input type="text" value="@item.Name" readonly="readonly" class="prods" name="editProdName" /></td>
+                        <td><input type="text" value="@item.Material" readonly="readonly" class="prods" name="editRM"></td>
+                        <td><input type="text" value="@item.Size" readonly="readonly" class="prods" name="Size"></td>
+                        <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods" name="editQty" /></td>
+                        <td><input type="text" value="@(item.UnitGrWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitGr" /></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        <td><input type="text" value="@(item.UnitNetWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitNet" /></td>
+                        @*<td><input type="text" value="@item.Type" readonly="readonly" class="prods" name="editQty" /></td>*@
+                        <td><input type="text" value="@(item.TotalUnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                        <td><input type="text" value="@(item.TotalUnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                        <td class="editableFields"></td>
+                    </tr>
+                            charCount++;
+                        }
+                        else
+                        {
+                    <tr>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.SrNo" readonly="readonly" class="prods c-pointer" name="srno" />
+                                <span class="tooltipShow">@item.SrNo</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.CatalogueNo" readonly="readonly" class="prods c-pointer" name="editCatNo" />
+                                <span class="tooltipShow">@item.CatalogueNo</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Name" readonly="readonly" class="prods c-pointer" name="editProdName" />
+                                <span class="tooltipShow">@item.Name</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Material" readonly="readonly" class="prods c-pointer" name="editRM">
+                                <span class="tooltipShow">@item.Material</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="tooltipHover">
+                                <input type="text" value="@item.Size" readonly="readonly" class="prods c-pointer" name="Size">
+                                <span class="tooltipShow">@item.Size</span>
+                            </span>
+                        </td>
+                        <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods" name="editQty" /></td>
+                        <td><input type="text" value="@(item.UnitGrWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitGr" /></td>
+
+                        <td class="editableFields">
+                            @Html.Hidden("PrimaryId", @item.PrimaryId)
+                            <input type="text" value="@(item.WastagePercentage.ToString("N3"))" class="prods editableFields" name="WastagePercentage" onblur="SetUnitGrWt(this)" />
+                        </td>
+                        <td class="editableFields"><input type="text" value="@(item.CalculatedUnitGrWt.ToString("N3"))" class="prods" readonly="readonly" name="CalculatedUnitGrWt" /></td>
+                        <td><input type="text" value="@(item.UnitNetWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitNet" /></td>
+                        @*<td><input type="text" value="@item.Type" readonly="readonly" class="prods" name="editQty" /></td>*@
+                        <td><input type="text" value="@(item.TotalUnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                        <td><input type="text" value="@(item.TotalUnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                        <td class="editableFields">@(item.CostPerPiece.ToString("N3"))</td>
+                        <td class="editableFields">@(item.BlackCost.ToString("N3"))</td>
+                        <td class="editableFields">@(item.GalCost.ToString("N3"))</td>
+                    </tr>
+                        }
+                    }
+                </table>
+            }
+        </div>
+    </div>
+</div>
+<!-- view Bom modal-->
+<div class="modal fade " id="viewBomSum" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content ">
+            <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" id="xbtn">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body overflowModel">
+                <div class="BomRefDtls">
+                    <div class="col-sm-12 row BomRefHeader m-0">
+                        View BOM Summary
+                    </div>
+                    <div class="tableBlock newCompoTable">
+                        <table class="table m-0 modalTable" id="compModalTable">
+                            <tr>
+                                <th class="srNo" style="width:8%">Sr No</th>
+                                <th class="rawMater" style="width:60%">Raw Material</th>
+                                <th class="proTotalgr text-center">Total Unit Gross Weight<span class="position-relative float-left w-100" style="top:5px">(KG)</span></th>
+                                <th class="proTotalnet text-center">Total Unit Net Weight<span class="position-relative float-left w-100" style="top:5px">(KG)</span></th>
+                            </tr>
+                            @{
+                                int Count = 1;
+                            }
+                            @foreach (var sum in Model.Summary.data)
+                            {
+                                <tr>
+                                    <td class="catNo">@Count</td>
+                                    <td class="compoentNm">@sum.Name</td>
+                                    <td class="prodUnit text-center">@sum.UnitGrWt.ToString("N3")</td>
+                                    <td class="prodUnit text-center">@sum.UnitNetWt.ToString("N3")</td>
+                                </tr>
+                                Count++;
+                            }
+                        </table>
+                        <div class="text-right p-2 mt-2">
+                            <button type="button" class="createComponent sucessEnq" style="width:100px;" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="auditTrial" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="auditTrialDiv">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var isTenderUser = "@Model.IsTenderUser";
+    var isBomEditable = "@Model.IsEdit";
+
+    $(".whiteBgInput").attr("readonly", "readonly");
+    $("input").removeClass("whiteBgInput");
+
+    $(document).ready(function () {
+        $('input').each(function (index) {
+            if ($(this).val().length == 0) {
+                // ShowSnackBar("valute is 0");
+                $(this).closest(".tooltipHover").remove();
+            }
+        });
+    });
+    
+
+    function GetAuditTrial(bomId) {
+        $.ajax({
+            url: '/BomRevision/GetBomAuditTrial',
+            type: 'GET',
+            dataType: 'html',
+            data: { bomId: bomId },
+            success: function (data) {
+                $("#auditTrialDiv").html(data);
+                $('#auditTrial').modal('show');
+            },
+            failure: function (data) {
+            },
+            Error: function (data) {
+            }
+
+        });
+    };
+
+    function SetUnitGrWt(element) {
+        var wastePerc = Number($(element).val());
+        var unitGrWtValue = Number($(element).closest("td").prev().find(" input[name='editUnitGr']").val());
+        var calcGrWtElement = $(element).closest("td").next().find("input");
+        var calcGrWt = unitGrWtValue + (unitGrWtValue * wastePerc / 100);
+        $(calcGrWtElement).val(calcGrWt);
+    }
+
+</script>

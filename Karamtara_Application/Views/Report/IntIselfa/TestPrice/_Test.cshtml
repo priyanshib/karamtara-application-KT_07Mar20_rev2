@@ -1,0 +1,56 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+@using Karamtara_Application.Models.Tender;
+@{
+    int count = 1;
+    int value = 0;
+    var tndDetails = new IntTenderDetails();
+}
+<div class="BomRefDtls">
+
+    @using (Html.BeginForm("SaveTestPricing", "TenderPricing", FormMethod.Post, new { @id = "TMPrice" }))
+    {
+
+        <div class="TestMasterdetails tableBlock">
+            <div class="">
+                <table class="table m-0 TenderDtlModelTable parentTable">
+                    <tr><td colspan="8"></td></tr>
+                    <tr>
+                        <th class="srNo" rowspan="2">Sr.No</th>
+                        <th class="testType" rowspan="2">Test Name</th>
+                        <th class="testDes" rowspan="2">Description of Test</th>
+                        <th class="testType" rowspan="2">Type</th>
+                        <th class="testLine" rowspan="2">kV Line</th>
+                        <th class="testUTS" rowspan="2">UTS</th>
+                        <th class="testBundle" rowspan="2">Bundle</th>
+                        <th class="testBundle" rowspan="2">Summary</th>
+                    </tr>
+                    <tr>
+                        @*<th class="priceItem">INR</th>
+                            <th class="priceItem">EURO</th>
+                            <th class="priceItem">USD</th>*@
+                    </tr>
+                    @for (int i = 0; i < Model.TestList.Count; i++)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@Model.TestList[i].TestName</td>
+                            <td class="Model.TestList[i]DesTD">@Model.TestList[i].TestDescription</td>
+                            <td>@Model.TestList[i].Type</td>
+                            <td>@Model.TestList[i].KVLine</td>
+                            <td>@Model.TestList[i].UTS</td>
+                            <td>@Model.TestList[i].Bundle</td>
+                            <td class="text-center">
+                                @Model.TestList[i].Summary
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                </table>
+            </div>
+        </div>
+    }
+</div>
+<script>
+
+
+</script>

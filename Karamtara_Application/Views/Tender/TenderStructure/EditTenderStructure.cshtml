@@ -1,0 +1,314 @@
+﻿@model Karamtara_Application.Models.Tender.TenderStructureModel
+@{
+    ViewBag.Title = "EditTenderStructure";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("GetEditStructreDetails", "TenderStructure", FormMethod.Post, new { @id = "EditTndStrForm" }))
+{
+<div class="main-content">
+    <input type="hidden" id="hidStrType" name="hidStrType" />
+    <input type="hidden" id="hidEnqId" value="@Model.EnquiryId" name="EnquiryId" />
+    <input type="hidden" id="hidFormType" value="Edit" name="hidFormType" />
+    <div class="row tenderRow ">
+        <div class="col-sm-12 ">
+            <ul class="nav nav-tabs tabList">
+                <li class=" navLi "><a data-toggle="tab" href="#lines" class="firstOpen">Lines</a></li>
+                <li class="navLi"><a data-toggle="tab" href="#lots" class="tabClick">Lots</a></li>
+                <li class="navLi"><a data-toggle="tab" href="#packages" class="tabClick">Packages</a></li>
+                <li class="navLi"><a data-toggle="tab" href="#DtlStrt" class="tabClick" id="dltStrTab">Details Structute</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="lines" class="tab-pane fade in active show">
+                    <div class="TestMaterForm ">
+                        <div class="col-sm-9 mt-3">
+                            <div class="form-group">
+                                <label class="">Number Of Lines</label>
+                                <div class="d-flex AddDtlsDiv">
+                                    <input type="text" placeholder="Enter Total Number of lines" class="p-2" id="txtLineNo" value="@Model.LineList.Count" />
+                                    <input type="button" id="btnAddLines" value="Add" class="mt-3 m-0 mb-4 submitBomBtn publishBtn" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 NumberOfRow">
+                            <input type="hidden" id="hidLineType" value="1" name="hidLine" />
+                            <div class="row" id="lineDiv">
+                                @foreach (var item in Model.LineList)
+                                {
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Name Of Lines</label>
+                                            <input type="text" placeholder="enter name of lines" class="p-2" value="@item.Name" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-sm-12 text-right p-5 saveCancelBtn" style="display:none">
+                            <span class="errorModal" id="vErrorLine" style="display:none"></span>
+                            <input type="button" id="btnUpdateLine" value="Update" class="p-2 submitBomBtn saveBtn" />
+                            <input type="button" id="btnLineCancel" value="Cancel" class="p-2 submitBomBtn publishBtn" />
+                        </div>
+
+
+                    </div>
+                </div>
+                <div id="lots" class="tab-pane fade">
+                    <div class="TestMaterForm ">
+                        <div class="col-sm-9 mt-3">
+                            <div class="form-group">
+                                <label>Number Of Lots</label>
+                                <div class="d-flex AddDtlsDiv">
+                                    <input type="text" placeholder="Enter Total Number of lots" class="p-2" id="txtLotNo" value="@Model.LotList.Count" />
+                                    <input type="button" value="Add" class="mt-3 m-0 mb-4 submitBomBtn publishBtn" id="btnAddLots" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 NumberOfRow">
+                            <input type="hidden" id="hidLotType" value="2" name="hidLot" />
+                            <div class="row" id="lotDiv">
+                                @foreach (var item in Model.LotList)
+                                {
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Name Of Lots</label>
+                                            <input type="text" placeholder="enter name of lots" class="p-2" value="@item.Name" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-sm-12 text-right p-5 saveCancelBtn" style="display:none">
+                                <span class="errorModal" id="vErrorLot" style="display:none"></span>
+                                <input type="button" id="btnUpdateLot" value="Update" class="p-2 submitBomBtn saveBtn" />
+                                <input type="button" id="btnLotCancel" value="Cancel" class="p-2 submitBomBtn publishBtn" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="packages" class="tab-pane fade">
+                    <div class="TestMaterForm ">
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <label>Number Of Packages</label>
+                                <div class="d-flex AddDtlsDiv">
+                                    <input type="text" placeholder="Enter Total Number of Packages" class="p-2" id="txtPkgNo" value="@Model.PackageList.Count" />
+                                    <input type="button" id="btnAddPkg" value="Add" class="mt-3 m-0 mb-4 submitBomBtn publishBtn" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 NumberOfRow">
+                            <input type="hidden" id="hidPckgType" value="3" name="hidPckg" />
+                            <div class="row" id="pkgDiv">
+                                @foreach (var item in Model.PackageList)
+                                {
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Name Of Packages</label>
+                                            <input type="text" placeholder="enter name of packages" class="p-2" value="@item.Name" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <div class="col-sm-12 text-right p-5 saveCancelBtn" style="display:none">
+                                <span class="errorModal" id="vErrorPckg" style="display:none"></span>
+                                <input type="button" id="btnUpdatePckg" value="Update" class="p-2 submitBomBtn saveBtn" />
+                                <input type="button" id="btnPkgCancel" value="Cancel" class="p-2 submitBomBtn publishBtn" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="DtlStrt" class="tab-pane fade">
+                    <div class="TestMaterForm ">
+                        <div class="col-sm-12 mt-5">
+                            <div class="col-sm-12 mt-5">
+                                <div class="tableBlock" id="detailedTblDiv">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+}
+
+<script>
+    $(document).ready(function () {
+
+        $(".tabClick").click(function () {
+            $(".frstNavList a").removeClass("firstOpen");
+        })
+    })
+
+
+    $("#btnAddLines").click(function () {
+        var totalLines = $("#txtLineNo").val();
+        var txtHtml = '<div class="col-sm-6"><div class="form-group bmd-form-group "><label>Name Of Line</label>' +
+            '<input type="text" placeholder="Enter the Line Name" class="p-2 validateLine" name="lineName" />' +
+            '</div></div></div >';
+        $("#lineDiv").html('');
+        if (totalLines > 0) {
+
+            $.each(new Array(Number((totalLines))), function (i) {
+                $("#lineDiv").append(txtHtml);
+            });
+
+        }
+        $('.saveCancelBtn').removeAttr('style');
+    });
+
+    $("#btnAddLots").click(function () {
+        var totalLots = $("#txtLotNo").val();
+        var txtHtml = '<div class="col-sm-6" >' +
+            '<div class="form-group bmd-form-group"><label>Name Of Lots</label>' +
+            '<input type="text" placeholder="enter name of lots" class="p-2 validateLot" name="lotName"/>' +
+            '</div></div >';
+        $("#lotDiv").html('');
+        if (totalLots > 0) {
+            $.each(new Array(Number(totalLots)), function (i) {
+                $("#lotDiv").append(txtHtml);
+            });
+        }
+        $('.saveCancelBtn').removeAttr('style');
+
+    });
+
+
+    $("#btnAddPkg").click(function () {
+        var totalPkg = $("#txtPkgNo").val();
+        var txtHtml = ' <div class="col-sm-6" >' +
+            '<div class="form-group bmd-form-group"><label>Name Of Packages</label>' +
+            '<input type="text" placeholder="enter name of packages" class="p-2 validatePckg" name="pkgName"/>' +
+            '</div></div >'
+        $("#pkgDiv").html('');
+        if (totalPkg > 0) {
+            $.each(new Array(Number(totalPkg)), function (i) {
+                $("#pkgDiv").append(txtHtml);
+            });
+        }
+        $('.saveCancelBtn').removeAttr('style');
+    });
+
+
+    $("#btnUpdateLine").click(function () {
+        var validate = true;
+        $('.validateLine').each(function () {
+            if ($(this).val() == '') {
+                $("#vErrorLine").html('Please fill all the Line Names.');
+                $("#vErrorLine").removeAttr('style');
+                validate = false;
+            }
+        })
+        if (validate) {
+            $("#vErrorLine").html('');
+            $("#vErrorLine").addClass('style', 'display:none');
+            $("#hidStrType").val('');
+            $("#hidStrType").val('1');
+            var formData = $("#EditTndStrForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: '/TenderStructure/UpdateTenderStr',
+                dataType: "JSON",
+                data: formData,
+                success: function (data) {
+                    ShowSnackBar('Line data save successfully.');
+                },
+                error: function (data) {
+                    ShowSnackBar('Some Error occured.');
+                }
+            });
+        }
+    });
+
+
+    $("#btnUpdateLot").click(function () {
+        var validate = true;
+        $('.validateLot').each(function () {
+            if ($(this).val() == '') {
+                $("#vErrorLot").html('Please fill all the Lot Names.');
+                $("#vErrorLot").removeAttr('style');
+                validate = false;
+            }
+        })
+        if (validate) {
+            $("#hidStrType").val('');
+            $("#hidStrType").val('2');
+            $("#vErrorLine").html('');
+            $("#vErrorLine").addClass('style', 'display:none');
+            var formData = $("#EditTndStrForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: '/TenderStructure/UpdateTenderStr',
+                dataType: "JSON",
+                data: formData,
+                success: function (data) {
+                    ShowSnackBar('Lot data save successfully.');
+                },
+                error: function (data) {
+                    ShowSnackBar('Some Error occured.');
+                }
+            });
+        }
+    });
+
+
+    $("#btnUpdatePckg").click(function () {
+        var validate = true;
+        $('.validatePckg').each(function () {
+            if ($(this).val() == '') {
+                $("#vErrorPckg").html('Please fill all the Package Names.');
+                $("#vErrorPckg").removeAttr('style');
+                validate = false;
+            }
+        })
+        if (validate) {
+            $("#hidStrType").val('');
+            $("#hidStrType").val('3');
+            $("#vErrorLine").html('');
+            $("#vErrorLine").addClass('style', 'display:none');
+            var formData = $("#EditTndStrForm").serialize();
+            $.ajax({
+                type: "POST",
+                url: '/TenderStructure/UpdateTenderStr',
+                dataType: "JSON",
+                data: formData,
+                success: function (data) {
+                    ShowSnackBar('Package data save successfully.');
+                },
+                error: function (data) {
+                    ShowSnackBar('Some Error occured.');
+                }
+            });
+        }
+    });
+
+    $("#dltStrTab").click(function () {
+        var enqId = $("#hidEnqId").val();
+      //  ShowSnackBar(enqId);
+        $.ajax({
+            type: "GET",
+            url: '/TenderStructure/GetDetailStr',
+            dataType: "HTML",
+            data: { enqId: enqId, tndId: tndId  },
+            success: function (data) {
+                $("#detailedTblDiv").html(data);
+            },
+            error: function (data) {
+                ShowSnackBar('Some Error occured.');
+            }
+        });
+    })
+</script>

@@ -1,0 +1,457 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+
+<script type="text/javascript">
+    @{ var rowNum=0;}
+</script>
+<div class="enquiryTable tableBlock">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr class="selectedActivies">
+                    <td colspan="10" class="tdheader text-left p-1 creteEnquiryTd">
+                        <div class="col-sm-12 row align-item-center">
+                            <div class="col-sm-9 align-self-center">
+                                <div class="activities c-pointer createEnqBtn"><img src="~/Assets/images/enquiry.png" height="20px" class="mr-10"><span class="titleHead"> Create Enquiry</span></div>
+                                @*Enquiries*@
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="searchBlock ">
+                                    <div class="inputSerachBlok creteEnqSearch">
+                                        <input type="text" id="enquirytxtSearch" class="input-group serachInput f-13 p-2" placeholder="Search Enquiries"/>
+                                        <button type="button" id="btnClear" class="btn-clear searchClear" onclick="clearSearch();"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+                                    </div>
+                                    <button type="button" id="btnSearchbar" class="serachBtn"><img src="~/Assets/images/search.svg" width="20px" /></button>
+                                    @*<input type="button" id="btnSearch" value="Search" class="createProdBtn saveBtn" />*@
+
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </td>
+                    <td colspan="10" class="tdheader text-left p-1 enquiryTd">                       
+                        <span class="titleHead">  Enquiries</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="col" class="DeptNo">Tender Dept File No.</th>
+                    <th scope="col" class="Type">Type</th>
+                    <th scope="col" class="text-left ProjName" colspan="2">Project Name</th>
+                    @*<th scope="col" class="Status">Published</th>*@
+                    <th scope="col" class="EndCustName" colspan="2">End customer name</th>
+                    <th scope="col" class="DueDt">Due Date</th>
+                    <th scope="col" class="Status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.EnquiryList != null && Model.EnquiryList.Count > 0)
+                {
+                    foreach (var item in Model.EnquiryList)
+                    {
+                        rowNum++;
+                <tr>
+                    <td class="tenderNo">
+                        @if (Model.CustomerList != null && Model.CustomerList.Count > 0)
+                        {
+                            if (Model.CustomerList.Any(x => x.ProjectId.Equals(item.ProjectId)))
+                            {
+                                <button type="button" class="addRowBtn" id="addRowBtnId"><img src="/Assets/images/addBtn.png" id="plusIcon_@rowNum" onclick="expCust(@rowNum);" /></button>
+                            }
+                        }
+                        @(item.TenderFileNo.Substring(0, item.TenderFileNo.Length > 25 ? 25 : item.TenderFileNo.Length) + (item.TenderFileNo.Length > 25 ? "..." : ""))
+                    </td>
+                    <td class="typeDOM">@item.EnquiryType</td>
+                    <td class="text-left ProjNameTD">@item.ProjectName</td>
+
+                    <td class="attachmentTD text-right">
+                        @if (!string.IsNullOrEmpty(item.EnquiryAttachmentName))
+                        {
+                            <img src="~/Assets/images/attachment.png" onclick="openPdf(0, '@item.ProjectId', '@item.EnquiryAttachmentName');" />
+                        }
+                    </td>
+                    @*<td>@(item.IsPublished ? "Yes" : "No")</td>*@
+                    <td class="text-left ProjNameTD">@item.EndCustName</td>
+                    <td class="attachmentTD text-right"></td>
+                    <td>@(item.EnqDueDate.ToLocalTime().Date.ToString("dd-MM-yyyy"))</td>
+                    <td class="Status statusOpen" id='StatusMenu_@rowNum'>
+                        <span id="span_@rowNum" class="optionSpan">@item.StatusDesc</span>
+
+                        @if (!item.IsPublished)
+                        {
+                            <div class="ActnActivities " id="ActnActivities_@rowNum">
+                                <ul>
+                                    @if (!item.IsPublished)
+                                    {
+                                        <li onclick="Edit(@item.ProjectId, @rowNum);">Edit</li>
+                                        <li onclick="Publish(@item.ProjectId);">Publish</li>
+                                    }
+
+                                    @*@if (!string.IsNullOrEmpty(item.EnquiryAttachmentName))
+                                    {
+                                        <li onclick="openPdf(0, @item.ProjectId, '@item.EnquiryAttachmentName')">View Attachment</li>
+                                        @*<li>View Attachment</li>
+                                    }*@
+                                    @if (!item.IsPublished)
+                                    {
+                                        <li onclick="location.href='@Url.Action("DeleteProject", "Enquiry", new { projectId = Model.ProjectId})'">Delete</li>
+                                    }
+
+                                </ul>
+                                <div class="closeMenu">
+                                    <button type="button" class="close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
+                    </td>
+                </tr>
+                        if (Model.CustomerList != null && Model.CustomerList.Count > 0)
+                        {
+                            if (Model.CustomerList.Any(x => x.ProjectId.Equals(item.ProjectId)))
+                            {
+                                int innerRowNum = 1;    
+                                
+                                <tr class="collapseRow" id="custRow_@rowNum">
+                                    <td colspan="8" class="p-0">
+                                        <table class="collapseTable w-100">
+                                            <tr>
+                                                <th class="DeptSrNo"></th>
+                                                <th class="Type">Sr. No.</th>
+                                                <th class="text-left csutNm">Customer Name</th>
+                                                <th class="text-left csutNm">Country</th>
+                                                <th class="DtEnquiry">Date of Enquiry</th>
+                                                <th class="ExDate">Expiry Date</th>
+                                                <th class="DtStatus">Status</th>
+                                                <th class="Options" colspan="1">Options</th>
+                                            </tr>
+                                            @foreach (var x in Model.CustomerList)
+                                            {
+                                                if (x.ProjectId.Equals(item.ProjectId))
+                                                {
+                                            <tr>
+                                                <td>
+                                                    @if (x.TechnicalQuery != null && x.TechnicalQuery.Count > 0)
+                                                    {
+                                                        <span class="tooltipHover c-pointer" data-toggle="modal" data-target="#Querymodal">
+                                                            <img src="~/Assets/images/flashBulp.gif" class="enqBulb" width="16px" id="commentIcon_@x.EnquiryId" onclick="ShowQuery(@x.EnquiryId);" />
+                                                            <span class="tooltipShow text-center"> To view Technical query click here</span>
+                                                            @Html.Hidden("@x.EnquiryId")
+                                                        </span>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="tooltipHover c-pointer" data-toggle="modal" data-target="#Querymodal">
+                                                            <img src="~/Assets/images/flashBulp.gif" width="16px" style="display:none" id="commentIcon_@x.EnquiryId" onclick="ShowQuery(@x.EnquiryId);"/>
+                                                            <span class="tooltipShow">Question & Answers</span>
+                                                        </span>
+                                                    }
+
+                                                    @*<img src="~/Assets/images/flashBulp.gif" width="16px" id="commentIcon_@x.EnquiryId" data-toggle="tooltip" data-placement="right" title="" />*@
+
+                                                </td>
+                                                <td>@innerRowNum</td>
+                                                <td class="text-left ">@x.EpCCustomerName</td>
+                                                <td class="text-left ">@x.Country</td>
+                                                <td>@x.EnquiryDate.ToString("dd-MM-yyyy")</td>
+                                                <td>@x.ExpiryDate.ToString("dd-MM-yyyy")</td>
+                                                <td>@x.EnquiryStatus</td>
+                                                <td class="Options statusOpen c-pointer" id='StatusMenu_@rowNum'>
+                                                    <span id="span_@rowNum" class="optionSpan">Options</span>
+
+                                                    <div class="ActnActivities " id="ActnActivities_@rowNum">
+                                                        <ul>
+                                                            @if (!string.IsNullOrEmpty(x.BoqFileName))
+                                                            {
+                                                                <li onclick="openPdf(@x.EnquiryId, @x.ProjectId, '@x.BoqFileName')">BOQ</li>
+                                                            }
+                                                            @if (!string.IsNullOrEmpty(x.ProjectSpecFileName))
+                                                            {
+                                                                <li onclick="openPdf(@x.EnquiryId, @x.ProjectId, '@x.ProjectSpecFileName')">Project Specification</li>
+                                                            }
+
+                                                            @if (!string.IsNullOrEmpty(x.OtherFileName))
+                                                            {
+                                                                <li onclick="openPdf(@x.EnquiryId, @x.ProjectId, '@x.OtherFileName')">Other Attachment</li>
+                                                            }
+                                                            @*@if (x.TechnicalQuery != null && x.TechnicalQuery.Count > 0)
+        {
+            <li data-toggle="modal" onclick="openModal(this)" data-id="@x.EnquiryId"> Update Technical Query</li>
+        }
+        else*@
+
+                                                            <li data-toggle="modal" onclick="openModal(this)" data-id="@x.EnquiryId"> Add Technical Query</li>
+
+
+                                                            @if (x.CanCreateBOM && item.IsPublished)
+                                                            {
+                                                                <li onclick="CreateBOM(@x.EnquiryId);">Create BOM</li>
+                                                            }
+
+                                                            @*<li>Delete</li>*@
+                                                            @*<li onclick="location.href='@Url.Action("ViewBOM","CreateBOM",new { enqId = x.EnquiryId })'">View BOM</li>*@
+                                                            @*<li onclick="location.href='@Url.Action("CreateRevision","CreateBOM",new { enqId = x.EnquiryId })'">Create Revision</li>*@
+                                                        </ul>
+                                                        <div class="closeMenu">
+                                                            <button type="button" class="close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                                    innerRowNum++;
+                                                }
+
+                                            }
+                                        </table>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="Querymodal" tabindex="1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content">
+            <div class="modal-body background-white">
+                <div class="closeMenu">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div id="techQueryView" class="techQueryView">
+                    @Html.Partial("~/Views/Shared/Enquiry/_technicalQuery.cshtml", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="PdfModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="BomRefDtls">
+                    <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="col-sm-12 row BomRefHeader m-0">
+                        Pdf File Name
+                    </div>
+                    <div class="tableBlock BomRefTable">
+                        <div class="modal-body f-14">
+                            <iframe src="" id="embedId" style="width: 100%; height: 80vh;" frameborder="0" scrolling="no" class="w-100"></iframe>
+                            @*<embed type="application/pdf" id="embedId" src="" class="w-100" style="height:90vh">*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function openPdf(enqId, projId, fileName) {
+        var url = '';
+        if (enqId == 0)
+            url = "/Documents/Project_" + projId + "/" + fileName + "#page=1&zoom=180";
+        else
+            url = "/Documents/Project_" + projId + "/Customer_" + enqId + "/" + fileName + "#page=1&zoom=180";
+
+        $('#embedId').attr('src', url);
+        $('#PdfModal').modal('show');
+    };
+
+    $('.collapseRow').toggle();
+    $('[data-toggle="tooltip"]').tooltip();
+    //$(document).ready(function () {
+
+    //});
+
+    function expCust(id) {
+        var ids = 'custRow_' + id;
+
+        if ($('#' + ids).is(':visible')) {
+            $('#' + ids).hide(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/addBtn.png");
+        }
+        else {
+            $('#' + ids).show(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/minBtn.png");
+        }
+    };
+
+    function openModal(e) {
+        var id = $(e).data('id');
+        $('#comment').val('');
+        //$("#comment").attr('id', "comment" + id);
+        $('#modelSubmitComment').attr('onClick', 'submitComment(' + id + ');');
+        $("#exampleModalCenter").modal('show');
+    }
+
+    function submitComment(num) {
+        var comment = $('#comment').val();
+        $.ajax({
+            type: "post",
+            url: "/Enquiry/SubmitTechnicalQuery",
+            dataType: "JSON",
+            data: { id: num, query: comment },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data === true || data == 'true') {
+                    $('#commentIcon_' + num).removeAttr('style');
+                 //   $('#commentIcon_' + num).attr('title', comment);
+                 //   $('#commentIcon_' + num).tooltip();
+                }
+                else {
+                    alert('failed');
+                }
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function Edit(projectId, rowNum)
+    {
+        $("#ActnActivities_" + rowNum).toggle(200);
+
+        $.ajax({
+            type: "get",
+            url: "/Enquiry/EditProject",
+            dataType: "html",
+            data: { projectId: projectId},
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                var data = $('#enquiryView').html(data);
+
+                $(".collapseSide").removeClass("col-sm-12").addClass("col-sm-7");
+                $(".collapseHide").css("display", "block");
+                $(".enquiryTd").css("display", "table-cell");
+                $(".creteEnquiryTd").css("display", "none");
+            },
+            error: function (got) { }
+        });
+
+        $('#CreateEnquiryForm').attr('action', '/Enquiry/EditProject');
+    }
+
+    function Publish(projectId) {
+        $.ajax({
+            type: "post",
+            url: "/Enquiry/PublishProject",
+            dataType: "json",
+            data: { projectId: projectId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data == true)
+                {
+                    successModal();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (got) { }
+        });
+
+        $('#CreateEnquiryForm').attr('action', '/Enquiry/EditProject');
+    }
+
+    function CreateBOM(enqId) {
+        $.ajax({
+            type: "get",
+            url: "/Enquiry/CreateBOMId",
+            dataType: "json",
+            data: { enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+
+                if (data > 0) {
+                    var url = '@Url.Action("CreateBom","CreateBom")?EnqId=' + enqId;
+                   // alert(url);
+                    window.location.href = url;
+                }
+                else {
+                    alert('Error: while processing BOM.')
+                }
+                //redirect to bom create with bom id.
+            },
+            error: function (got) { }
+        });
+    }
+
+    function ShowQuery(enqId) {
+            $.ajax({
+            type: "get",
+                url: "/Enquiry/GetTechQuery",
+            dataType: "html",
+            data: { enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#techQueryView").html(data);
+                    $("#Querymodal").modal.show(); 
+            },
+            error: function (got) { }
+        });
+    }
+
+    $('#btnSearchbar').click(function () {
+        var prefix = $("#enquirytxtSearch").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/Enquiry/SearchEnquiries",
+                dataType: "html",
+                data: { prefix: prefix },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#checkClass").html(data);
+                    $("#enquirytxtSearch").val(prefix);
+                    $("#enquirytxtSearch").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    });
+
+    $('#enquirytxtSearch').keypress(function (e) {
+        var key = e.which;
+        if (key == 13)  
+        {
+            $('#btnSearchbar').click();
+            return false;
+        }
+    });   
+
+    function clearSearch() {
+        var prefix = $("#enquirytxtSearch").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/Enquiry/SearchEnquiries",
+                dataType: "html",
+                data: { prefix: '' },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#checkClass").html(data);
+                    $("#enquirytxtSearch").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    }
+
+</script>

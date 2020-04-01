@@ -1,0 +1,105 @@
+﻿@model Karamtara_Application.Models.ComponentModel
+
+
+<div class="Catgdetails tableBlock" id="divProdEdit">
+    @using (Html.BeginForm("SubmitCompMaster", "ComponentMaster", FormMethod.Post, new { @id = "SubComMasForm" }))
+    {
+        <div class="row">
+            <div class="col-sm-12">
+           <table class="table prodDetails" id="prodTbl2">
+                    <tr>
+                        <th class="ComNo">Catalogue No</th>
+                        <th class="comName">Component Name</th>
+                        <th class="comRawMat">Raw Material</th>
+                        <th class="compSize">Size</th>
+                        @*<th class="catNo">Qty</th>*@
+                        <th class="unitGrwt">UnitGrWt</th>
+                        <th class="unNetwt">UnitNetWt</th>
+                        <th class="galRequrd">Galvanized Required</th>
+                        <th class="galMatrl">Galvanized Material</th>
+                        <th class="drawNo">Drawing No</th>
+                        <th class="MaterialGrid">Material Grade</th>
+                    </tr>
+                    <tr>
+                        <td class="catNo">@Html.TextBoxFor(m => Model.CatalogueNo, new { @readonly = "readonly", @id = "ComponentId" + Model.ComponentId }) </td>
+                        @Html.HiddenFor(x => x.ComponentId)
+                        <td class="compoentNm"> @Html.TextBoxFor(m => Model.ComponentName, new { @readonly = "readonly", @id = "CompName" })</td>
+                        <td class="RawMaterialId">@Html.TextBoxFor(m => Model.RawMaterial, new { @id = "RawMat", @class = "rawMater whiteBgInput" })</td>
+                        <td class="prodNo">@Html.TextBoxFor(m => Model.Size, new { @id = "Size" + Model.ComponentId, @class = "whiteBgInput" })</td>
+                        <td class="prodUnit">@Html.TextBoxFor(m => Model.UnitGrWt, new { @id = "UGW", @class = "whiteBgInput" })</td>
+                        <td class="prodUnit">@Html.TextBoxFor(m => Model.UnitNetWt, new { @id = "UNW", @class = "whiteBgInput" })</td>
+                        <td class="galMat">@Html.DropDownListFor(x => x.GalvanizedRequiredInt, new SelectList(Model.GalvanizedRequiredList, "Value", "Text", Model.GalvanizedRequiredInt), new { @class = "browser-default custom-select whiteBgInput " }) </td>
+                        <td class="galMat">@Html.DropDownListFor(x => x.GalvanizedMaterial, new SelectList(Model.GalvanizedMaterialList, "Id", "Element", Model.GalvanizedMaterial), new { @class = "browser-default custom-select whiteBgInput " }) </td>
+                        @*<td class="galMat"> @Html.TextBoxFor(m => Model.GalvanizedMaterial, new { @readonly = "readonly", @id = "GalvanizedMaterial" + Model.ComponentId })</td>*@
+                        <td class="DrawingNo">@Html.TextBoxFor(m => Model.DrawingNo, new { @id = "DrawingNo" + Model.ComponentId, @class = "whiteBgInput" }) </td>
+                        <td class="MaterialGrid">@Html.TextBoxFor(m => Model.MaterialGrade, new { @id = "MaterialGrade" + Model.ComponentId, @class = "whiteBgInput" }) </td>
+                    </tr>
+                    @*rowCount++;*@
+                </table>
+                <div class="text-right">
+                    <button type="button" class="submitBomBtn publishBtn" id="btnProdSaveBtn">Save</button>
+                </div>
+            </div>
+            </div>
+    }
+</div>
+
+    <script>
+        $(".rawMater").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/RawMaterialMaster/AutoComplete/',
+                    data: "{ 'prefix': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response(data);
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, ui) {
+                $(this).val(ui.item.label);
+                return false;
+            },
+            minLength: 2,
+            autoFocus: true,
+            change: function (event, ui) {
+                if (ui.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                }
+            }
+
+        });
+
+        $('#btnProdSaveBtn').click(function () {
+            if (!validation())
+                return;
+            $("#SubComMasForm").submit();
+        });
+
+        function validation() {
+            if ($("#RawMat").val() == '') {
+                //alert('here');
+                $("#RawMat").focus();
+                alert("Please Select Raw Material");
+                return false;
+            }
+            else if ($("#UGW").val() == '') {
+                $("#UGW").focus();
+                alert("Please Enter Unit Gross Weight");
+                return false;
+            }
+            else if ($("#UNW").val() == '') {
+                $("#UNW").focus();
+                alert("Please Select Unit Net Weight");
+                return false;
+            }
+            else return true;
+        }
+    </script>

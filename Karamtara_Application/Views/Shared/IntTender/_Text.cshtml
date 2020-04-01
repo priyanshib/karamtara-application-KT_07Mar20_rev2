@@ -1,0 +1,104 @@
+﻿@using Karamtara_Application.Models.Tender
+@model TenderDetailsModel
+
+
+
+<div class="BomRefDtls main-container">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        Add Text
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        <div class="col-sm-12 ">
+            <div class="col-sm-12 NumberOfRow">
+                <input type="hidden" id="hidLineType" value="1" name="hidLine" />
+                <div class="row" id="lineDiv">
+                    @foreach (var item in Model.TextList)
+                    {
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <textarea name="comment" id="txtAreaMsg" disabled="disabled" style="width:100%">@item.Message</textarea>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <input type="button" id="btnAddText" value="Add" class="mt-3 m-0 mb-4 submitBomBtn publishBtn" />
+            </div>
+            <div class="col-sm-12 text-right p-5 saveCancelBtn" style="display:none">
+                <span class="errorModal" id="vErrorLine" style="display:none"></span>
+                @*<input type="button" id="btnUpdateText" value="Update" class="p-2 submitBomBtn saveBtn" />
+                    <input type="button" id="btnTextCancel" value="Cancel" class="p-2 submitBomBtn publishBtn" />*@
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+                <button type="button" id="btnSubmitText" class="submitEnq publishBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    var tndId =@Model.TenderId, tndRevNo=@Model.TenderRevisionNo;
+
+    $("#btnAddText").click(function () {
+        var txtHtml = '<div class="col-sm-12"><div class="form-group">' +
+            '<textarea name="comment" id="txtAreaMsg" placeholder="Enter text here..." class="p-2 validateText" style="width:100%"></textarea>' +
+            '</div></div></div>';
+
+        $("#lineDiv").append(txtHtml);
+        $('.saveCancelBtn').removeAttr('style');
+    });
+
+
+    $("#btnSubmitText").click(function () {
+        var validate = true;
+        $('.validateText').each(function () {
+            if ($(this).val() == '') {
+                $("#vErrorLine").html('Please enter the text.');
+                $("#vErrorLine").removeAttr('style');
+                validate = false;
+            }
+        })
+        if (validate) {            
+            $("#vErrorLine").html('');
+            $("#vErrorLine").addClass('style', 'display:none');
+            $("#hidStrType").val('');
+            $("#hidStrType").val('1');
+
+            var Message = $(".validateText").val();
+
+            $.ajax({
+                type: "POST",
+                url: '/IntTenderPricingKT/SaveTextDetails?message=' + Message + '&tndId=' + tndId + '&tndRevNo=' + tndRevNo,
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    if (data) {
+                        $(".modal").modal('hide');
+                        successModal();
+                        //SubmitTestPrice();
+                        //SubmitMarkup();
+                        //SubmitFreight();
+                        //window.location.reload();
+                    }
+                    else {
+                        $(".modal").modal('hide');
+                        failureModal();
+                    }
+                },
+                error: function (courses) {
+                    $(".modal").modal('hide');
+                    failureModal();
+                }
+            });
+        }
+    });
+
+
+</script>
+

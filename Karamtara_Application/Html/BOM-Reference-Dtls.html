@@ -1,0 +1,553 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+        <div class="row CreateNotfn">
+            <img src="../Assets/images/createBOM.png" />
+            <span>New BOM has been created. Please add relative assemblies in description  </span>
+            <button type="button" class="notificationBtn" id="notificationClose">OK</button>
+        </div>
+
+        <div class="main-content mainContentPaddingBtm">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="row prjNmBlock">
+                        <div class="col-sm-8 align-self-center">
+                            <span>Project :</span>Transmission system strengthening in Jharkhand State
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button type="button" class="createBomBtn saveBtn">SAVE</button>
+                            <button type="button" class="createBomBtn revisionBtn">Save Revision</button>
+                            <button type="button" class="createBomBtn publishBtn">Publish</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12">
+                    <div class="row AddOptnDtl">
+                        <div class="AddOptn col-sm-3">
+                            <img src="../Assets/images/plusIcon.png" />ADD TESTS FOR COMPONENTS
+                        </div>
+                        <div class="AddOptn col-sm-2 p-0">
+                            <img src="../Assets/images/plusIcon.png" />VIEW RAW MATERIALS
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-5">
+                    <div class="createBomDtls tableBlock">
+                        <div class="row">
+                            <table class="table">
+                                <tr>
+                                    <th class="srNo">Sr. No</th>
+                                    <th class="desc" colspan="2">Description</th>
+                                    <th class="uniWeght">Unit Weight</th>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2"></td>
+                                    <td class="UnitDtl">KG</td>
+                                </tr>
+                                <tr>
+                                    <td class="SrNoDtl">A</td>
+                                    <td class="createBomDescTd">
+                                        <input type="text" value="HW Fittings: 400kv ACSR Moose Conductor" />
+                                    </td>
+                                    <td class="createBomImg"> <img src="../Assets/images/addMore.png"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="SrNoDtl">1</td>
+                                    <td class="createBomDescTd">
+                                        Double Suspension
+                                    </td>
+                                    <td class="createBomImg"> <img src="../Assets/images/bulb.png"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="SrNoDtl">2</td>
+                                    <td class="createBomDescTd">
+                                        Single Suspension Pilot (with 200kg Counter Weight)
+                                    </td>
+                                    <td class="createBomImg"><span data-toggle="tooltip" data-placement="right" title="Tooltip on right"> <img src="../Assets/images/bulb.png" data-toggle="modal" data-target="#exampleModalCenter"></span></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-7 p-0">
+                    <div class="BomRefDtls">
+
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            <div class="col-sm-11 ">
+                                Reference Bill of Material (BOM)
+                            </div>
+                            <div class="col-sm-1 text-right" data-toggle="modal" data-target="#fullScreenModal">
+                                <img src="../Assets/images/fullscreen.png">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 row BomRefSubHead m-0">
+                            <div class="col-sm-9 ">
+                                400kv double suspension insulator string for quad moose ACSR conductor
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <img src="../Assets/images/calender.png" /> 28/04/2018
+                            </div>
+                        </div>
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-4">
+                                DRG. No. <span>KI/400kv-DSII(Q).240/02</span><img src="../Assets/images/attachment.png">
+                            </div>
+                            <div class="col-sm-4 ">
+                                Sub Assembly Code: DIS-Q-PG-PR
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Clone</button>
+                            </div>
+                        </div>
+
+
+
+                        <div class="tableBlock BomRefTable">
+                            <table class="table m-0">
+                                <tr>
+                                    <th class="BOMSrNo">S.NO.</th>
+                                    <th class="BomItemNm">Item Name</th>
+                                    <th class="BomCatNon">Catalouge No.</th>
+                                    <th class="BomSapNo">Sap No.</th>
+                                    <th class="BomMatType">Material Type</th>
+                                    <th class="BomQty">QTY./SET</th>
+                                    <th class="BomSize">Size</th>
+                                    <th class="BomUnit">Unit GR. Wt.<br />(KG)</th>
+                                    <th class="BomUnit">Unit Finish Wt. <br /> (KG)</th>
+                                    <th class="BomTotalWt">Total Wt.</th>
+                                    <th class="BomRemark">Remarks</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                    <td class="editDelTR">
+                                        <button type="button" class="editBtn" data-toggle="modal" data-target="#editModal"><img src="../Assets/images/editPensil.svg" width="13px"></button>
+                                        <button type="button" class="delBtn"><img src="../Assets/images/delete.svg" width="20px"></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr class="tableFooter">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td>35000</td>
+                                    <td></td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="row footerStatus">
+                KEPL/TE-0001/Revision1 / <span class="statusHold">DRAFT</span>
+                <button type="button"><img src="../Assets/images/viewTrial.png" />view audit trial</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a reference from below list <span>(Click on project name to view)</span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="Modal-Header">400 KV double suspension insulator string for quad moose ACSR conductor</div>
+                    <div class="AssigneeDtl">
+                        <table class="table">
+                            <tr>
+                                <th>S. No.</th>
+                                <th>Project Name</th>
+                                <th>Drg. No.</th>
+                                <th>Last Update Date</th>
+                                <th>created by </th>
+                                <th>remarks</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Reliance Power Tarapur Project</td>
+                                <td>KI/400KV-DSII(Q).240/02</td>
+                                <td>28/04/2019</td>
+                                <td>Sanjay More</td>
+                                <td><img src="../Assets/images/assebleSummary.png"></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Reliance Power Tarapur Project</td>
+                                <td>KI/400KV-DSII(Q).240/02</td>
+                                <td>28/04/2019</td>
+                                <td>Sanjay More</td>
+                                <td><img src="../Assets/images/assebleSummary.png"></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Reliance Power Tarapur Project</td>
+                                <td>KI/400KV-DSII(Q).240/02</td>
+                                <td>28/04/2019</td>
+                                <td>Sanjay More</td>
+                                <td><img src="../Assets/images/assebleSummary.png"></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Reliance Power Tarapur Project</td>
+                                <td>KI/400KV-DSII(Q).240/02</td>
+                                <td>28/04/2019</td>
+                                <td>Sanjay More</td>
+                                <td><img src="../Assets/images/assebleSummary.png"></td>
+                            </tr>
+
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                   
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                  Edit Modal
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Modal for fullscreen-->
+    <div class="modal fade" id="fullScreenModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            <div class="col-sm-11 ">
+                                Reference Bill of Material (BOM)
+                            </div>
+                            <div class="col-sm-1 text-right" class="close" data-dismiss="modal" aria-label="Close">
+                                <img src="../Assets/images/fullscreen.png">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 row BomRefSubHead m-0">
+                            <div class="col-sm-9 ">
+                                400kv double suspension insulator string for quad moose ACSR conductor
+                            </div>
+                            <div class="col-sm-3 text-right">
+                                <img src="../Assets/images/calender.png" /> 28/04/2018
+                            </div>
+                        </div>
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-4">
+                                DRG. No. <span>KI/400kv-DSII(Q).240/02</span><img src="../Assets/images/attachment.png">
+                            </div>
+                            <div class="col-sm-4 ">
+                                Sub Assembly Code: DIS-Q-PG-PR
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Clone</button>
+                            </div>
+                        </div>
+
+
+
+                        <div class="tableBlock BomRefTable">
+                            <table class="table m-0">
+                                <tr>
+                                    <th class="BOMSrNo">S.NO.</th>
+                                    <th class="BomItemNm">Item Name</th>
+                                    <th class="BomCatNon">Catalouge No.</th>
+                                    <th class="BomSapNo">Sap No.</th>
+                                    <th class="BomMatType">Material Type</th>
+                                    <th class="BomQty">QTY./SET</th>
+                                    <th class="BomSize">Size</th>
+                                    <th class="BomUnit">Unit GR. Wt.<br />(KG)</th>
+                                    <th class="BomUnit">Unit Finish Wt. <br /> (KG)</th>
+                                    <th class="BomTotalWt">Total Wt.</th>
+                                    <th class="BomRemark">Remarks</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td><img src="../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr class="tableFooter">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td>35000</td>
+                                    <td></td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {      
+      $("#notificationClose").click(function(){
+		
+		$(".CreateNotfn").slideUp(1000);	
+	  });
+	  
+	 
+    });
+		$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+</script>

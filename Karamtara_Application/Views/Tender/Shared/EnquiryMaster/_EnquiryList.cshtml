@@ -1,0 +1,653 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+
+<script type="text/javascript">
+    @{ var rowNum=0;
+        bool IsAdmin = false;
+        string userType = string.Empty;
+        var userInfo = (Karamtara_Application.Models.UserModel)Session["UserData"];
+        if (userInfo != null)
+        {
+            IsAdmin = userInfo.UserTypeId == 1 ? true : false;
+            userType = userInfo.UserType;
+        }
+    }
+</script>
+<div class="enquiryTable tableBlock">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr class="selectedActivies">
+                    <td colspan="10" class="tdheader text-left p-1 creteEnquiryTd">
+                        <div class="col-sm-12 row align-item-center">
+                            <div class="col-sm-7 align-self-center">
+                                <div class="activities c-pointer createEnqBtn"><img src="~/Assets/images/enquiry.png" height="20px" class="mr-10"><span class="titleHead"> Create Enquiry</span></div>
+                            </div>
+                            <div class="col-sm-5 p-0">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="searchBlock col-sm-11">
+                                            <div class="inputSerachBlok creteEnqSearch">
+                                                <input type="text" id="enquirytxtSearch" class="input-group serachInput f-13 p-2" placeholder="Search Enquiries" />
+                                                <button type="button" id="btnClear" class="btn-clear searchClear" onclick="clearSearch();"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+                                            </div>
+                                            <button type="button" id="btnSearchbar" class="serachBtn"><img src="~/Assets/images/search.svg" width="20px" /></button>
+
+                                        </div>
+                                        <div class="col-sm-1 align-items-center p-0">
+                                            <div class="showFilter c-pointer d-flex align-items-center mt-2"><img src="~/Assets/images/assembleFilter.png" class="mr-1">Filter</div>
+                                            <div class="filterDiv" style="display:none">
+                                                <div class="col-sm-12">
+                                                    <div class="row">
+                                                        <div class="col-sm-5  d-flex align-items-center">
+                                                            <span class="tiltleSpan">Sort By:</span>
+                                                            @Html.DropDownListFor(x => x.ColumnId, new SelectList(Model.Filter.Columns, "ColumnId", "ColumnName", Model.ColumnId), new { @class = "selectDrpdwn", @id = "columnId" })
+                                                        </div>
+                                                        <div class="col-sm-5  d-flex align-items-center">
+                                                            <span class="tiltleSpan">Order By:</span>
+                                                            @Html.DropDownListFor(x => x.OrderId, new SelectList(Model.Filter.Orders, "OrderId", "Order", Model.OrderId), new { @class = "selectDrpdwn", @id = "orderId" })
+                                                        </div>
+                                                        <div class="col-sm-2  d-flex align-items-center">
+                                                            <button type="button" onclick="FilterEnquiry();" class="submitBomBtn publishBtn">Filter</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td colspan="10" class="tdheader text-left p-1 enquiryTd">
+                        <span class="titleHead">  Enquiries</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="col" class="DeptNo">Tender Dept File No.</th>
+                    <th scope="col" class="Type">Type</th>
+                    <th scope="col" class="text-left ProjName" colspan="2">Project Name</th>
+                    <th scope="col" class="EndCustName" colspan="2">End customer name</th>
+                    <th scope="col" class="DueDt">Enquiry Date</th>
+                    <th scope="col" class="DueDt">Due Date</th>
+                    <th scope="col" class="Status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.EnquiryList != null && Model.EnquiryList.Count > 0)
+                {
+                    foreach (var item in Model.EnquiryList)
+                    {
+                        rowNum++;
+                        if (item.StatusDesc == "Partially Published")
+                        {
+                            <tr style="background-color:#FFFDE0">
+                                <td class="tenderNo">
+                                    @if (Model.CustomerList != null && Model.CustomerList.Count > 0)
+                                    {
+                                        if (Model.CustomerList.Any(x => x.ProjectId.Equals(item.ProjectId)))
+                                        {
+                                            <button type="button" class="addRowBtn" id="addRowBtnId"><img src="/Assets/images/addBtn.png" id="plusIcon_@rowNum" onclick="expCust(@rowNum);" /></button>
+                                        }
+                                    }
+                                    @(item.TenderFileNo.Substring(0, item.TenderFileNo.Length > 25 ? 25 : item.TenderFileNo.Length) + (item.TenderFileNo.Length > 25 ? "..." : ""))
+                                </td>
+                                @if (item.EnquiryType.ToLower() == "domestic")
+                                {
+                                    <td class="typeDOM">@item.EnquiryType</td>
+                                }
+                                else
+                                {
+                                    <td class="typeDOM" style="color:#06c2c0">@item.EnquiryType</td>
+                                }
+                                @*<td class="typeDOM">@item.EnquiryType</td>*@
+                                <td class="text-left ProjNameTD">@item.ProjectName</td>
+
+                                <td class="attachmentTD text-right">
+                                    @if (!string.IsNullOrEmpty(item.EnquiryAttachmentName))
+                                    {
+                                        <img src="~/Assets/images/attachment.png" onclick="location.href='@Url.Action("DownloadEnquiryDocs", "TenderEnquiry", new { projectId = item.ProjectId, enquiryId = 0, docType = "EA", file = item.EnquiryAttachmentName })'" />
+                                    }
+                                </td>
+                                <td class="text-left ProjNameTD">@item.EndCustName</td>
+                                <td class="attachmentTD text-right"></td>
+                                <td>@(item.EnqDate.ToLocalTime().Date.ToString("dd-MM-yyyy"))</td>
+                                <td>@(item.EnqDueDate.ToLocalTime().Date.ToString("dd-MM-yyyy"))</td>
+                                <td class="Status statusOpen" id='StatusMenu_@rowNum'>
+
+                                    <span id="span_@rowNum" class="optionSpan">@item.StatusDesc</span>
+                                    <div class="ActnActivities " id="ActnActivities_@rowNum">
+                                        <ul>
+                                            <li onclick="Edit(@item.ProjectId, @rowNum);">Edit</li>
+                                            <li onclick="PublishProject(@item.ProjectId);">Publish</li>
+                                            <li onclick="location.href='@Url.Action("DeleteProject", "TenderEnquiry", new { projectId = Model.ProjectId})'">Delete</li>
+                                        </ul>
+                                        <div class="closeMenu">
+                                            <button type="button" class="close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td class="tenderNo">
+                                    @if (Model.CustomerList != null && Model.CustomerList.Count > 0)
+                                    {
+                                        if (Model.CustomerList.Any(x => x.ProjectId.Equals(item.ProjectId)))
+                                        {
+                                            <button type="button" class="addRowBtn" id="addRowBtnId"><img src="~/Assets/images/addBtn.png" id="plusIcon_@rowNum" onclick="expCust(@rowNum);" /></button>
+                                        }
+                                    }
+                                    @(item.TenderFileNo.Substring(0, item.TenderFileNo.Length > 25 ? 25 : item.TenderFileNo.Length) + (item.TenderFileNo.Length > 25 ? "..." : ""))
+                                </td>
+
+                                @if (item.EnquiryType.ToLower() == "domestic")
+                                {
+                                    <td class="typeDOM">@item.EnquiryType</td>
+                                }
+                                else
+                                {
+                                    <td class="typeDOM" style="color:#06c2c0">@item.EnquiryType</td>
+                                }
+
+                                @*<td class="typeDOM">@item.EnquiryType</td>*@
+                                <td class="text-left ProjNameTD">@item.ProjectName</td>
+
+                                <td class="attachmentTD text-right">
+                                    @if (!string.IsNullOrEmpty(item.EnquiryAttachmentName))
+                                    {
+                                        <img src="~/Assets/images/attachment.png" onclick="location.href='@Url.Action("DownloadEnquiryDocs", "TenderEnquiry",
+                                        new { projectId = item.ProjectId, enquiryId = 0, docType = "EA", file = item.EnquiryAttachmentName })'" />
+                                    }
+                                </td>
+                                <td class="text-left ProjNameTD">@item.EndCustName</td>
+                                <td class="attachmentTD text-right"></td>
+                                <td>@(item.EnqDate.ToLocalTime().Date.ToString("dd-MM-yyyy"))</td>
+                                <td>@(item.EnqDueDate.ToLocalTime().Date.ToString("dd-MM-yyyy"))</td>
+                                <td class="Status statusOpen" id='StatusMenu_@rowNum'>
+
+                                    <span id="span_@rowNum" class="optionSpan">@item.StatusDesc</span>
+                                    <div class="ActnActivities " id="ActnActivities_@rowNum">
+                                        <ul>
+                                            @if (item.StatusDesc == "New")
+                                            {
+                                                <li onclick="Edit(@item.ProjectId, @rowNum);">Edit</li>
+                                                <li onclick="PublishProject(@item.ProjectId);">Publish</li>
+                                                <li onclick="DeleteProject(@item.ProjectId);" @*"location.href='Url.Action("DeleteProject", "TenderEnquiry", new { projectId = Model.ProjectId})'"*@>Delete</li>
+                                            }
+                                            else if (item.StatusDesc == "Published")
+                                            {
+                                                <li onclick="Edit(@item.ProjectId, @rowNum);">Edit</li>
+
+                                            }
+
+                                        </ul>
+                                        <div class="closeMenu">
+                                            <button type="button" class="close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        if (Model.CustomerList != null && Model.CustomerList.Count > 0)
+                        {
+                            if (Model.CustomerList.Any(x => x.ProjectId.Equals(item.ProjectId)))
+                            {
+                                int innerRowNum = 1;
+
+                                <tr class="collapseRow" id="custRow_@rowNum">
+                                    <td colspan="9" class="p-0">
+                                        <table class="collapseTable w-100">
+                                            <tr>
+                                                <th class="DeptSrNo"></th>
+                                                <th class="Type">Sr. No.</th>
+                                                <th class="text-left csutNm">Customer Name</th>
+                                                <th class="text-left csutNm">Country</th>
+                                                <th class="DtEnquiry">Date of Enquiry</th>
+                                                <th class="ExDate">Due Date</th>
+                                                <th class="DtStatus">Status</th>
+                                                <th class="Options" colspan="1">Options</th>
+                                            </tr>
+                                            @foreach (var x in Model.CustomerList)
+                                            {
+                                                if (x.ProjectId.Equals(item.ProjectId))
+                                                {
+                                                    <tr style="background-color:#f5f5f5;">
+                                                        <td>
+                                                            @if (x.TechnicalQuery != null && x.TechnicalQuery.Count > 0)
+                                                            {
+                                                                int count = 0;
+                                                                foreach (var query in x.TechnicalQuery)
+                                                                {
+                                                                    if (!query.Answers.Any())
+                                                                    {
+                                                                        count = 1;
+                                                                    }
+                                                                }
+                                                                if (count == 0)
+                                                                {
+                                                                    <span class="tooltipHover c-pointer" data-toggle="modal" data-target="#Querymodal">
+                                                                        <img src="~/Assets/images/flashBulp.gif" class="enqBulb" width="16px" id="commentIcon_@x.EnquiryId" onclick="ShowQuery(@x.EnquiryId);" />
+                                                                        <span class="tooltipShow text-center"> To view Technical query click here</span>
+                                                                        @Html.Hidden("@x.EnquiryId")
+                                                                    </span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span class="tooltipHover c-pointer" data-toggle="modal" data-target="#Querymodal">
+                                                                        <img src="~/Assets/images/RedBulp.gif" class="enqBulb" width="16px" id="commentIcon_@x.EnquiryId" onclick="ShowQuery(@x.EnquiryId);" />
+                                                                        <span class="tooltipShow text-center"> To view Technical query click here</span>
+                                                                        @Html.Hidden("@x.EnquiryId")
+                                                                    </span>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="tooltipHover c-pointer" data-toggle="modal" data-target="#Querymodal">
+                                                                    @**@
+                                                                    <img src="~/Assets/images/RedBulp.gif" width="16px" style="display:none" id="commentIcon_@x.EnquiryId" onclick="ShowQuery(@x.EnquiryId);" />
+                                                                    <span class="tooltipShow">Question & Answers</span>
+                                                                </span>
+                                                            }
+
+                                                        </td>
+                                                        <td>@innerRowNum</td>
+                                                        <td class="text-left ">@x.EpCCustomerName</td>
+                                                        <td class="text-left ">@x.Country</td>
+                                                        <td>@x.EnquiryDate.ToString("dd-MM-yyyy")</td>
+                                                        <td>@x.ExpiryDate.ToString("dd-MM-yyyy")</td>
+                                                        <td>@x.EnquiryStatus</td>
+                                                        <td class="Options statusOpen c-pointer" id='StatusMenuInner_@rowNum'>
+                                                            <span id="spanInner_@rowNum" class="optionSpan">Options</span>
+
+                                                            <div class="ActnActivities " id="ActnActivitiesInner_@rowNum">
+                                                                <ul>
+                                                                    @if (!string.IsNullOrEmpty(x.BoqFileName))
+                                                                    {
+                                                                        <li onclick="location.href='@Url.Action("DownloadEnquiryDocs", "TenderEnquiry", new { projectId = x.ProjectId, enquiryId = x.EnquiryId, docType = "Boq", file = x.BoqFileName})'">BOQ</li>
+                                                                    }
+                                                                    @if (!string.IsNullOrEmpty(x.ProjectSpecFileName))
+                                                                    {
+                                                                        <li onclick="location.href='@Url.Action("DownloadEnquiryDocs", "TenderEnquiry", new { projectId = x.ProjectId, enquiryId = x.EnquiryId, docType = "PS", file = x.ProjectSpecFileName})'">Project Specification</li>
+                                                                    }
+
+                                                                    @if (!string.IsNullOrEmpty(x.OtherFileName))
+                                                                    {
+                                                                        <li onclick="location.href='@Url.Action("DownloadEnquiryDocs", "TenderEnquiry", new { projectId = x.ProjectId, enquiryId = x.EnquiryId, docType = "Oth", file = x.OtherFileName})'">Other Attachment</li>
+                                                                    }
+                                                                    @if (userType.ToLower() == "design admin" || userType.ToLower() == "admin")
+                                                                    {
+                                                                        <li onclick="AssignModalOpen(@x.EnquiryId, @rowNum)">Assign To</li>
+                                                                    }
+
+                                                                    <li data-toggle="modal" onclick="openModal(this)" data-id="@x.EnquiryId"> Add Technical Query </li>
+
+                                                                    @if (!x.IsPublished)
+                                                                    {
+                                                                        <li onclick="PublishEnquiry(@x.EnquiryId);">Publish</li>
+                                                                    }
+
+                                                                    @if (IsAdmin && x.CanCreateBOM && x.IsPublished)
+                                                                    {
+                                                                        <li onclick="CreateBOM(@x.EnquiryId);">Create BOM</li>
+                                                                    }
+
+                                                                </ul>
+                                                                <div class="closeMenu">
+                                                                    <button type="button" class="close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    innerRowNum++;
+                                                }
+                                            }
+                                        </table>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="snackbar"></div>
+
+<div class="modal fade" id="Querymodal" tabindex="1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content">
+            <div class="modal-body background-white">
+                <div class="closeMenu">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div id="techQueryView" class="techQueryView">
+                    @Html.Partial("~/Views/Tender/Shared/EnquiryMaster/_technicalQuery.cshtml", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="assignToModal" tabindex="-1" role="dialog" aria-hidden="true"/>
+
+<script type="text/javascript">
+
+    function successAssign() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Enquiry assigned successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failAssign() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while assigning enquiry. Please try again"
+        x.className = "snackBarshow";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    }
+
+    function AssignModalOpen(enqId, rowNum) {
+        $.ajax({
+            type: "get",
+            url: "/Enquiry/GetAssignModal",
+            dataType: "html",
+            data: { enquiryId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $("#assignToModal").html(data);
+                $("#assignToModal").modal('show');
+            },
+            error: function (got) { }
+        });
+    };
+
+    function FilterEnquiry() {
+        var columnId = $('#columnId').val();
+        var orderId = $('#orderId').val();
+
+        $.ajax({
+            type: "get",
+            url: "/TenderEnquiry/EnquiryFilter",
+            dataType: "html",
+            data: { columnId: columnId, orderId: orderId},
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $("#checkClass").html(data);
+            },
+            error: function (data) { }
+        });
+    };
+
+
+     function CreateBOM(enqId) {
+        $.ajax({
+            type: "get",
+            url: "/Enquiry/CreateBOMId",
+            dataType: "json",
+            data: { enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+
+                if (data > 0) {
+                    var url = '@Url.Action("CreateBom","CreateBom")?EnqId=' + enqId;
+                    window.location.href = url;
+                }
+                else {
+                    ShowSnackBar('Error: while processing BOM.')
+                }
+            },
+            error: function (got) { }
+        });
+    }
+
+    $('#CreateEnquiryForm').validate({
+    });
+
+    $('.collapseRow').toggle();
+    $('[data-toggle="tooltip"]').tooltip();
+
+    function expCust(id) {
+        var ids = 'custRow_' + id;
+
+        if ($('#' + ids).is(':visible')) {
+            $('#' + ids).hide(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/addBtn.png");
+        }
+        else {
+            $('#' + ids).show(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/minBtn.png");
+        }
+    };
+
+    function openModal(e) {
+        var id = $(e).data('id');
+        $('#comment').val('');
+        $("#exampleModalCenter").modal('show');
+        $('#modelSubmitComment').attr('onClick', 'submitComment(' + id + ');');
+    }
+
+    function successQuery() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Query submitted successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failQuery() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while sending query. Please try again"
+        x.className = "snackBarshow";
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    }
+
+
+    function submitComment(num) {
+        var comment = $('#comment').val();
+        var formData = new FormData();
+
+        var file = $('#queryFile').prop('files')[0];
+        if (file != null && file != undefined) {
+            formData.append('file', file);
+        }
+
+        formData.append('id', num);
+        formData.append('comment', comment);
+
+        $.ajax({
+            type: "post",
+            url: "/TenderEnquiry/SubmitTechnicalQuery",
+            enctype: 'multipart/form-data',
+            dataType: "JSON",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function (data) {
+                $("#enquiryLoader").show();
+            },
+            success: function (data) {
+                if (data === true || data == 'true') {
+                    successQuery();
+                    $('#commentIcon_' + num).removeAttr('style');
+                    $('#commentIcon_' + num).attr("src", "/Assets/images/RedBulp.gif");;
+                }
+                else {
+                    failQuery();
+                }
+            },
+            complete: function (data) {
+                $("#enquiryLoader").hide();
+            },
+            error: function (courses) {
+                failQuery();
+            }
+        });
+    }
+
+    function Edit(projectId, rowNum)
+    {
+        $("#ActnActivities_" + rowNum).toggle(200);
+
+        $.ajax({
+            type: "get",
+            url: "/TenderEnquiry/EditProject",
+            dataType: "html",
+            data: { projectId: projectId},
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                var data = $('#enquiryView').html(data);
+
+                $(".collapseSide").removeClass("col-sm-12").addClass("col-sm-7");
+                $(".collapseHide").css("display", "block");
+                $(".enquiryTd").css("display", "table-cell");
+                $(".creteEnquiryTd").css("display", "none");
+            },
+            error: function (got) { }
+        });
+
+        $('#CreateEnquiryForm').attr('action', '/TenderEnquiry/EditProject');
+    }
+
+    function PublishProject(projectId) {
+        $.ajax({
+            type: "post",
+            url: "/TenderEnquiry/PublishProject",
+            dataType: "json",
+            data: { projectId: projectId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data == true)
+                {
+                    successModal();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (got) { }
+        });
+    }
+
+    function DeleteProject(projectId) {
+        $.ajax({
+            type: "post",
+            url: "/TenderEnquiry/DeleteProject",
+            dataType: "json",
+            data: { projectId: projectId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (result) {
+                if (result == 1) {
+                    successModal();
+                }
+                else if (result == 1) {
+                    successModal();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (got) { }
+        });
+    };
+
+    function PublishEnquiry(enqId) {
+        $.ajax({
+            type: "post",
+            url: "/TenderEnquiry/PublishEnquiry",
+            dataType: "json",
+            data: { enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data == true) {
+                    successModal();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (got) { }
+        });
+    };
+
+    function ShowQuery(enqId) {
+            $.ajax({
+            type: "get",
+                url: "/TenderEnquiry/GetTechQuery",
+            dataType: "html",
+            data: { enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#techQueryView").html(data);
+                    $("#Querymodal").modal('show');
+            },
+            error: function (got) { }
+        });
+    };
+
+    $('#btnSearchbar').click(function () {
+        var prefix = $("#enquirytxtSearch").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/TenderEnquiry/SearchEnquiries",
+                dataType: "html",
+                data: { prefix: prefix },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#checkClass").html(data);
+                    $("#enquirytxtSearch").val(prefix);
+                    $("#enquirytxtSearch").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    });
+
+    $('#enquirytxtSearch').keypress(function (e) {
+        var key = e.which;
+        if (key == 13)
+        {
+            $('#btnSearchbar').click();
+            return false;
+        }
+    });
+
+    function clearSearch() {
+        var prefix = $("#enquirytxtSearch").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/TenderEnquiry/SearchEnquiries",
+                dataType: "html",
+                data: { prefix: '' },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#checkClass").html(data);
+                    $("#enquirytxtSearch").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $(".showFilter").click(function () {
+            $(".filterDiv").slideToggle(300);
+        })
+    });
+
+</script>

@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../../Assets/js/popper.js"></script>
+    <script src="../../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="enquiryTable tableBlock">
+                        <div class="row">
+                            <table class="table tebderDtlTable">
+                                <thead>
+                                    <tr class="selectedActivies">
+                                        <td colspan="10">
+                                            <div class="activities"><img src="../../Assets/images/BOM.png" height="28px">  International Tenders</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="10" class="tdheader text-left">All Enquiries</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col" class="CustId">Customer ID</th>
+                                        <th scope="col" class="tendDeptNo">Tender Dept File No.</th>
+                                        <th scope="col" class="ProjNm">Project Name</th>
+                                        <th scope="col" class="enqDt">Enquiry Date</th>
+                                        <th scope="col" class="dueDt">Due Date</th>
+                                        <th scope="col" class="expDt">Expiry Date</th>
+                                        <th scope="col" class="cust">Customers</th>
+                                        <th scope="col" class="Revi">Revision</th>
+                                        <th scope="col" class="workStatus">Work Status</th>
+                                        <th scope="col" class="viewBlock"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td scope="col" class="CustId">#KEPL123</td>
+                                        <td scope="col" class="tendDeptNo">#KEPL/TE-0001/</td>
+                                        <td scope="col" class="text-left ProjNm">400KV Single Tension String for Drake ACSR Conductor</td>
+                                        <td scope="col" class="enqDt">20/04/2019</td>
+                                        <td scope="col" class="dueDt">20/06/2019</td>
+                                        <td scope="col" class="expDt">20/08/2019</td>
+                                        <td scope="col" class="cust">Tata, KEC, KPTL, EMC, L&T, TLL</td>
+                                        <td scope="col" class="Revi">1</td>
+                                        <td scope="col" class="workStatus statusNew">NEW</td>
+                                        <td scope="col" class="viewBlock p-0">
+                                            <button type="button" class="submitEnq ViewBtn">View</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="col" class="CustId">#KEPL123</td>
+                                        <td scope="col" class="tendDeptNo">#KEPL/TE-0001/</td>
+                                        <td scope="col" class="text-left ProjNm">400KV Single Tension String for Drake ACSR Conductor</td>
+                                        <td scope="col" class="enqDt">20/04/2019</td>
+                                        <td scope="col" class="dueDt">20/06/2019</td>
+                                        <td scope="col" class="expDt">20/08/2019</td>
+                                        <td scope="col" class="cust">Tata, KEC, KPTL, EMC, L&T, TLL</td>
+                                        <td scope="col" class="Revi">1</td>
+                                        <td scope="col" class="workStatus statusDraft">IN DRAFT</td>
+                                        <td scope="col" class="viewBlock p-0"></td>
+                                    </tr>                                  
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    
+
+
+</body>
+</html>
+<script>
+    function AddRows() {
+        var arr = new Array(10);
+        $.each(arr, function () {
+            $('.tebderDtlTable tr:last')
+                .after('<tr><td scope="col" class="CustId"></td>' +
+                '<td scope="col" class="tendDeptNo"></td>' + '<td scope="col" class="text-left ProjNm"></td>' +
+                '<td scope="col" class="enqDt"></td>' + '<td scope="col" class="dueDt"></td>' + '<td scope="col" class="expDt"></td>' + '<td scope="col" class="cust"></td>' +
+                '<td scope="col" class="Revi"></td>' + '<td scope="col" class="workStatus statusDraft"></td>' + '<td scope="col" class="viewBlock p-0"></td>' + '</tr>');
+
+        });
+    }
+    window.onload = AddRows;
+</script>

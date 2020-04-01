@@ -1,0 +1,100 @@
+﻿@model Karamtara_Application.Models.AssignToModel
+@{
+    int count = 1;
+}
+@using (Html.BeginForm("AssignEnquiry", "Enquiry", FormMethod.Post, new { @id = "AssignForm" }))
+{
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign Customer Enquiry</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="Modal-Header">Project Name : @Model.ProjectName</div>
+                <div class="Modal-Header">Customer Name: @Model.CustomerName</div>
+                <div class="AssigneeDtl">
+                    <table class="table">
+                        <tr>
+                            <th>SR.NO.</th>
+                            <th>CONTRIBUTOR NAME</th>
+                            <th>DESIGNATION</th>
+                            <th></th>
+                        </tr>
+                        @if (Model.Users.Count > 0)
+                        {
+                            foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td>@count</td>
+                                    <td>
+                                        @user.Name
+                                    </td>
+                                    <td>
+                                        @user.Designation
+                                    </td>
+                                    <td>
+                                        <label class="container checkbox">
+                                            <input type="checkbox" value="@user.UserId" @(user.IsSelected ? "checked" : "") name="user.IsSelected" />
+                                            @Html.HiddenFor(y => user.UserId, new { @id = "user_" + user.UserId })
+                                            <span class="checkmark"></span>
+                                        </label>
+
+
+                                        @*@Html.CheckBoxFor(y => user.IsSelected)*@
+
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                            @Html.HiddenFor(x => x.EnquiryId)
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" style="font-style:italic; font-size:12px">No Design Team Users available</td>
+                            </tr>
+                        }
+
+
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn" data-dismiss="modal" id="AssignCancel">Cancel</button>
+                <button type="button" class="submitBomBtn publishBtn" id="AssignUserBtn">Assign</button>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    $("#AssignUserBtn").on('click', function () {
+
+        var form = $("#AssignForm").serialize();
+        $.ajax({
+            type: "post",
+            url: "/Enquiry/AssignEnquiry",
+            dataType: "json",
+            data: form,
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data == true) {
+                    $("#assignToModal").modal('hide');
+                    ShowSnackBar('Assign Successfull');
+                }
+                else {
+                    ShowSnackBar('Assign Failed');
+                }
+            },
+            error: function (got) { }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#AssignForm').validate({
+        });
+    })
+
+</script>

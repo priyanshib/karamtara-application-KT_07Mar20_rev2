@@ -1,0 +1,355 @@
+﻿@model Karamtara_Application.Models.AssemblyMasterModel
+@{
+    ViewBag.Title = "AssemblyMaster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var cat_val = TempData["CreateProd_Cat"] ?? string.Empty;
+}
+@if (Convert.ToInt32(TempData["CreateAssSuccess"]) == 1)
+{
+    <script>alert("Assembly created successfully");</script>
+}
+else
+{
+}
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row assmMasterBlock p-1 ProdNmBlock">
+                <div class="col-sm-8 align-items-center d-flex">
+                    <span class="collapseHideSide c-pointer "><img src="~/Assets/images/leftDir.svg" width="15px" /></span>
+                    <span class="collapseShowSide c-pointer "><img src="~/Assets/images/rightDir.svg" width="15px" /></span>
+                    @*<img src="/Assets/images/prodMaster.png" height="24px">*@<span class="titleHead"> Assembly Master</span>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="createProdBtn saveBtn" data-toggle="modal" data-target="#createAssembly">Create New Assembly</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-4 collapseSide">
+            <div class="createProdDtls tableBlock">
+                <div class="searchBlock pb-3">
+                    <div class="inputSerachBlok ">
+                        <input type="text" id="txtSearch" class="input-group serachInput f-13" />
+                        <button type="button" id="btnClear" class="btn-clear searchClear"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+                    </div>
+                    <button type="button" id="btnSearch" class="serachBtn"><img src="~/Assets/images/search.svg" width="20px" /></button>
+                    @*<input type="button" id="btnSearch" value="Search" class="createProdBtn saveBtn" />*@
+
+                </div>
+
+                <div class="row" id="tblAssmList">
+                    @Html.Partial("~/Views/Shared/Assembly/_AssemblyList.cshtml", Model)
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-8 FullCollapse" id="subAssmDiv">
+            @Html.Partial("~/Views/Shared/Assembly/_AssmProducts.cshtml")
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("CreateAssembly", "AssemblyMaster", FormMethod.Post, new { @id = "AssemblyMasterForm", enctype = "multipart/form-data" }))
+{
+    <!-- Modal -->
+    <div class="modal fade" id="createAssembly" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="CreateCatDiv">
+                        <label>Code :</label>
+                        <input type="text" value="" id="txtModelCode" name="txtAssmCode" required="required" />
+                    </div>
+                    <div class="CreateCatDiv">
+                        <label>Name :</label>
+                        <input type="text" value="" id="txtModelName" name="txtAssmName" required="required" />
+                    </div>
+                    <div class="CreateCatDiv">
+                        <label>Technical Name :</label>
+                        <input type="text" value="" id="txtModelTechName" name="txtTechName" required="required" />
+                    </div>
+                    <div class="CreateCatDiv">
+                        <label>Drawing No :</label>
+                        <input type="text" value="" id="txtDrawingNo" name="txtDrawingNo" />
+                    </div>
+                    <div class="CreateCatDiv">
+                        <label>UTS Value :</label>
+                        @Html.DropDownListFor(m => m.UtsValueId, new SelectList(Model.UtsValueList, "Id", "UTSValue"), "UTS", new { @class = "browser-default custom-select whiteBgSelect", id = "ddlUTS" })
+                    </div>
+                    <div class="CreateCatDiv mt-4">
+                        <label>Drawing File Name :</label>
+                        <input type="file" value="" id="txtDrawingFileName" name="txtDrawingFileName" />
+                    </div>
+                    <div class="CreateCatDiv">
+                        <label style="display:none" id="FieldsError">Please fill all fields</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span class="errorModal" id="validationErr" style="display:none"></span>
+                    <button type="button" class="submitBomBtn saveBtn " data-dismiss="modal" id="btnDismissModal">Cancel</button>
+                    <button type="submit" class="submitBomBtn publishBtn " id="btnAssmAdd">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="modal fade" id="createProdNotifModel" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="crossClose" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="CreateCatDiv">
+                    <label>Please select Category and Add products.</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn " data-dismiss="modal" id="btnDismissModalProduct">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#btnDismissModal").click(function () {
+        $("#txtModelCode").val('');
+        $("#txtModelName").val('');
+        $("#txtModelTechName").val('');
+        $("#txtDrawingNo").val('');
+    })
+
+    $("#crossClose").click(function () {
+        $("#txtModelCode").val('');
+        $("#txtModelName").val('');
+        $("#txtModelTechName").val('');
+        $("#txtDrawingNo").val('');
+    })
+
+    $('#txtSearch').keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $('#btnSearch').click();
+            return false;
+        }
+    });
+
+    function createSuccess() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Assembly created successfully');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function createFailure() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Assembly could not be created due to some error. Please try again');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function editSuccess() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Assembly edited successfully');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function editFailure() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Assembly could not be edited due to some error. Please try again');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    $("#btnSearch").click(function () {
+        var value = $("#txtSearch").val();
+        if (value) {
+            $.ajax({
+                type: "post",
+                url: "/AssemblyMaster/AssmSearchList/",
+                dataType: "html",
+                data: { searchText: value },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#subAssmDiv').empty();
+                    $('#tblAssmList').html(data);
+                    $("txtSearch").val(value);
+                },
+                error: function (data) { }
+            });
+        };
+    });
+
+    $(document).ready(function () {
+
+
+        $(".collapseHideSide").click(function () {
+            $(".collapseSide").css("display", "none");
+            $(".FullCollapse").removeClass("col-sm-8").addClass("col-sm-12");
+            $(".collapseShowSide").css("display", "block");
+            $(".collapseHideSide").css("display", "none");
+        })
+        $(".collapseShowSide").click(function () {
+            $(".collapseSide").css("display", "block");
+            $(".FullCollapse").removeClass("col-sm-12").addClass("col-sm-8");
+            $(".collapseShowSide").css("display", "none");
+            $(".collapseHideSide").css("display", "block");
+
+        });
+    });
+
+    function GetAssmProducts(id) {
+        $.ajax({
+            type: "get",
+            url: "/AssemblyMaster/GetAssmProducts",
+            dataType: "html",
+            data: { assmId: id },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $(".assmRow").removeAttr("style");
+                $("#AssmTr_" + id).attr("style", "font-weight:bold");
+                $('#subAssmDiv').html(data);
+                $(".prodTr").attr("readonly", true);
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function UpdateSubAssmList(id) {
+        $.ajax({
+            type: "get",
+            url: "/AssemblyMaster/GetAssmList",
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $('#tblAssmList').html(data);
+                //$(".assmRow").removeAttr("style");
+                $("#AssmTr_" + id).attr("style", "font-weight:bold");
+                $("#txtModelCode").val('');
+                $("#txtModelName").val('');
+                $("#txtModelTechName").val('');
+            },
+            error: function (courses) { }
+        });
+    }
+
+    $("#btnClear").click(function () {
+        $("#txtSearch").val('');
+        selectedId = $("#hidAssmId").attr('value');
+        UpdateSubAssmList(selectedId);
+        //window.location.reload();
+    });
+
+    $("#txtModelCode").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: '/AssemblyMaster/CodeAutoComplete',
+                data: "{ 'searchText': '" + request.term + "'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    response(data);
+                },
+                error: function (response) {
+                },
+                failure: function (response) {
+                }
+            });
+        },
+        select: function (e, ui) {
+            $(this).val(ui.item.label);
+            return false;
+        },
+        minLength: 2,
+        autoFocus: true,
+        change: function (event, ui) {
+            //if (ui.item == null) {
+            //    $(this).val("");
+            //    $(this).focus();
+            //}
+        }
+    });
+
+    $("#AssemblyMasterForm").submit(function () {
+        var ddlUTS = $('#ddlUTS');
+        if (ddlUTS.val() == '') {
+            $("#validationErr").html('Please select UTS value');
+            $("#validationErr").removeAttr('style');
+            return false;
+            // e.preventDefault();
+        }
+        if ($("#txtModelCode").val() == '') {
+            $("#validationErr").html('Please enter Assembly Code');
+            $("#validationErr").removeAttr('style');
+            return false;
+        }
+        if ($("#txtModelName").val() == '') {
+            $("#validationErr").html('Please enter Assembly Name');
+            $("#validationErr").removeAttr('style');
+            return false;
+        }
+        if ($("#txtModelTechName").val() == '') {
+            $("#validationErr").html('Please enter Assembly Technical Name');
+            $("#validationErr").removeAttr('style');
+            return false;
+        }
+    });
+
+    $("#ddlUTS").change(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    }
+    );
+
+    $("#txtModelCode").keyup(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    }
+    );
+
+    $("#txtModelName").keyup(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    }
+    );
+
+    $("#txtModelTechName").keyup(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    }
+    );
+</script>

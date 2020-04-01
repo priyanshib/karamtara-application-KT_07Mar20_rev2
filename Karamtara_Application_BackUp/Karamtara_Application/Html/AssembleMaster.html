@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+    <script src="https://cdn.rawgit.com/FezVrasta/snackbarjs/1.1.0/dist/snackbar.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">            
+            <div class="row">
+                <div class="col-sm-5" >
+                    <div class="createTable tableBlock">
+                        <div class="row">
+                            <table class="table">
+                                <tr class="selectedActivies">
+                                    <td colspan="3">
+                                        <div class="activities"><img src="../Assets/images/assembleMaster.png" height="28px">  Create Assembly</div>
+                                    </td>
+                                </tr>                               
+                                <tr>
+                                    <td class="tableTH">Assembly Name</td>
+                                    <td colspan="2" class="TDtitle"><input type="text" value="" class="w-100 text-left"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Date</td>
+                                    <td class="calImg"><img src="../Assets/images/calender.png" /></td>
+                                    <td>DD/MM/YYYY</td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Assembly Type</td>
+                                    <td colspan="2">
+                                        <div class="SelectTD">
+                                            <select class="browser-default custom-select">
+                                                <option>Hardware Fittings</option>
+                                                <option>Hardware Fittings1</option>
+                                                <option>Hardware Fittings2</option>
+                                                <option>Hardware Fittings3</option>
+                                            </select>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Line Voltage</td>
+                                    <td colspan="2" class="">
+                                        <div class="SelectTD">
+                                            <select class="browser-default custom-select">
+                                                <option>132 kV</option>
+                                                <option>132 kV</option>
+                                                <option>132 kV</option>
+                                                <option>132 kV</option>
+                                            </select>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">UTS </td>
+                                    <td colspan="2" class="">
+                                        <div class="SelectTD">
+                                            <select class="browser-default custom-select">
+                                                <option>100 kN</option>
+                                                <option>100 kN</option>
+                                                <option>100 kN</option>
+                                                <option>100 kN</option>
+                                            </select>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Bundle Type </td>
+                                    <td colspan="2" class="">
+                                        <div class="SelectTD">
+                                            <select class="browser-default custom-select">
+                                                <option>Single 1 </option>
+                                                <option>Single 2 </option>
+                                                <option>Single 3 </option>
+                                                <option>Single 4 </option>
+                                            </select>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <!--this block going to repeted according to selection of number of customers-->
+                                <tr class="AssembleTR ">
+                                    <td colspan="3" class="p-0">
+                                        <div class="AssembleTDAppend ">
+                                            <table class="table m-0 AssembleTable">
+                                                <tr class="borderTopBlue">
+                                                    <td></td>
+                                                    <td colspan="2" class="TDtitle">Add Sub Assembly </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tableTH">Sub Assembly ID </td>
+                                                    <td colspan="2" class="InputTd"><input type="text" value="DIS-Q-PG-Pr" /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tableTH">Sub Assembly Name </td>
+                                                    <td colspan="2" class="InputTd"><input type="text" value="Double  Suspension" /></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tableTH">Sub Assembly Name </td>
+                                                    <td colspan="2" class="InputTd"><input type="text" value="400 KV DOUBLE SUSPENSION INSULATOR STRING" /></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                
+                                <!--this block going to repeted-->
+                                <tr class="borderTopBlue">
+                                    <td></td>
+                                    <td colspan="2" >
+                                        <div class="addSubAsmbl" id="addSubAssemble">
+                                            <img src="../Assets/images/addMore.png" /> Add more Sub Assembly 
+                                        </div></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2"></td>
+                                </tr>
+
+                                <tr>
+                                    <td rowspan="2" class="tableTH">Add Summary</td>
+                                    <td colspan="2" class="summaryTD">
+                                        <textarea rows="8"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="p-0">
+                                        <button type="button" class="submitEnq cancelEnq">Cancel</button>
+                                        <button type="button" class="submitEnq sucessEnq" data-toggle="snackbar" data-style="toast" data-content="Data Submitted.">Submit</button>
+                                       
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-sm-7 " id="checkClass">
+                    <div class="enquiryTable tableBlock">
+                        <div class="row">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="tdheader actListHeader text-left">LIST OF ASSEMBLIES</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="assembleFilter">
+                                                ASSEMBLY FILTER
+                                                <img src="../Assets/images/assembleFilter.png" />
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="SelectTD">
+                                                <select class="browser-default custom-select">
+                                                    <option>Assembly Type</option>
+                                                    <option>Assembly Type 1</option>
+                                                    <option>Assembly Type 2</option>
+                                                    <option>Assembly Type 3</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="SelectTD">
+                                                <select class="browser-default custom-select">
+                                                    <option>Voltage</option>
+                                                    <option>Voltage 1</option>
+                                                    <option>Voltage 2</option>
+                                                    <option>Voltage 3</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="SelectTD">
+                                                <select class="browser-default custom-select">
+                                                    <option>UTS</option>
+                                                    <option>UTS 1</option>
+                                                    <option>UTS 2</option>
+                                                    <option>UTS 3</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="SelectTD">
+                                                <select class="browser-default custom-select">
+                                                    <option>Bundle Type</option>
+                                                    <option>Bundle Type 1</option>
+                                                    <option>Bundle Type 2</option>
+                                                    <option>Bundle Type 3</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5"></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="5" class="p-0">
+                                            <table class="table m-0">
+                                                <tr>
+                                                   
+                                                    <th scope="col" class="assmbleId text-left">Assembly ID</th>
+                                                    <th scope="col" class="assmbleNm text-left">Assembly Name</th>
+                                                    <th scope="col" class="lastUpdate">Last Updated On</th>
+                                                    <th scope="col" class="summary">Summary</th>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-left">Assembly ID</td>
+                                                    <td class="text-left">Assembly Name</td>
+                                                    <td>26/-0/2019</td>
+                                                    <td><img src="../Assets/images/assebleSummary.png" /></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                </div>
+    </div>
+
+    
+</body>
+</html>
+<script>
+    $(document).ready(function () {      
+        $("#addSubAssemble").click(function () {
+            $('.AssembleTR').find('.AssembleTable').first().clone().appendTo('.AssembleTDAppend');
+        })
+    });
+    $('body').bootstrapMaterialDesign();
+</script>

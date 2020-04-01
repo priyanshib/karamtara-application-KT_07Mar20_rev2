@@ -1,0 +1,146 @@
+﻿@model Karamtara_Application.Models.BOMListModel
+<script>
+     @{ var rowNum=0;}
+</script>
+<div class="col-sm-12">
+    <div class="row">
+        <table class="table prodDetails" id="prodTbl2">
+
+    <tr>
+        <th class="DeptNo">Tender File No</th>
+        <th class="productNm">Project Name</th>
+        <th class="createDt">Project Create Date</th>
+        <th class="DueDt">Project Due Date</th>
+        @*<th class="srNo">Customer Name</th>
+            <th class="srNo">Country</th>
+            <th class="srNo">Revision</th>*@
+        @*<th class="Status">Status</th>*@
+        @*<th class="srNo">View</th>
+            <th class="srNo">Edit</th>*@
+    </tr>
+    @if (Model.DataList != null && Model.DataList.Count > 0)
+    {
+        foreach (var item in Model.DataList)
+        {
+            rowNum++;
+            <tr>
+                <td class="DeptNo">
+                    <button type="button" class="addRowBtn" id="addRowBtnId"><img src="/Assets/images/addBtn.png" id="plusIcon_@rowNum" onclick="expCust(@rowNum);" /></button>
+                    @item.ProjectNo
+                </td>
+
+                <td class="productNm">@item.ProjectName</td>
+                <td class="createDt">@item.ProjectCreateDate.ToString("dd-MM-yyyy")</td>
+                @*<td>@item.EnquiryDuteDate.ToString("dd-MM-yyyy")</td>*@
+                <td class="DueDt">@item.ProjectDueDate.ToString("dd-MM-yyyy")</td>
+                @*<td>@item.EpcCustomerName</td>
+                    <td>@item.Country</td>
+                    <td>@item.RevNo </td>*@
+                @*<td class="Status statusOpen">@item.ProjectStatus</td>*@
+                @*<td> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("ViewBOM","BOMRevision",new { bomId=item.BomId, revNo=item.RevNo, enqId=item.EnquiryId})"'> <img src="~/Assets/images/viewExcel.svg" width="16px" class="mr-1" /> View </Button></td>
+                    <td> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("GetRevisionData","BOMRevision",new { @bomId=item.BomId,@revNo=item.RevNo,@enqId=item.EnquiryId})"'><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" /> Edit </Button></td>*@
+            </tr>
+            <tr class="collapseRow" id="custRow_@rowNum">
+                <td colspan="6" class="p-0">
+                    <table class="collapseTable w-100">
+                        <tr>
+                        <tr>
+                            <th class="bomCtry">Reference T Number</th>
+                            <th class="bomCustNm">Customer Name</th>
+                            <th class="bomEnq">Enquiry Due Date</th>
+                            <th class="bomCtry">Country</th>
+                            <th class="bomRevi">Revision</th>
+                            <th class="bomStatus">BOM Status</th>
+                            <th class="bomView">View</th>
+                            <th class="bomView">Revision</th>
+                            <th class="bomEdit">Edit</th>
+                        </tr>
+                        @foreach (var innerTemp in Model.InnerDataList.Where(x => x.ProjectId == item.ProjectId))
+                        {
+                        <tr>
+                            <td class="bomCtry">@innerTemp.TNumber</td>
+                            <td class="bomCustNm">@innerTemp.EpcCustomerName</td>
+                            <td class="bomEnq">@innerTemp.EnquiryDate.ToString("dd-MM-yyyy")</td>
+                            <td class="bomCtry">@innerTemp.Country</td>
+                            <td class="bomRevi">@innerTemp.RevNo </td>
+                            <td class="bomStatus statusOpen">@innerTemp.EnquiryStatus</td>
+                            @if (innerTemp.IsPublished)
+                            {
+                                <td class="bomView"> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("ViewBOM","BOMRevision",new { bomId=innerTemp.BomId, revNo=innerTemp.RevNo, enqId=innerTemp.EnquiryId})"'> <img src="~/Assets/images/viewExcel.svg" width="16px" class="mr-1" /> View BOM </Button></td>
+                                @*<td class="bomEdit"> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("GetRevisionData","BOMRevision",new { @bomId=innerTemp.BomId,@revNo=innerTemp.RevNo,@enqId=innerTemp.EnquiryId})"'><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" />Create Revision</Button></td>*@
+                                if (innerTemp.IsLatestRevision)
+                                {
+                                    <td class="bomEdit"> <Button type="button" class="commonBtn" onclick="CreateRevision(@innerTemp.EnquiryId, @innerTemp.BomId, @innerTemp.RevNo)"><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" />Create Revision</Button></td>
+                                }
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                                <td></td>
+                                if (innerTemp.BOMSource.Equals("1")|| innerTemp.BOMSource.Equals("0"))
+                                {
+                                    <td class="bomEdit"> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("EditBOM", "EditBOM", new { @bomId = innerTemp.BomId, @revNo = innerTemp.RevNo })"'><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" />Edit BOM</Button></td>
+                                }
+                                else if (innerTemp.BOMSource.Equals("2") || innerTemp.BOMSource.Equals("3"))
+                                {
+                                    <td class="bomEdit"> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("GetEditRevisionData", "BOMRevision", new { @bomId = innerTemp.BomId, @revNo = innerTemp.RevNo })"'><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" />Edit BOM</Button></td>
+                                }
+                            }
+
+                        </tr>
+                        }
+                    </table>
+                </td>
+            </tr>
+        }
+    }
+</table>
+    </div>
+
+</div>
+
+
+<script>
+
+   
+
+    function CreateRevision(enqId, bomId, revNo) {
+        $("#hidBomId").val(bomId);
+        $("#hidRevNo").val(revNo);
+        $("#hidEnqId").val(enqId);
+        $("#BomMasterRefreshModal").modal('show');
+    }
+
+    $("#btnRefreshFromBom").click(function () {
+        alert('partial bom list');
+        var bomId = $("#hidBomId").val();
+        var revNo = $("#hidRevNo").val();
+        var enqId = $("#hidEnqId").val();
+        location.href = '/BOMRevision/GetRevisionData?bomId=' + bomId + '&&revNo=' + revNo + '&&enqId=' + enqId;
+    })
+
+    $("#btnRefreshFromMaster").click(function () {
+        alert('partial bom list');
+        var bomId = $("#hidBomId").val();
+        var revNo = $("#hidRevNo").val();
+        var enqId = $("#hidEnqId").val();
+        location.href = '/BOMRevision/GetRevisionDataFromMaster?bomId=' + bomId + '&&revNo=' + revNo + '&&enqId=' + enqId;
+    })
+
+    $('.collapseRow').toggle();
+    $('[data-toggle="tooltip"]').tooltip();
+
+    function expCust(id) {
+        var ids = 'custRow_' + id;
+
+        if ($('#' + ids).is(':visible')) {
+            $('#' + ids).hide(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/addBtn.png");
+        }
+        else {
+            $('#' + ids).show(200);
+            $('#plusIcon_' + id).attr('src', "/Assets/images/minBtn.png");
+        }
+    };
+</script>

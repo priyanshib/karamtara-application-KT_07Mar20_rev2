@@ -1,0 +1,44 @@
+﻿<script>
+    @{
+        Layout = null;
+    }
+</script>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" @*content="width=device-width"*@ http-equiv="refresh" content="10;../../login/Index" />
+    <title>Error</title>
+</head>
+<body>
+    <div class="main-content">
+        <div class="row">
+            <div class="errorBlcok">
+                <div class="errorImg">
+                    <img src="../Assets/images/ErrorIcon.svg" width="200px" />
+                </div>
+                <div class="errorMsg">
+                    Something Went Wrong !!!
+                </div>
+                <div class="errorMsgDiv">
+                    You will be redirected to Login Page in 10 seconds
+                    <div class="loginBtn">
+                        <button type="submit" class="btn" id="loginBtn"><a href="../../Login/Index"> LOGIN</a></button>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    @*<hgroup>
+        <h1>Error.</h1>
+        <h2>An error occurred while processing your request.</h2>
+    </hgroup>
+    <h5>You will be redirected to Login Page in 10 seconds...</h5>
+    <h5>If you are not redirected, click <a href="../../Login/Index"> here </a></h5>*@
+</body>
+</html>

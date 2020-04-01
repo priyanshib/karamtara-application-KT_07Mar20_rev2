@@ -1,0 +1,317 @@
+﻿@model Karamtara_Application.Models.UserModel
+@{
+    ViewBag.Title = "Signup";
+    Layout = null;
+
+    List<SelectListItem> listItems = new List<SelectListItem>();
+    listItems.Add(new SelectListItem
+    {
+        Text = "Mr",
+        Value = "Mr"
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "Mrs",
+        Value = "Mrs",
+        Selected = true
+    });
+    listItems.Add(new SelectListItem
+    {
+        Text = "Ms",
+        Value = "Ms"
+    });
+}
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">\
+
+
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css">
+
+    <link rel="stylesheet" href="~/Assets/css/style.css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    @*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>*@
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="~/Assets/js/popper.js"></script>
+    <script src="~/Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <script src="https://cdn.rawgit.com/FezVrasta/snackbarjs/1.1.0/dist/snackbar.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- Added for datepicker-->
+</head>
+
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <!--
+
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"><img src="images/user.png" /> Mr. Sachin Sawant</div>
+                    <div class="logOut col-12">Logout</div>
+                </div>-->
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="main-content">
+            <div class="row signupBlock">
+                <span>Sign up</span>
+                @using (Html.BeginForm("SignupUser", "Signup", FormMethod.Post, new { @id = "SignupForm", @class = "loginForm" }))
+                {
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="email" class="">Email Id</label>
+                        @Html.TextBoxFor(x => x.Email, null, new { @class = "form-control", id = "email", @type = "email", @required = "required", autocomplete = "new-password" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="username" class="">User Name</label>
+                        @Html.TextBoxFor(x => x.UserName, null, new { @class = "form-control", id = "username", @required = "required", autocomplete = "new-password" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="username" class="">Salutation</label>
+                        @Html.DropDownListFor(x => x.Salutation, listItems, new { @class = "form-control", id = "salutation", @required = "required", @autocomplete = "off" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="fName" class="">First Name</label>
+                        @Html.TextBoxFor(x => x.FirstName, string.Empty, new { @class = "form-control", id = "fName", @required = "required", autocomplete = "new-password" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="lName" class="">Last Name</label>
+                        @Html.TextBoxFor(x => x.LastName, string.Empty, new { @class = "form-control", id = "lName", autocomplete = "new-password" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="cDate" class="">Date of Birth</label>
+                        @Html.TextBoxFor(x => x.DOB, null, new { @class = "form-control", id = "cDate", @type = "date" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- manually specified -->
+                        <label for="password" class="">Password</label>
+                        @Html.TextBoxFor(x => x.Password, null, new { @class = "form-control", id = "password", @type = "password", @required = "required", autocomplete = "new-password" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- manually specified -->
+                        <label for="password" class="">Confirm Password</label>
+                        @Html.TextBoxFor(x => x.ConfirmPassword, null, new { @class = "form-control", id = "confirmPassword", @type = "password", @required = "required" })
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="signupCode" class="">Sign up Code</label>
+                        @Html.TextBoxFor(x => x.SignUpCode, null, new { @class = "form-control", id = "signupCode", @required = "required" })
+                    </div>
+                    <div>
+                        <label class="text-danger" id="ErrorLabelPass" style="display:none"> </label>
+                    </div>
+                    <div class="loginBtn">
+                        <button type="button" class="btn" id="signupBtn" @*onclick="signupUser()*@>SIGN UP</button>
+                    </div>
+                    <div class="forgetPassBtn">
+                        @Html.ActionLink("Go Back to Login Page", "Index", "Login", null, new { @class = "btn" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modelHeader">
+                    <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="modalBody" class="lableMsg">  </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+
+    function ShowSnackBar(key) {
+        $("#snackbar").remove();
+        $('<div id="snackbar"></div>').appendTo('body');
+        var x = document.getElementById("snackbar");
+        x.innerHTML = key;
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    }
+
+    $(document).ready(function () {
+        $("#password").keyup(function () {
+            if($("#password").val() || !$("#confirmPassword").val()) {
+                if ($("#password").val() == $("#confirmPassword").val()) {
+                    $("#signupBtn").removeAttr("disabled");
+                    $("#ErrorLabelPass").attr("style", "display:none");
+                } else {
+                    $("#ErrorLabelPass").attr("style", "");
+                    $("#ErrorLabelPass").text("Password and Confirm password do not match");
+                    $("#signupBtn").attr("disabled", "disabled");
+                }
+            }
+        });
+
+        $("#confirmPassword").keyup(function () {
+            if ($("#confirmPassword").val() == $("#password").val()) {
+                $("#signupBtn").removeAttr("disabled");
+                $("#ErrorLabelPass").attr("style", "display:none");
+            } else {
+                $("#ErrorLabelPass").attr("style", "");
+                $("#ErrorLabelPass").text("Password and Confirm password do not match");
+                $("#signupBtn").attr("disabled", "disabled");
+            }
+        });
+    })
+
+    function successModal() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Signup successful. You can now login with your credentials');
+        $("#modalOkButton").attr('onclick', "location.href='@Url.Action("Index", "Login")'");
+        $("#successModel").modal('show');
+    }
+
+    function passFailure() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Password and Confirm password do not match');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function emailOrCodefailureModal() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Signup Failed due to invalid Email or Signup Code');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function unexpectedError() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Signup Failed due to unexpected Error. Kindly Contact your admin');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function fieldsError() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Please fill all fields');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function fieldsDetailError(fieldName, id) {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Please fill valid data in ' + fieldName);
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+        $('#' + id).focus();
+    }
+
+    $("#signupBtn").on('click', function (e) {
+        e.preventDefault();
+
+        var email = $("#email").val();
+        var username = $("#username").val();
+        var fname = $("#fName").val();
+        var lname = $("#lName").val();
+        var cdate = $("#cDate").val();
+        var pass = $("#password").val();
+        var confirmpass = $("#confirmPassword").val();
+        var code = $("#signupCode").val();
+        var salutation = $("#salutation").val();
+
+        if (username.trim() == "") {
+            fieldsDetailError('Username', 'username');
+            return;
+        }
+
+        if (fname.trim() == "") {
+            fieldsDetailError('First Name', 'fName');
+            return;
+        }
+
+        if (email.trim() == "") {
+            fieldsDetailError('Email Id', 'email');
+            return;
+        }
+
+        if (lname.trim() == "") {
+            fieldsDetailError('Last Name', 'lName');
+            return;
+        }
+
+        if (code.trim() == "") {
+            fieldsDetailError('Signup Code', 'signupCode');
+            return;
+        }
+
+        if (pass.trim().length < 8 || confirmpass.trim().length < 8) {
+            $("#ErrorLabelPass").attr("style", "");
+            $("#ErrorLabelPass").text("Password should consist of minimum 8 characters");
+            $("#password").focus();
+            return;
+        }
+
+        var model = { UserName: username, Password: password, Email: email, FirstName: fname, LastName: lname, CreatedDate: cdate, Password: pass, ConfirmPassword: confirmpass, SignUpCode: code, Salutation: salutation }
+        var temp = JSON.stringify(model);
+
+        $.ajax({
+            type: 'POST',
+            url: "/Signup/SignupUser",
+            data: JSON.stringify(model),
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (data) {
+                if (data == -4)
+                    fieldsError();
+                else if (data == -3)
+                    passFailure();
+                else if (data == -2 || data == -1)
+                    emailOrCodefailureModal();
+                else if (data == 0)
+                    unexpectedError();
+                else if (data == 1)
+                    successModal();
+            },
+            error: function () {
+                unexpectedError();
+            }
+        });
+
+    });
+
+
+</script>

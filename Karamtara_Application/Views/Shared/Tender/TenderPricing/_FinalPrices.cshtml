@@ -1,0 +1,203 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@using System.Dynamic;
+@{ var count = 1;}
+@{
+    dynamic dynamic = new ExpandoObject();
+    decimal value = 0;
+}
+<div class="BomRefDtls">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        FINAL PRICES
+    </div>
+    <div class="tableBlock TenderDtlModelTable">
+        <div class="col-sm-12 row BomRefItem m-0">
+            <div class="col-sm-8 ">
+                <div class="row">
+                    <div class="col-sm">
+
+                        @{
+                            if (Model.TndLineValuesList != null && Model.TndLineValuesList.Any())
+                            {
+                                dynamic = new ExpandoObject();
+                                dynamic = Model.TenderValues.Where(x => x.Description == "GSTPercentage").FirstOrDefault();
+                                if (dynamic != null)
+                                {
+                                    value = dynamic.Values;
+                                }
+                                else
+                                {
+                                    value = 18;
+                                }
+                            }
+                        }
+                        GST
+                        <p class="d-flex align-items-center mt-1"><input type="number" value="@value" id="GSTPercentage" name="GSTPercentage" onblur="CalculateTotal()" />%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+                <button type="button" class="submitEnq publishBtn" onclick="SaveFinalPrices()">Submit</button>
+            </div>
+        </div>
+        <table class="table m-0 tableLayout">
+            <tr>
+                <th class="priceDesc">Description</th>
+                @{count = 1;}
+                @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                {
+                    <th class="priceItem  Ln_@count">@item</th>
+                    count++;
+                }
+                <th class="priceItem">Total</th>
+            </tr>
+            <tr>
+                <td class="priceDesc">Exw</td>
+                @{count = 1;}
+                @foreach (var item in Model.TndLineValuesList.Where(x => x.Description.ToLower() == "exworks"))
+                {
+                    <td class="priceItem Ex_@count">@item.Values</td>
+                    count++;
+                }
+                <td class="priceItem totalExworks"></td>
+            </tr>
+            <tr>
+                <td class="priceDesc">Freight</td>
+                @{count = 1;}
+                @foreach (var item in Model.TndLineValuesList.Where(x => x.Description.ToLower() == "freight"))
+                {
+                    <td class="priceItem  Fr_@count">@item.Values</td>
+                    count++;
+                }
+                <td class="priceItem totalFreight"></td>
+            </tr>
+        @*</table>
+    </div>
+    <div class="tableBlock frghtChargBlk">
+        <table class="table m-0">*@
+            <tr class="bgBlue">
+                <td class="priceDesc">GST</td>
+                @{count = 1;}
+                @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                {
+                    <td class="priceItem Gst_@count">@item</td>
+                    count++;
+                }
+                <td class="priceItem totalGst">58026520</td>
+            </tr>
+        @*</table>
+    </div>
+    <div class="tableBlock frghtChargBlk">
+        <table class="table m-0">*@
+            <tr class="bgBlue">
+                <td class="priceDesc">TOTAL</td>
+                @{count = 1;}
+                @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                {
+                    <td class="priceItem Total_@count">@item</td>
+                    count++;
+                }
+                <td class="priceItem finalPrice">58026520</td>
+            </tr>
+        @*</table>
+    </div>
+    <div class="tableBlock frghtChargBlk">
+        <table class="table m-0">*@
+            <tr class="bgBlue">
+                <td class="priceDesc">Value in Cr</td>
+                @{count = 1;}
+                @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                {
+                    <td class="priceItem CrValue_@count">@item</td>
+                    count++;
+                }
+                <td class="priceItem totalCrValue"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+
+    var lineNos = @Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList().Count();
+
+    CalculateTotal();
+
+    function CalculateTotal() {
+        var calcTotal = 0;
+        var crValue = 0;
+        var gstPerc = Number($("#GSTPercentage").val());
+        var gstValue = 0,totalGst = 0;
+
+        for (var i = 1; i <= lineNos; i++) {
+            calcTotal = Number($(".Ex_" + i).text()) + Number($(".Fr_" + i).text());
+
+            gstValue = calcTotal * gstPerc / 100;
+            totalGst += gstValue;
+
+            calcTotal += gstValue;
+
+            crValue = Number(calcTotal / 10000000);
+            $(".Gst_" + i).text(gstValue.toFixed(3));
+            $(".Total_" + i).text(calcTotal.toFixed(3));
+            $(".CrValue_" + i).text(crValue.toFixed(3));
+        }
+
+        $(".totalGst").text(totalGst.toFixed(4));
+
+        var totalExworks = 0;
+        for (var i = 1; i <= lineNos; i++) {
+            totalExworks += Number($(".Ex_" + i).text());
+            $(".totalExworks").text(totalExworks.toFixed(4));
+        }
+
+        var totalFreight = 0;
+        for (var i = 1; i <= lineNos; i++) {
+            totalFreight += Number($(".Fr_" + i).text());
+            $(".totalFreight").text(totalFreight.toFixed(4));
+        }
+
+        var finalPrice = Number($(".totalExworks").text()) + Number($(".totalFreight").text()) + Number($(".totalGst").text());
+        $(".finalPrice").text(finalPrice.toFixed(4))
+
+        var priceInCr = Number(finalPrice / 10000000);
+        $(".totalCrValue").text(priceInCr.toFixed(4))
+    }
+
+    function SaveFinalPrices() {
+
+        if ($("#GSTPercentage").val() == "") {
+            ShowSnackBar("Please enter GST Percentage");
+            return false;
+        }
+
+        var obj = {};
+        obj.tndId = $("#tndId").val();
+        obj.tndRevNo = $("#tndRevId").val();
+        obj.GstValue = $("#GSTPercentage").val();
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/SaveFinalPrices',
+            data: obj,
+            async: false,
+            success: function (data) {
+                if (data) {
+                    ShowSnackBar("Saved Successfully");
+                    $(".modal").modal('hide');
+                }
+                else {
+                    ShowSnackBar("Failure");
+                }
+            },
+            error: function (courses) {
+                // failureModal();
+            }
+        });
+    }
+
+
+</script>

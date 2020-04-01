@@ -1,0 +1,45 @@
+﻿@model Karamtara_Application.Models.Tender.RawMaterialPricingDetail
+
+
+    
+    @using (Html.BeginForm("SaveRMPricing", "TenderPricing", FormMethod.Post, new { @id = "RMPrice" }))
+    {
+        
+            <table class="table m-0 parentTable" id="rmPricingTable">
+                <tr>
+                    <th class="TendSrNo">S.NO.</th>
+                    <th class="RawitemNm">Raw Material Name</th>
+                    <th class="itemCat">Raw Material Group</th>
+                </tr>
+                @{
+                    if (Model != null)
+                    {
+                        int i = 1;
+                        foreach (var item in Model.RawMaterialList.ToList())
+                        {
+                            <tr>
+                                <td class="TendSrNo">@i </td>
+                                <td class="RawitemNm">@item.MaterialDesc</td>
+                                <td class="itemCat">@item.MaterialGroup</td>
+                            </tr>
+                            i = i + 1;
+                        }
+                    }
+                }
+            </table>
+        
+
+    }
+
+
+<script>
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").hide();
+        $("input[type='button']").hide();
+    }
+
+</script>

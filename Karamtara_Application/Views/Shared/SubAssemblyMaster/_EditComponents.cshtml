@@ -1,0 +1,104 @@
+﻿@model Karamtara_Application.Models.ComponentModel
+
+
+<div class="Catgdetails tableBlock" id="divProdEdit">
+    @using (Html.BeginForm("SubmitCompMaster", "SubAssemblyMaster", FormMethod.Post, new { @id = "SubComMasForm" }))
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                @*<table class="table prodDetails m-0" id="prodTbl1">
+            <tr>
+                <th colspan="2">Code/Catalogue No</th>
+                <th>Product Name</th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="hidden" id="hidBomId" value="@Model.BomId" />
+                    <input type="hidden" id="hidRevNo" value="@Model.RevisionNo" />
+                    <label id="lblCatNo">@Model.CatalogueNo</label>
+                    <input type="hidden" value="@Model.ProductId" id="hidProductId" name="SubAssemblyId" />
+                </td>
+                <td colspan="2">
+                    <label id="lblProdName" value="Name">@Model.ProductName</label>
+                </td>
+            </tr>
+        </table>*@
+                <table class="table prodDetails" id="prodTbl2">
+                    <tr>
+                        <th class="srNo">ComponentId</th>
+                        <th class="catNo">ComponentName</th>
+                        <th class="catNo">RawMaterialId</th>
+                        <th class="catNo">Size</th>
+                        <th class="catNo">Qty</th>
+                        <th class="catNo">UnitGrWt</th>
+                        <th class="productNm">UnitNetWt</th>
+                        <th class="prodNo">GalvanizedRequired</th>
+                        <th class="prodNo">GalvanizedMaterial</th>
+                        <th class="productNm">DrawingNo</th>
+                        <th class="MaterialGrid">MaterialGrade</th>
+
+                    </tr>
+                    <tr>
+                        <td class="catNo">@Html.TextBoxFor(m => Model.ComponentId, new { @readonly = "readonly", @id = "ComponentId" + Model.ComponentId }) </td>
+                        <td class="compoentNm"> @Html.TextBoxFor(m => Model.ComponentName, new { @readonly = "readonly", @id = "ComponentName" + Model.ComponentId })</td>
+                        <td class="RawMaterialId">@Html.TextBoxFor(m => Model.RawMaterial, new { @id = "RawMaterial" + Model.ComponentId, @class = "rawMater whiteBgInput" })</td>
+                        <td class="prodNo">@Html.TextBoxFor(m => Model.Size, new { @id = "Size" + Model.ComponentId, @class= "whiteBgInput" })</td>
+                        <td class="prodQty">@Html.TextBoxFor(m => Model.Qty, new { @readonly = "readonly", @id = "Qty" + Model.ComponentId })</td>
+                        <td class="prodUnit">@Html.TextBoxFor(m => Model.UnitGrWt, new { @id = "UnitGrWt" + Model.ComponentId, @class = "whiteBgInput" })</td>
+                        <td class="prodUnit">@Html.TextBoxFor(m => Model.UnitNetWt, new { @id = "UnitNetWt" + Model.ComponentId })</td>
+                        @*<td class="galReq">@Html.TextBoxFor(m => Model.GalvanizedRequired, new { @id = "GalvanizedRequired" + Model.ComponentId })</td>*@
+                        <td class="galMat">@Html.DropDownListFor(x => x.GalvanizedRequiredInt, new SelectList(Model.GalvanizedList, "Value", "Text", Model.GalvanizedRequired), "Select", new { @class = "browser-default custom-select whiteBgInput " }) </td>
+                        <td class="galMat"> @Html.TextBoxFor(m => Model.GalvanizedMaterial, new { @readonly = "readonly", @id = "GalvanizedMaterial" + Model.ComponentId })</td>
+                        @*@Html.DropDownListFor(m => Model.GalvanizedRequired, new List<SelectListItem>() { new SelectListItem { Value = "0", Text = "False" }, new SelectListItem { Value = "1", Text = "True" } })</td>*@
+
+
+                        <td class="DrawingNo">@Html.TextBoxFor(m => Model.DrawingNo, new { @id = "DrawingNo" + Model.ComponentId, @class = "whiteBgInput" }) </td>
+                        <td class="MaterialGrid">@Html.TextBoxFor(m => Model.MaterialGrade, new { @id = "MaterialGrade" + Model.ComponentId, @class = "whiteBgInput" }) </td>
+                    </tr>
+                    @*rowCount++;*@
+                </table>
+                <div class="text-right">
+                    @*<button type="button" class="submitBomBtn saveBtn opacityBtnyelow" id="addRowsBtn" onclick="AddRowFunction();">Add Rows</button>*@
+
+                    <button type="submit" class="submitBomBtn publishBtn" id="btnProdSave">Save </button>
+                    @*<button type="button" class="submitBomBtn publishBtn opacityBtngreen" id="btnProdSave">Cancel </button>*@
+                </div>
+            </div>
+            </div>
+    }
+</div>
+
+    <script>
+        $(".rawMater").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/RawMaterialMaster/AutoComplete/',
+                    data: "{ 'prefix': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response(data);
+                        console.log(data);
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, ui) {
+                $(this).val(ui.item.label);
+                return false;
+            },
+            minLength: 2,
+            autoFocus: true,
+            change: function (event, ui) {
+                if (ui.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                }
+            }
+
+        });
+    </script>

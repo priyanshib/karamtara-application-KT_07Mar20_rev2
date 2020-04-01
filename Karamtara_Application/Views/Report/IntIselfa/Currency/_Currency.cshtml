@@ -1,0 +1,42 @@
+﻿@using Karamtara_Application.Models.Tender
+@model CurrencyDetailModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    decimal value = 0;
+    int i = 0;
+}
+<table class="table parentTable">
+    <tr>
+        <th class="intCurr TenderRevisonName"></th>
+    </tr>
+    <tr>
+        <th class="intCurr">International Currency</th>
+        
+    </tr>
+    @foreach (var item in Model.List)
+    {
+        if (i == 2)
+        {
+            <tr>
+                <th class="TenderRevisonName euroToOtherTh">Euro To Other Currencies</th>
+            </tr>
+        }
+        i = i + 1;
+        <tr>
+            <td class="intCurr">@item.Name</td>
+        </tr>
+    }
+</table>
+
+@*<div class="row center-align">
+        <div>@item.Name</div>
+        <img src="../../Assets/images/rightArrow.svg" height="20px" />
+        <div>INR</div>
+        <div>=</div>
+        <div><input type="text" currencyid="@item.Id" currencyname="@item.Name" value="@item.Value" onchange="SetCurrency(this)" class="whiteBgInput" /></div>
+    </div>*@
+
+<script>
+    
+</script>

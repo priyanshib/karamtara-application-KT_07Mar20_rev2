@@ -1,0 +1,214 @@
+﻿@model Karamtara_Application.Models.ProductGroupModel
+
+
+    <div class="Catgdetails tableBlock" id="divProdEdit">
+        <div class="row">
+            <table class="table prodDetails m-0" id="prodTbl1">
+                <tr>
+                    <th class="proGrpCode">Product Group Code</th>
+                    <th class="proGrpNm" colspan="3">Product Group Name</th>
+                    <th class="proSumary" colspan="3">Product Group Type</th>
+                    @*<th class="proDrawno">Drawing No</th>*@
+                </tr>
+                <tr>
+                    <td class="proGrpCode">
+                        <label id="lbl1" value="Product Group Code">@Model.ProductGroupCode</label>
+                        <input type="hidden" value="@Model.ProductGroupId" id="hidGroupId" />
+                    </td>
+                    <td class="proGrpNm" colspan="3">
+                        <label id="lbl2" value="Assemebly Name">@Model.ProductGroupName</label>
+                    </td>
+                    <td class="proSumary" colspan="3">
+                        <label id="lbl3" value="Product Group Type">@Model.GroupType</label>
+                    </td>
+                    @*<td class="proDrawno">
+                        <label id="lbl4" value="DrawingNo">@Model.DrawingNo</label>
+                    </td>*@
+                </tr>
+                <tr>
+                    <th class="proGrpNm">Line Voltage</th>
+                    <th class="proSumary">Conductor Type</th>
+                    <th class="proGrpCode">Conductor Name</th>
+                    <th class="proDrawno">Bundle Type</th>
+                    <th class="proDrawno">Bundle Spacing</th>
+                    <th class="proUnigr text-center" style="width:7.2%">Unit Gross Weight <span class="position-relative w-100 float-left" style="top:5px">(Kg)</span></th>
+                    <th class="proUninet text-center" style="width:7.2%">Unit Net Weight <span class="position-relative w-100 float-left" style="top:5px">(Kg)</span></th>
+                </tr>
+                <tr>
+                    <td class="proGrpCode">
+                        <label id="lbl1" value="Product Group Type">@Model.LineVoltage</label>
+                    </td>
+                    <td class="proGrpNm">
+                        <label id="lbl1" value="Line Voltage">@Model.Conductor</label>
+                        @*<input type="hidden" value="@Model.AssemblyId" id="hidGroupId" />*@
+                    </td>
+                    <td class="proSumary">
+                        <label id="lbl2" value="UTS">@Model.ConductorName</label>
+                    </td>
+                    <td class="proDrawno">
+                        <label id="lbl3" value="Bundle Type">@Model.BundleType</label>
+                    </td>
+                    <td class="proDrawno">
+                        <label id="lbl3" value="Bundle Spacing">@Model.BundleSpacing</label>
+                    </td>
+                    <td class="proSumary">
+                        <label id="lbl2" value="UnitGrWt">@Model.UnitGrWt.ToString("N3")</label>
+                    </td>
+                    <td class="proDrawno">
+                        <label id="lbl3" value="UnitNetWt">@Model.UnitNetWt.ToString("N3")</label>
+                    </td>
+                </tr>
+
+            </table>
+            <table class="table prodDetails mb-5" id="prodTbl2">
+                <tr>
+                    <th class="srNo">Sr.No</th>
+                    <th class="procatNo">Catalogue No / Code</th>
+                    <th class="proItm">Item Name</th>
+                    <th class="proRaw">Raw Material</th>
+                    <th class="proMat">Material Grade</th>
+                    <th class="proDraw">Drawing No</th>
+                    <th class="proSize">Size</th>    
+                    <th class="proQty text-center">Quantity <span class="position-relative" style="top:5px">(Nos)</span></th>
+                    <th class="proUnigr text-center">Unit Gross Weight <span class="position-relative w-100 float-left" style="top:5px">(Kg)</span></th>
+                    <th class="proUninet text-center">Unit Net Weight <span class="position-relative w-100 float-left" style="top:5px">(Kg)</span></th>
+                    <th class="proTotalgr text-center">Total Gross Net Weight <span class="position-relative w-100 float-left" style="top:5px">(Kg)</span></th>
+                    <th class="proTotalnet text-center">Total Unit Net Weight <span class="position-relative w-100 float-left" style="top:5px">(Kg)</span></th>
+                </tr>
+               @foreach (var item in Model.MasterList)
+                {
+                    if (item.IsRelated)
+                    {
+                <tr>
+                    <td><input type="text" value="@item.SrNo" readonly="readonly" class="prods bold" name="srno" /></td>
+                    <td><input type="text" value="@(string.IsNullOrEmpty(item.CatalogueNo) ? item.Code : item.CatalogueNo)" readonly="readonly" class="prods bold" name="editCatNo" /></td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.Name" readonly="readonly" class="prods bold  c-pointer" name="editSubAssmName" />
+                            <span class="tooltipShow">@item.Name</span>
+                        </span>
+                    </td>
+                    <td><input type="text" value="@item.Material" readonly="readonly" class="prods bold  c-pointer" name="editRM"> </td>
+                    <td><input type="text" value="@item.Grade" readonly="readonly" class="prods bold" name="editRM"></td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.DrawingNo" readonly="readonly" class="prods bold c-pointer" name="editRM">
+                            <span class="tooltipShow">@item.DrawingNo</span>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.Size" readonly="readonly" class="prods bold c-pointer" name="editSize">
+                            <span class="tooltipShow">@item.Size</span>
+                        </span>
+                    </td>
+                    <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods bold" name="editQty" /></td>
+                    <td><input type="text" value="@(item.UnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                    <td><input type="text" value="@(item.UnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                    <td><input type="text" value="@(item.TotalUnitGrWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                    <td><input type="text" value="@(item.TotalUnitNetWt.ToString("N3"))" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                </tr>
+                       //foreachCount++;
+                   }
+                   else
+                   {
+                <tr class="bold">
+                    <td><input type="text" value="@item.SrNo" readonly="readonly" class="prods bold" name="srno" /></td>
+                    <td><input type="text" value="@(string.IsNullOrEmpty(item.CatalogueNo) ? item.Code : item.CatalogueNo)" readonly="readonly" class="prods" name="editCatNo" /></td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.Name" readonly="readonly" class="prods c-pointer" name="editSubAssmName" />
+                            <span class="tooltipShow">@item.Name</span>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.Material" readonly="readonly" class="prods  c-pointer" name="editRM">
+                            <span class="tooltipShow">@item.Material</span>
+                        </span>
+                    </td>
+                    <td><input type="text" value="@item.Grade" readonly="readonly" class="prods" name="editRM"></td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.DrawingNo" readonly="readonly" class="prods c-pointer" name="editRM">
+                            <span class="tooltipShow">@item.DrawingNo</span>
+                        </span>
+
+                    </td>
+                    <td>
+                        <span class="tooltipHover c-pointer">
+                            <input type="text" value="@item.Size" readonly="readonly" class="prods c-pointer" name="editSize">
+                            <span class="tooltipShow">@item.Size</span>
+                        </span>
+                    </td>
+                    <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods" name="editQty" /></td>
+                    <td><input type="text" value="@(item.UnitGrWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitGr" /></td>
+                    <td><input type="text" value="@(item.UnitNetWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitNet" /></td>
+                    <td><input type="text" value="@(item.TotalUnitGrWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitGr" /></td>
+                    <td><input type="text" value="@(item.TotalUnitNetWt.ToString("N3"))" readonly="readonly" class="prods" name="editUnitNet" /></td>
+                </tr>
+                    }
+                }
+            </table>
+            <div class="saveProddtls savePgNewBtn saveAssblProd">
+                <button type="button" class="submitBomBtn saveBtn opacityBtnyelow" id="btnProdsEdit">Edit</button>
+                <button type="button" class="submitBomBtn saveBtn opacityBtnyelow" id="btnDel" onclick="DeleteProducGroup('@Model.ProductGroupId')" ;>Delete</button>
+                @*<button type="button" class="submitBomBtn publishBtn" id="btnProdSave">Save </button>*@
+            </div>
+        </div>
+    </div>
+
+<script>
+    $("#btnProdsEdit").on('click', function () {
+        var groupId = @Model.ProductGroupId;
+            $.ajax({
+            type: 'GET',
+                url: "/ProductGroup/GetEditProductGroupData",
+                data: { groupId: groupId },
+            dataType: 'html',
+            success: function (data) {
+                $('#AssemblyListDetails').html(data);
+            },
+            error: function (err) {
+
+            }
+        });
+
+        
+
+    });
+
+    function DeleteProducGroup(pgId) {
+        if (confirm("Are you sure you want to delete this Product Group? This action cannot be undone")) {
+            $.ajax({
+                type: 'POST',
+                url: "/Common/DeleteMasterData",
+                data: { id: pgId, type: 1 },
+                dataType: 'json',
+                success: function (data) {
+                    if (data == true || data == 'true') {
+                        ShowSnackBar('Product Group Deleted Successfully');
+                        window.location.reload();
+                    }
+                    else {
+                        ShowSnackBar('Product Group Delete Failed. Please contact your System Admin');
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    }
+    $(document).ready(function () {
+
+        $('input').each(function (index) {
+            if ($(this).val().length == 0) {
+                // ShowSnackBar("valute is 0");
+                $(this).closest(".tooltipHover").remove();
+            }
+        });
+
+
+    });
+
+</script>
+

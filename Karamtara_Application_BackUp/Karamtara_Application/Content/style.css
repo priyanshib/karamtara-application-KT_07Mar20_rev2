@@ -1,0 +1,339 @@
+﻿html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+body {
+    line-height: 1;
+    font-family: 'Open Sans', sans-serif;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+input:focus, select:focus {
+    outline-color: transparent;
+}
+
+
+/**** customised css  ***/
+.brand-logo img {
+    width: 64px;
+    height: auto;
+}
+.blueHorizLine {
+    background: #0b1d65;
+    height: 20px;
+}
+.loginBlock{margin:20px auto;width:50%;}
+.loginBlock span{text-align:center;width:100%;font-size:40px;color:#0b1d65;font-weight:bold}
+.loginBtn button{
+    width: 250px;
+    margin: 10px auto;
+    text-align: center;
+    background: #0b1d65;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 16px;
+}
+.loginBtn, .forgetPassBtn {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+
+}
+    .forgetPassBtn button {
+        color: #0b1d65;
+        font-size: 16px;
+        width: 250px;
+    }
+
+.activities{
+    text-transform:uppercase;
+    color:#0b1d65;
+    font-size:14px;
+}
+.activiesList {
+    background: #f5f5f5;
+    padding: 15px 0;
+}
+.selectedActivies {
+    padding: 10px 3%;
+    border-bottom:4px solid #f5f5f5;
+}
+.addRowBtn{
+    padding:0 4px;
+    margin:0 5px;
+    cursor:pointer;
+}
+.collapseTR {
+    display: none;
+}
+/*floating label */
+.bmd-label-floating {
+    color: #000;
+}
+.is-focused [class*=" bmd-label"], .is-focused [class^=bmd-label] {  color: #0b1d65;}
+.custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
+    background-image: linear-gradient(0deg,#0b1d65 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
+}
+/*floating label */
+
+.typeDOM {
+    color: #3c36ff;
+    font-weight: bold;
+}
+.typeINTL {
+    color: #05c2c0;font-weight:bold;
+}
+
+.statusOpen {
+    color: #d72c41;
+    font-weight: bold;
+}
+.statusHold {
+    color: #f5a623;
+    font-weight: bold;
+}
+.statusProcess {
+    color: #0e4fa3;
+    font-weight: bold;
+}
+.statusDone {
+    color: #4eb685;
+    font-weight: bold;
+}
+.revision {
+    color: #43acab;font-weight:bold;
+}
+.selectedRow {
+    background: #fffde0;
+}
+.ActnActivities {
+    position: absolute;
+    background: #0c4da2;
+    color: #fff;
+    text-align: left;
+    right: 44px;
+    display: none;
+    top: 35px;
+    z-index: 1;
+    width: 160px;
+}
+    .ActnActivities li {
+        padding: 10px;
+        border-bottom: 1px solid;
+        cursor: pointer;
+    }
+
+.statuBtn {
+    background: #e4e4e4;
+    box-shadow: 1px 2px 2px 0px #bfbcbc;
+    /*color: transparent;*/
+    /* width: 200px; */
+    padding: 5px 14px;
+    border-radius: 4px;
+}
+.tableBlock table td.Status{cursor:pointer;}
+
+.tableBlock.createTable table td {
+    border-style: solid;
+    text-align:left;
+    text-transform:capitalize;
+}
+.tableTH{font-weight:bold;width:200px;}
+.createTable select {
+    background: transparent;
+    width: 150px;
+    border: none;
+    padding: 0px 0;
+}
+.tableBlock.createTable table .calImg {
+    padding-right: 5px;
+    padding-left: 5px;
+    text-align: center;
+}
+.CustNumber{background:#f5f5f5;}
+.TDtitle {
+    color: #0c4da2;
+    font-weight:bold;
+}
+.tableBlock.createTable table td.summaryTD {
+    padding: 0
+}
+.summaryTD  textarea{
+    width: 100%;
+    background: #fafafa;
+    box-shadow: inset 0 0 6px #969393;
+}
+.submitEnq {
+    width: 74px;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+}
+.cancelEnq {
+    background: #a4a4a4
+}
+.sucessEnq {
+    background: #18a087;
+    color:#fff;
+}
+.attachmentBtn {
+    background: transparent;
+    width: auto;
+}
+.attachmentBtn img{
+margin: 0 8px;
+position: relative;
+top: 5px;
+}
+
+
+
+/**common css for table*/
+.tableBlock table td, .tableBlock table th {
+    border: 1px solid #d1d1d1;
+    border-style: dashed;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.tdheader{font-weight:bold;font-size:16px;}
+.tableBlock table th {
+    font-weight: bold;
+    font-size: 16px;
+    background: #f5f5f5;
+    color: #000;
+    text-transform: capitalize;
+    text-align: center;
+}
+.tableBlock table td{
+    font-size:14px;
+    text-transform:uppercase; 
+    text-align:center;
+    position:relative;
+}
+.tableBlock table td input{
+    border: none;
+    background: transparent;
+    text-align: center;
+}
+
+/** modal popup customization*/
+.modal-dialog  .close{
+    position: absolute;
+    top: -5px;
+    right: 3px;
+    background: #000;
+    padding: 3px 8px;
+    border-radius: 50px;
+    opacity: 1;
+    color: #fff;
+    border: 3px solid;
+    font-weight: normal;
+}
+.modal-content { background: #f3f3f3; }
+    .modal-content .modal-body {padding:0; }
+.Modal-Header {
+    border-top: 1px solid #e2e2e2;
+    border-bottom: 1px solid #e2e2e2;
+    padding: 15px 24px;
+    font-weight: bold;
+    font-size: 16px;
+}
+.modal.show .modal-dialog {
+    transform: translate(0);
+    max-width: 700px;
+}
+.Modal-subHeader {
+    padding: 15px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e2e2;
+    font-size: 14px;
+}
+.modal-title {
+    color: #0c4da2;
+    font-size:18px;
+    text-transform:uppercase;
+    font-weight:bold;
+   
+}
+
+.AssigneeDtl table th {
+    background: #fff;
+    font-weight: bold;
+    text-transform:uppercase;
+}
+.AssigneeDtl table td, .AssigneeDtl table th {
+    border: 1px solid #d1d1d1;
+    border-style: dashed;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.AssigneeDtl table td{font-weight:bold;}
+.modalCancel {
+    background: #ecc509;
+    color: #000;
+    font-weight: bold;
+}
+.modalAssignee {
+    background: #2ea986;
+    color: #fff;
+    font-weight: bold;
+}
+.modal-content .modal-footer .btn {
+    margin: 0 5px;
+}
+
+
+/** modal popup customization*/
+    #CreateEnqDiv {
+        display: none;
+    }
+#createEnq{cursor:pointer;}
+td.SelectTD:after {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #000;
+    position: absolute;
+    content: '';
+    top: 18px;
+    margin: 0 -14px;
+    /* left: 70px; */
+    z-index: 0;
+}
+.createTable select {
+    background: transparent;
+    width: auto;
+    border: none;
+    padding: 0px 0;
+    z-index: 1;
+    min-width: 100px;
+}

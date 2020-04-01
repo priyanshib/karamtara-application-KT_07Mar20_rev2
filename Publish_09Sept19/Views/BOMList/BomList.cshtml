@@ -1,0 +1,106 @@
+﻿@model Karamtara_Application.Models.BOMListModel
+@{
+    ViewBag.Title = "BomList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+   
+</script>
+<div class="Catgdetails tableBlock" id="divProdEdit">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row ProdNmBlock p-2">
+                <div class="col-sm-9 align-items-center d-flex">
+                    <img src="/Assets/images/invoice.svg" height="20px">  BOM
+                </div>  
+                <div class="col-sm-3">
+                    <div class="searchBlock ">
+                        <div class="inputSerachBlok creteEnqSearch">
+                            <input type="text" id="searchBOMList" class="input-group serachInput f-13 p-2" placeholder="Search BOM List" />
+                            <button type="button" id="btnClear" class="btn-clear searchClear" onclick="clearSearch();"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+                        </div>
+                        <button type="button" id="btnSearchbar" class="serachBtn w-40"><img src="~/Assets/images/search.svg" width="20px" /></button>
+                        @*<input type="button" id="btnSearch" value="Search" class="createProdBtn saveBtn" />*@
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="listView" class="w-100">
+            @Html.Partial("~/Views/Shared/BOMList/_BomList.cshtml", Model)
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="BomMasterRefreshModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="divEditSubAssmModel">
+                <label class="w-100 text-center mt-4 mb-4" >Refresh the Revision Data from </label>
+                <input type="hidden" id="hidBomId" />
+                <input type="hidden" id="hidRevNo" />
+                <input type="hidden" id="hidEnqId" />
+                <div class="saveProddtls position-relative mb-2 w-100 mt-2">
+                    @*<button type="button" class="submitBomBtn saveBtn " id="addRowsBtn" onclick="AddRowFunction();">Cancel</button>*@
+                    <button type="submit" class="submitBomBtn saveBtn " id="btnRefreshFromMaster">From Master</button>
+                    <button type="submit" class="submitBomBtn publishBtn " id="btnRefreshFromBom">From BOM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#btnSearchbar').click(function () {
+        var prefix = $("#searchBOMList").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/BOMList/SearchBOMList",
+                dataType: "html",
+                data: { prefix: prefix },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#listView").html(data);
+                    $("#searchBOMList").val(prefix);
+                    $("#searchBOMList").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    });
+
+    $('#searchBOMList').keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $('#btnSearchbar').click();
+            return false;
+        }
+    });
+
+    function clearSearch() {
+        var prefix = $("#searchBOMList").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/BOMList/SearchBOMList",
+                dataType: "html",
+                data: { prefix: '' },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#listView").html(data);
+                    $("#searchBOMList").val('');
+                    $("#searchBOMList").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    }
+</script>
+
+

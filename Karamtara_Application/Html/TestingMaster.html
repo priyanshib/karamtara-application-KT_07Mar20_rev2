@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="../Assets/css/bootstrap-material-design.min.css">
+    <link href="../Assets/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script src="../Assets/js/bootstrap-multiselect.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(););</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+		<div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+      
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="row ProdNmBlock p-2">
+                        <div class="col-sm-8 align-items-center d-flex">
+                            <img src="../Assets/images/testMaster.png" height="20px">  TESTING MASTER
+                        </div>
+                       
+                    </div>
+                   
+                </div>
+                
+                <div class="col-sm-4 rightBorder">
+                    <div class="createTestMaster tableBlock">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="addRawMateHead">ADD NEW TEST</div>
+                                <div class="TestMaterForm mt-2">
+                                    <div class="form-group">
+                                        <label class="textLabel">Test Name</label>
+                                        <input type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="textLabel">Test Description</label>
+                                        <input type="text" />
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="textLabel">Test Type</div>
+                                                    <div class="multiselectDiv">
+                                                        <select id="chkveg" multiple="multiple" class="chkveg">
+
+                                                            <option value="cheese">Hardware Fitting</option>
+
+                                                            <option value="tomatoes">Hardware Fitting1</option>
+
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="textLabel">Select kV line</div>
+                                                    <div class="multiselectDiv">
+                                                        <select id="chkveg" multiple="multiple" class="chkveg">
+
+                                                            <option value="765 kV">765 kV</option>
+                                                            <option value="  400 kV">  400 kV</option>
+                                                            <option value="  132 kV">  132 kV</option>
+                                                            <option value="  99 kV">  99 kV</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <div class="textLabel">Select UTS</div>
+                                                    <div class="multiselectDiv">
+                                                        <select id="chkveg" multiple="multiple" class="chkveg">
+
+                                                            <option value="765 kV">765 kV</option>
+                                                            <option value=" 100 kN">  100 kN</option>
+                                                            <option value="  200 kN">   200 kN</option>
+                                                            <option value="  300 kN"> 300 kN</option>
+                                                        </select>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group m-0">
+                                                    <div class="textLabel">Select Bundle</div>
+                                                    <div class="multiselectDiv">
+                                                        <select id="chkveg" multiple="multiple" class="chkveg">
+
+                                                            <option value="765 kV">765 kV</option>
+                                                            <option value="Single"> Single</option>
+                                                            <option value="Twin">   Twin</option>
+                                                            <option value="Triple"> Triple</option>
+                                                        </select>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    
+                                  
+                               
+                                   
+                                    <div class="form-group">
+                                        <div class="textLabel">Summary</div>
+                                        <textarea></textarea>
+                                    </div>
+                                    <div class="saveRawMater">
+                                        <button type="button" class="submitBomBtn saveBtn">Add</button>
+                                        <button type="button" class="submitBomBtn publishBtn">Cancel </button>
+                                    </div>
+
+
+
+                                </div>
+                                    <!--<div class="saveRawMater">
+        <button type="button" class="submitBomBtn saveBtn">Add</button>
+        <button type="button" class="submitBomBtn publishBtn">Cancel </button>
+    </div>-->
+                                </div>
+                        </div>
+                       
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="TestMasterdetails tableBlock ">
+						<div class="row">                            
+                            <table class="table TestMaterialTable ">
+                                <tr>
+                                    <th class="srNo">Sr. NO.</th>
+                                    <th class="testDes">Description of Test</th>
+                                    <th class="testType">Type</th>
+                                    <th class="testLine">kV Line</th>
+                                    <th class="testUTS">UTS</th>
+                                    <th class="testBundle">Bundle</th>
+                                    <th class="testSummary">Summary</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td class="testDesTD">Wet Power frequency voltage withstand test with corona control rings/grading ring and arcing  horns under wet condition</td>
+                                    <td>Hardware Fitting</td>
+                                    <td>756, 400, 132, 99</td>
+                                    <td>100, 200, 300, 400</td>
+                                    <td>Single, Twin, Tripple</td>
+                                    <td><img src="../Assets/images/assebleSummary.png" /></td>
+
+                                </tr>
+                            </table>
+							
+						</div>
+					</div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+
+
+
+</body>
+</html>
+<script>
+
+    function AddRows() {
+        //alert('ok');
+        $.each(new Array(10), function (i) {
+            $('.TestMaterialTable tr:last')
+                .after('<tr><td></td>' + '<td></td>' + '<td></td>' + '<td></td>' + '<td></td>' + '<td></td>' + '<td></td>' +  '</tr>');
+
+           });
+    }
+    window.onload = AddRows;
+
+    $(function () {
+
+        $('.chkveg').multiselect({
+
+            includeSelectAllOption: true
+
+        });
+
+        $('#btnget').click(function () {
+
+            //alert($('.chkveg').val());
+
+        })
+
+    });
+  
+</script>

@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+        <!--notification msg(place before main-containt div)-->
+        <div class="row WarningAlert CreateNotfn" style="display:none" id="RedAlert">
+            <div>Warning Alert  </div>
+            <!--<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>-->
+        </div>
+
+        <div class="row SucessAlert CreateNotfn" style="display:none" id="GreenAlert">
+            <div>Sucessful  Alert</div>
+            <!--<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>-->
+        </div>
+
+        <div class="row InfoAlert CreateNotfn" style="display:none" id="InfoAlert">
+            <div>Info Alert</div>
+            <!--<button type="button" class="close p-2" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>-->
+        </div>
+
+
+        <!--notification msg End-->
+        <div class="main-content mainContentPaddingBtm">
+            <button type="button" class="createBomBtn saveBtn" id="WarnMsg">Warning </button>
+            <button type="button" class="createBomBtn saveBtn" id="SucessMsg">Sucess </button>
+            <button type="button" class="createBomBtn saveBtn" id="InfoMsg">Info </button>
+            <button type="button" class="createBomBtn saveBtn" onclick="myFunction()">toast Message</button>
+
+            <!-- The actual toast message -->
+            <div id="snackbar">Some text some message..</div>
+        </div>
+
+        <div class="footer">
+            <div class="row footerStatus">
+                KEPL/TE-0001/Revision1 / <span class="statusHold">DRAFT</span>
+                <button type="button"><img src="../Assets/images/viewTrial.png" />view audit trial</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+    $(document).ready(function () {    
+        $("#WarnMsg").click(function () {
+            $("#RedAlert").slideDown(1000).delay(2000).slideUp(1000);
+            //$("#RedAlert");
+        });
+
+        $("#SucessMsg").click(function () {
+            $("#GreenAlert").slideDown(1000).delay(2000).slideUp(1000);;
+        });       
+
+        $("#InfoMsg").click(function () {
+            $("#InfoAlert").slideDown(1000).delay(2000).slideUp(1000);;
+        }); 
+        
+    });
+    function myFunction() {
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar")
+
+        // Add the "show" class to DIV
+        x.className = "snackBarshow";
+
+        // After 3 seconds, remove the show class from DIV
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    }
+		
+</script>

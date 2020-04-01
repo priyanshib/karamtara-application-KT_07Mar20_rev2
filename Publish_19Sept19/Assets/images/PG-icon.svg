@@ -1,0 +1,13 @@
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+ <title/>
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path fill="#0b1d65" id="Rectangle 153 copy" d="m3.9962,0l8.0076,0c2.20737,0 3.9962,1.78916 3.9962,3.9962l0,8.0076c0,2.20737 -1.78916,3.9962 -3.9962,3.9962l-8.0076,0c-2.20737,0 -3.9962,-1.78916 -3.9962,-3.9962l0,-8.0076c0,-2.20737 1.78916,-3.9962 3.9962,-3.9962zm0.00715,1c-1.6587,0 -3.00335,1.34238 -3.00335,3.00335l0,7.9933c0,1.6587 1.34238,3.00335 3.00335,3.00335l7.9933,0c1.6587,0 3.00335,-1.34238 3.00335,-3.00335l0,-7.9933c0,-1.6587 -1.34238,-3.00335 -3.00335,-3.00335l-7.9933,0zm0,0"/>
+  <text stroke="null" transform="matrix(0.3758323216022616,0,0,0.45717713467348814,11.667390759165187,-4.540143107669731) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_3" y="35.784298" x="-26.893649" stroke-opacity="null" stroke-width="0" fill="#0b1d65">PG</text>
+ </g>
+</svg>

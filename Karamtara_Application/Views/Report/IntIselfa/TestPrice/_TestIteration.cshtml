@@ -1,0 +1,117 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+@using Karamtara_Application.Models.Tender;
+@{
+    int count = 1;
+    int value = 0;
+    var tndDetails = new IntTenderDetails();
+}
+<div class="BomRefDtls" testRevNo="@Model.TenderRevisionId">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        TEST MASTER PRICING
+
+    </div>
+    @using (Html.BeginForm("SaveTestPricing", "TenderPricing", FormMethod.Post, new { @id = "TMPrice" }))
+    {
+        <div class="col-sm-12 row BomRefItem m-0">
+            <div class="col-sm-8 ">
+                <div class="row addMarkInput">
+                    <div class="col-sm-4 IncrementByPercentage">
+                        Increment By
+                        @{
+                            value = 0;
+                            tndDetails = new IntTenderDetails();
+                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                            {
+                                tndDetails = Model.IntTndValues.Where(x => x.Description == "IncrementByPercentage").FirstOrDefault() ?? new IntTenderDetails();
+                                Model.IncrementByPercentage = tndDetails.Value;
+                            }
+                        }
+                        <p class="d-flex align-items-center mt-1">@Html.TextBoxFor(x => Model.IncrementByPercentage, Model.IncrementByPercentage.ToString("G29"), new { @onblur = "SetIncrementedPrices()", @id = "IncrementByPercentage", @class = "whiteBgInput" })%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                @*<input type="button" class="submitEnq revisionBtn" value="Cancel" onclick="closeModal();"/>
+                    <input type="button" class="submitEnq publishBtn" id="btnTndSaveForm" value="Submit" />*@
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal();">Cancel</button>
+                <button type="button" class="submitEnq publishBtn" id="btnTndSaveForm">Submit</button>
+            </div>
+        </div>
+        <div class="TestMasterdetails tableBlock">
+            <div class="">
+                <table class="table m-0 TenderDtlModelTable iterationTable">
+                    <tr>
+                        <td class="TenderRevisonName">Revision @Model.TenderRevisionId</td>
+                    </tr>
+                    <tr>
+                        <th class="priceItem" colspan="3">Price</th>
+                        <th class="priceItem" rowspan="2">Quantity</th>
+                        <th class="priceItem incrementedPrice" rowspan="2">Incremented Price (INR)</th>
+                    </tr>
+                    <tr>
+                        <th class="priceItem">INR</th>
+                        <th class="priceItem">EURO</th>
+                        <th class="priceItem">USD</th>
+                    </tr>
+                    @for (int i = 0; i < Model.TestList.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Inr, Model.TestList[i].Inr.ToString("G29"), new { @onblur = "SetIncrementedPrices()", @id = "tpInr", @class = "whiteBgInput" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Euro, Model.TestList[i].Euro.ToString("G29"), new { @id = "tpEuro", @class = "whiteBgInput" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Usd, Model.TestList[i].Usd.ToString("G29"), new { @id = "tpUsd", @class = "whiteBgInput" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Quantity, Model.TestList[i].Quantity.ToString("G29"), new { @id = "tpQuantity", @class = "whiteBgInput" })
+                            </td>
+                            <td class="incrementedPrice"></td>
+                        </tr>
+                        count++;
+                    }
+                </table>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    var testRevDiv = $("div[testRevNo='" +@Model.TenderRevisionId+"']");
+
+    if (intTenderType == 2) {
+        $(testRevDiv).find(".TenderRevisonName").attr("colspan",4);
+        $(".IncrementByPercentage,.incrementedPrice").hide();
+    }
+    else {
+        $(".IncrementByPercentage,.incrementedPrice").show();
+        $(testRevDiv).find(".TenderRevisonName").attr("colspan",5);
+        SetIncrementedPrices();
+    }
+
+    function SetIncrementedPrices() {
+        var elements, incrementPercent = 0, parentItem, inrValue, value;
+        elements = $(testRevDiv).find("td.incrementedPrice");
+        incrementPercent = $(testRevDiv).find("#IncrementByPercentage").val();
+        $(elements).each(function (index, item) {
+            parentItem = $(item).parent();
+            inrValue = Number($(parentItem).find("#tpInr").val());
+            value = inrValue + (inrValue * (incrementPercent / 100));
+            $(item).text(value.toFixed(3));
+        });
+
+    }
+
+    $("input").attr('readonly', true);
+    $("input").removeClass("whiteBgInput");
+    $("input").removeClass("p-1");
+    $("button").not(".close").hide();
+    $("input[type='button']").hide();
+
+</script>

@@ -1,0 +1,100 @@
+﻿@model Karamtara_Application.Models.Tender.TenderStructureModel
+
+<table class="table">
+
+    <tr>
+        <th class="DtlLine">Details of Line</th>
+        <th class="DtlLot">Details of Lots</th>
+        <th class="Dtlpack">Details of Packages</th>
+    </tr>
+    @foreach (var line in Model.LineList)
+    {
+        <tr>
+            <td style="display:none"><input type="hidden" id="hidLineId" value="@line.Id" name="LineId" /></td>
+            <td style="display:none"><input type="hidden" id="hid" value="@line.StrType" name="Type" /></td>
+            <td>@line.Name</td>
+            @if (Model.LotList != null && Model.LotList.Count > 0)
+            {
+            <td>
+                @Html.DropDownListFor(m => m.LotId, new SelectList(Model.LotList, "Id", "Name"), "-Select Lot-", new { @class = "selectDrpdwn ddlReq ddlLot" })
+            </td>
+            }
+            else
+            {
+                <td><input type="hidden" name="LotId" value="0" /></td>
+            }
+            @if (Model.PackageList != null && Model.PackageList.Count > 0)
+            {
+            <td>
+                @Html.DropDownListFor(m => m.PackageId, new SelectList(Model.PackageList, "Id", "Name"), "-Select Package-", new { @class = "selectDrpdwn ddlReq ddlPackage" })
+            </td>
+            }
+            else
+            {
+                <td><input type="hidden" name="PackageId" value="0" /></td>
+            }
+        </tr>
+
+    }
+</table>
+<div class="col-sm-12 text-right p-5 saveCancelBtn">
+    <span class="errorModal" id="validationErr" style="display:none"></span>
+    <input type="button" id="btnDetailsSave" value="Save" class="p-2 submitBomBtn saveBtn" />
+    <input type="button" id="btnDetailsCancel" value="Cancel" class="p-2 submitBomBtn publishBtn" />
+</div>
+
+<script>
+
+    $("#btnDetailsSave").click(function () {
+        var validate = true;
+        $('.ddlReq').each(function () {
+            if ($(this).val() == '') {
+                $("#validationErr").html('Please fill all the Line and Package values.');
+                $("#validationErr").removeAttr('style');
+                validate = false;
+            }
+
+        })
+        if (validate)
+            SaveTenderDetails();
+    });
+
+    function SaveTenderDetails() {
+        $("#validationErr").html('');
+        $("#validationErr").addClass('style', 'display:none');
+        var formType = $("#hidFormType").val();
+        if (formType != null && formType == 'Create') {
+            var formData = $("#TenderStrForm").serialize();
+        }
+        else if (formType != null && formType == 'Edit') {
+            var formData = $("#EditTndStrForm").serialize();
+        }
+        var enqId = $("#hidEnqId").val();
+        var bomId = $("#hidBomId").val();
+        var revNo = $("#hidRevId").val();
+        var tndId = $("#hidTndId").val();
+        var tndRevNo = $("#hidTndRevNo").val();
+        $.ajax({
+            type: "POST",
+            url: '/TenderStructure/SaveStrDetails',
+            dataType: "JSON",
+            data: formData,
+            success: function (data) {
+                if (data > 0) {
+                    ShowSnackBar('Tender Structure saved successfully.');
+                    window.location = '/TenderPricing/TenderDetailsDom?enqId=' + enqId + '&bomId=' + bomId + '&revNo=' + revNo +
+                        '&tndId=' + tndId + '&tndRevNo=' + tndRevNo;
+                }
+                else {
+                    ShowSnackBar('Some Error occured.');
+                }
+
+            },
+            error: function (data) {
+                ShowSnackBar('Some Error occured.');
+            }
+        });
+    }
+
+
+</script>

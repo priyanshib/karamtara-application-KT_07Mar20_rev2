@@ -1,0 +1,32 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+<script>
+    @{ var rowNum = 0;}
+</script>
+<div class="BOMdetails tableBlock">
+    <div class="row">
+        <table class="table addSubAssmBOM BOMHeader">
+            <tr rowspan="2">
+                <td colspan="5" class="BOMHeader">@Html.TextBoxFor(m => m.DisplayText, null, new { @id = "txtAddAssmName" })</td>
+                <td style="display:none">@Html.TextBoxFor(m => m.ComponentId)</td>
+            </tr>
+            <tr>
+                <th class="asemblyId">Catalogue No</th>
+                <th class="techAsemblyNm">Component Name</th>
+                <th class="asemblyNm">Raw Material</th>
+                <th class="asemblyNm">Grade</th>
+                <th class="asemblyNm">Unit Gr Wt</th>
+                <th class="asemblyNm">Unit Net Wt</th>
+            </tr>
+            @if (Model.MasterList != null && Model.MasterList.Count > 0)
+            {
+                rowNum++;
+                <tr><td>@Model.CatalogueNo</td></tr>
+                <tr><td>@Model.</td></tr>
+                <tr><td>@Model.CatalogueNo</td></tr>
+                <tr><td>@Model.CatalogueNo</td></tr>
+                <tr><td>@Model.CatalogueNo</td></tr>
+
+            }
+        </table>
+    </div>
+</div>

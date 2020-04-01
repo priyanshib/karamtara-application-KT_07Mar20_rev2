@@ -1,0 +1,80 @@
+﻿@using System.Data
+@model DataSet
+@{
+    DataTable tenderDt;
+    DataTable dt;
+}
+<div class="BomRefDtls">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        Tender Raw Material Pricing Report
+
+    </div>
+    <div class="TenderDtlTable tableBlock tablePrctender">
+        <table class="table tableLayout">
+            <tr class="rowHeadings">
+                @{
+                    if (Model != null)
+                    {
+                        <th class="rawMaterial">Raw Material</th>
+                        tenderDt = Model.Tables[0];
+                        foreach (DataColumn column in tenderDt.Columns)
+                        {
+                            <th class=" revisionTD text-center">@column</th>
+                        }
+                    }
+                }
+            </tr>
+            <tr class="rowHeadings">
+                <td>Published Date</td>
+                @{
+                    if (Model != null)
+                    {
+                        dt = Model.Tables[0];
+
+                        foreach (DataColumn column in dt.Columns)
+                        {
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                <td class="tenderGrWt text-center">@row[column.ColumnName]</td>
+                            }
+                        }
+                    }
+                }
+            </tr>
+            @{
+                if (Model != null)
+                {
+                    //dt = Model.Tables[1];
+                    tenderDt = Model.Tables[1];
+                    foreach (DataRow row in tenderDt.Rows)
+                    {
+                        <tr class="">
+
+                            @foreach (DataColumn col in tenderDt.Columns)
+                            {
+
+                                if (col.ColumnName != "MaterialDescription")
+                                {
+                                    <td class="tenderNetWt text-center">@row[col.ColumnName]</td>
+                                }
+                                else
+                                {
+                                    <td class="rawMaterial">@row["MaterialDescription"]</td>
+                                }
+
+
+                            }
+                        </tr>
+                    }
+
+
+                }
+            }
+        </table>
+    </div>
+</div>

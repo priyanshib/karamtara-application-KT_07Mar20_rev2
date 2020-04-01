@@ -1,0 +1,215 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+
+<script>
+    @{ var rowNum = 0;}
+</script>
+<div class="BOMdetails tableBlock">
+    <div class="row">
+        <table class="table addSubAssmBOM BOMHeader">
+            <tr rowspan="2">
+                <td colspan="3" class="BOMHeader">@Html.TextBoxFor(m => m.DisplayText, null, new { @id = "txtAddAssmName" })</td>
+                <td style="display:none">@Html.TextBoxFor(m => m.AssemblyId)</td>
+            </tr>
+            <tr>
+                <th class="asemblyId">Assembly Code</th>
+                <th class="techAsemblyNm">Technical Name of Sub Assembly</th>
+                <th class="asemblyNm">Sub Assembly Name </th>
+                <th style="display:none"></th>
+            </tr>
+            @if (Model.AssemblyList != null && Model.AssemblyList.Count > 0)
+            {
+                foreach (var item in @Model.AssemblyList)
+                {
+                    rowNum++;
+                    <tr>
+                        @*<td><input type="text" class="subAsmCode" value="@item.SubAssemblyCode" /></td>*@
+                        <td style="display:none">@Html.TextBoxFor(m => item.AssemblyId,null,new { @id="AssmId_"+rowNum})</td>
+                        <td>@Html.TextBoxFor(m => item.AssemblyCode, new { @class = "subAsmCode", @id = "AssmCode_" + rowNum, onclick = "CodeAutoComp(" + rowNum + ");" })</td>
+                        <td>@Html.TextBoxFor(m => item.AssmTechName, null, new { @class = "techAssmName", @id = "AssmTName_" + rowNum, onclick = "TNameAutoComp(" + rowNum + ");" })</td>
+                        <td>@Html.TextBoxFor(m => item.AssemblyName, null, new { @class = "subAssmName", @id = "AssmName_" + rowNum })</td>
+                        @*<td style="display:none"><input type="text" value="@item.SubAssemblyId" /></td>*@
+                        @*<td> class="asemblyId">@item.SubAssemblyCode</td>
+                            <th class="techAsemblyNm">@item.SubAssmTechName</th>
+                            <th class="asemblyNm">@item.SubAssemblyName</th>*@
+                    </tr>
+
+                }
+            }
+            else
+            {
+                <tr><td colspan="3">No Sub Assemblies linked to this Assembly.</td></tr>
+            }
+
+
+        </table>
+        <div class="saveBOMdtls" style="display:none">
+            <button type="button" class="submitBomBtn saveBtn AddRow" id="RowAdd">Add More Rows</button>
+            <button type="button" class="submitBomBtn revisionBtn">cancel</button>
+            <button type="button" class="submitBomBtn saveBtn" id="btnSaveSubAsmChanges">SAVE CHANGES</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".catClass").autocomplete({
+        source: function (request, response) {
+            //  alert('111');
+            $.ajax({
+                url: '/CreateBOM/AssemblyAutoCompleteList/',
+                data: "{ 'prefix': '" + request.term + "'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return item;
+                    }))
+                },
+                error: function (response) {
+                    //  alert('error;')
+                    //  alert(response.responseText);
+                },
+                failure: function (response) {
+                    //  alert('failure')
+                    //  alert(response.responseText);
+                }
+            });
+        },
+        select: function (e, i) {
+            var value = i.item.value;
+            $("#srno_" + count).html(count);
+
+        },
+        minLength: 2
+    });
+
+    function CodeAutoComp(count) {
+        $(".subAsmCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/SubAssemblyMaster/GetSubAssmCodeAutoComp/',
+                    data: "{ 'prefix': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return item;
+                        }))
+                    },
+                    error: function (response) {
+                        alert('error;')
+                        //  alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert('failure')
+                        //  alert(response.responseText);
+                    }
+                });
+            },
+            select: function (e, i) {
+                GetSubAsmDetails_Code(i.item.value, count);
+
+            },
+            minLength: 2
+        });
+    }
+
+    function GetSubAsmDetails_Code(code, count) {
+        $.ajax({
+            type: "GET",
+            url: "/SubAssemblyMaster/GetSubAssmRow",
+            dataType: "json",
+            data: { code: code },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $("#AssmId_" + count).val(data.SubAssmId);
+                $("#AssmTName_" + count).val(data.TName);
+                $("#AssmName_" + count).val(data.Name);
+            },
+            error: function (data) { }
+        });
+    }
+
+    function TNameAutoComp(count) {
+        $(".techAssmName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/SubAssemblyMaster/GetSubAssmTNameAutoComp/',
+                    data: "{ 'prefix': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return item;
+                        }))
+                    },
+                    error: function (response) {
+                        alert('error;')
+                        //  alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        alert('failure')
+                        //  alert(response.responseText);
+                    }
+                });
+            },
+            select: function (e, i) {
+                GetSubAsmDetails_TName(i.item.value, count);
+
+            },
+            minLength: 2
+        });
+    }
+
+    function GetSubAsmDetails_TName(code, count) {
+        $.ajax({
+            type: "GET",
+            url: "/SubAssemblyMaster/GetSubAssmRow",
+            dataType: "json",
+            data: { code: code },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $("#AssmId_" + count).val(data.SubAssmId);
+                $("#AssmCode_" + count).val(data.Code);
+                $("#AssmName_" + count).val(data.Name);
+            },
+            error: function (data) { }
+        });
+    }
+
+
+    $("#btnSaveSubAsmChanges").click(function () {
+        var form = $("#CreateBOMForm").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "/CreateBOM/SaveAssemblyChanges",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+                if (data > 0) {
+                    alert('Data saved successfully.')
+                }
+                else if (data == 0) {
+                    alert('Data already exists.')
+                }
+            }
+        }
+        )
+    })
+
+    var count =@rowNum;
+
+    $("#RowAdd").click(function () {
+        $.each(new Array(5), function (i) {
+            count++;
+            $('.addSubAssmBOM tr:last')
+                .after(' <tr>' +
+                    '<td style="display:none"><input type="text" name="item.SubAssemblyId" id= "AssmId_' + count+'"></td>' +
+                    ' <td><input name="item.SubAssemblyCode" type="text" class="subAsmCode" id="AssmCode_'+ count+'" onclick="CodeAutoComp('+count+');"></td>' +
+                    ' <td><input name="item.SubAssmTechName" type="text" class="techAssmName" id="AssmTName_'+ count+'" onclick="TNameAutoComp('+count+');"></td>' +
+                '<td><input name="item.SubAssemblyName" type="text" class="subAssmName" id="AssmName_' + count + '"></td></tr>');
+        });
+    })
+</script>

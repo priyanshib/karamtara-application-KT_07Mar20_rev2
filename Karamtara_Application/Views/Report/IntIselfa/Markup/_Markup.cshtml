@@ -1,0 +1,351 @@
+﻿@using Karamtara_Application.Models.Tender
+@model IntMarkupModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    MarkupDetails markupModel = null;
+    decimal value = 0;
+}
+
+
+
+    @Html.HiddenFor(x => x.AdvBGpercent, new { @id = "AdvBGpercentMrkp" })
+
+  
+
+        <input type="hidden" name="tndId" id="markupTndId" />
+        <input type="hidden" name="tndRevId" id="markupTndRevId" />
+        <table id="markupListItems" class="table m-0 markupListItems parentTable tableLayout">
+            <tr>
+                <th class="markSrNo" style="width:50px"></th>
+            </tr>
+            <tr>
+                <th class="markSrNo" style="width:50px"></th>
+            </tr>
+            <tr>
+                <th class="markSrNo" style="width:50px"></th>
+            </tr>
+            <tr>
+                <th class="markSrNo" style="width:50px">S.NO.</th>
+            </tr>
+            <tr>
+                <td class="markSrNo" >1</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">2</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">3</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">4</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">5</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">6</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">7</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">8</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">9</td>
+            </tr>
+            <tr id="SubtotalRow">
+                <td class="markSrNo">10</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">11</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">12</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">13</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">14</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">15</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">16</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">17</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">18</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">19</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">20</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">21</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">22</td>
+            </tr>
+            <tr>
+                <td class="markSrNo">23</td>
+            </tr>
+        </table>
+
+   
+
+<script>
+
+    @*var tndType = @Model.TndType,tndMarkupRevDiv=$("div[tndMarkupRevNo='"+@Model.TndRevNo+"']");
+
+    $(tndMarkupRevDiv).find("#btnSubmitMarkup").click(function () {
+
+        $(tndMarkupRevDiv).find(".MarkupPricingCharges").find("input[type='number']").filter(function () {
+            return this.value == "";
+        }).val(0);
+
+        $(tndMarkupRevDiv).find("input[name='InterestSave']").filter(function () {
+            return this.value == "";
+        }).val(0);
+
+        $(tndMarkupRevDiv).find(".MarkupPricingCharges").find("input[type='text']").not("input[name='InterestSave']").filter(function () {
+            return $(tndMarkupRevDiv).find(this).val() == "";
+        }).val("-");
+
+        var form = $(tndMarkupRevDiv).find("#MarkupPricingForm").serialize();
+
+        $.ajax({
+            type: "post",
+            url: '/IntTenderPricingKT/SaveMarkupPricing',
+            dataType: "json",
+            data: form,
+            success: function (data) {
+                if (data) {
+                    $(tndMarkupRevDiv).find(".modal").modal('hide');
+                    //successModal();
+                    window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    });
+
+    $(tndMarkupRevDiv).find(document).ready(function () {
+        SetValues();
+
+        $(tndMarkupRevDiv).find("#markupTndId").val($(tndMarkupRevDiv).find("#tndId").val());
+        $(tndMarkupRevDiv).find("#markupTndRevId").val($(tndMarkupRevDiv).find("#tndRevId").val());
+
+        $(tndMarkupRevDiv).find("td").filter(function () {
+            return $(tndMarkupRevDiv).find(this).text().toLowerCase() == 'pbg';
+        }).nextAll().find("input").attr('readonly', 'readonly');
+
+        if ($(tndMarkupRevDiv).find("#isPageEditable").val() != "True" && $(tndMarkupRevDiv).find("#isPageEditable").val() != "true") {
+            $(tndMarkupRevDiv).find("input").attr('readonly', true);
+            $(tndMarkupRevDiv).find(".ModelFooter").find(".whiteBgInput").css("font-weight", "bold");
+            $(tndMarkupRevDiv).find(".ModelFooter").find(".whiteBgInput").css("color", "#fff");
+            $(tndMarkupRevDiv).find("input").removeClass("whiteBgInput");
+            $(tndMarkupRevDiv).find("input").removeClass("p-1");
+        }
+    });
+
+    function SetValues() {
+        var interestRate, financingDays, finSalesCrDays, interestSaveDays, interestSaveMnths, financing, finSalesCr, interestSave, value;
+
+        interestRate = Number($(tndMarkupRevDiv).find("#IntRate").val());
+        financingDays = Number($(tndMarkupRevDiv).find("#FinancingDays").val());
+        finSalesCrDays = Number($(tndMarkupRevDiv).find("#FinSalesCrDays").val());
+        interestSaveDays = Number($(tndMarkupRevDiv).find("#InterestSaveDays").val());
+        interestSaveMnths = Number($(tndMarkupRevDiv).find("#InterestSaveMnths").val());
+
+        financing = (interestRate / 360) * financingDays;
+        $(tndMarkupRevDiv).find("#FinInd").val(financing.toFixed(3));
+        $(tndMarkupRevDiv).find("#FinItaly,#FinBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+
+        finSalesCr = (interestRate / 360) * finSalesCrDays;
+        $(tndMarkupRevDiv).find("#FinSalesCrInd").val(finSalesCr.toFixed(3));
+        $(tndMarkupRevDiv).find("#FinSalesCrItaly,#FinSalesCrBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+
+        interestSave = Number($(tndMarkupRevDiv).find("#AdvBGpercentMrkp").val()) * (interestRate / 1200) * interestSaveMnths;
+
+        if (interestSave > 0)
+            value = "-" + interestSave.toFixed(3).toString();
+        else
+            value = 0;
+        if (tndType == 1) {
+            $(tndMarkupRevDiv).find("#InterestSaveInd").val(value);
+            $(tndMarkupRevDiv).find("#InterestSaveItaly,#InterestSaveBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+            $(tndMarkupRevDiv).find("#PBGItaly").val('');
+        } else {
+            $(tndMarkupRevDiv).find("#InterestSaveItaly").val(value);
+            $(tndMarkupRevDiv).find("#InterestSaveInd,#InterestSaveBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+            $(tndMarkupRevDiv).find("#PBGInd").val('');
+        }
+
+        SetSubTotal();
+        SetTotal();
+        SetPercentUnitCost();
+        SetFinalTotal();
+        SetTotalMarkup();
+
+        if (tndType == 1) {
+            $(tndMarkupRevDiv).find("#TravelLBItaly").val("");
+            $(tndMarkupRevDiv).find("#TravelLBBO").val("");
+        } else {
+            $(tndMarkupRevDiv).find("#TravelLBInd").val("");
+            $(tndMarkupRevDiv).find("#TravelLBBO").val("");
+        }
+    }
+
+    function SetSubTotal() {
+        var sum = 0, elements;
+        elements = $(tndMarkupRevDiv).find("#SubtotalRow").prevAll().find("input[colname='india']");
+        $.each(elements, function (index, ele) {
+            sum += Number($(tndMarkupRevDiv).find(ele).val());
+        });
+        $(tndMarkupRevDiv).find("#SubtotalInd").val(sum.toFixed(3));
+
+        sum = 0;
+        elements = $(tndMarkupRevDiv).find("#SubtotalRow").prevAll().find("input[colname='italy']");
+        $.each(elements, function (index, ele) {
+            sum += Number($(tndMarkupRevDiv).find(ele).val());
+        });
+        $(tndMarkupRevDiv).find("#SubtotalItaly").val(sum.toFixed(3));
+
+        sum = 0;
+        elements = $(tndMarkupRevDiv).find("#SubtotalRow").prevAll().find("input[colname='bo']");
+        $.each(elements, function (index, ele) {
+            sum += Number($(tndMarkupRevDiv).find(ele).val());
+        });
+        $(tndMarkupRevDiv).find("#SubtotalBO").val(sum.toFixed(3));
+    }
+
+    function SetTotal() {
+        var value, testOverrideCharge;
+        testOverrideCharge = Number($(tndMarkupRevDiv).find("#OverrideTestItaly").val());
+        if (testOverrideCharge > 0) {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBItaly").val()) + Number($(tndMarkupRevDiv).find("#DevItaly").val()) + testOverrideCharge;
+        } else {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBItaly").val()) + Number($(tndMarkupRevDiv).find("#DevItaly").val()) + Number($(tndMarkupRevDiv).find("#TestingItaly").val());
+        }
+        $(tndMarkupRevDiv).find("#TotalItaly").val(value.toFixed(3));
+
+        testOverrideCharge = Number($(tndMarkupRevDiv).find("#OverrideTestInd").val());
+        if (testOverrideCharge > 0) {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBInd").val()) + Number($(tndMarkupRevDiv).find("#DevInd").val()) + testOverrideCharge;
+        } else {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBInd").val()) + Number($(tndMarkupRevDiv).find("#DevInd").val()) + Number($(tndMarkupRevDiv).find("#TestingInd").val());
+        }
+        $(tndMarkupRevDiv).find("#TotalInd").val(value.toFixed(3));
+
+        testOverrideCharge = Number($(tndMarkupRevDiv).find("#OverrideTestBO").val());
+        if (testOverrideCharge > 0) {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBBO").val()) + Number($(tndMarkupRevDiv).find("#DevBO").val()) + testOverrideCharge;
+        } else {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBBO").val()) + Number($(tndMarkupRevDiv).find("#DevBO").val()) + Number($(tndMarkupRevDiv).find("#TestingBO").val());
+        }
+        $(tndMarkupRevDiv).find("#TotalBO").val(value.toFixed(3));
+    }
+
+    function SetPercentUnitCost() {
+        var totalCost, finalTotalInd, value, total, subTotalInd;
+        //
+        totalCost = Number($(tndMarkupRevDiv).find("#totalCostINR").val());
+        total = Number($(tndMarkupRevDiv).find("#TotalInd").val());
+
+        value = (total / totalCost) * 100;
+        $(tndMarkupRevDiv).find("#PercUnitCostInd").val(value.toFixed(2));
+
+        subTotalInd = Number($(tndMarkupRevDiv).find("#SubtotalInd").val());
+        finalTotalInd = 1 + ((subTotalInd + value) / 100);
+
+        $(tndMarkupRevDiv).find("#FinalTotInd").val(finalTotalInd.toFixed(4));
+
+        total = Number($(tndMarkupRevDiv).find("#TotalItaly").val());
+        value = (total / (totalCost * finalTotalInd)) * 100;
+        $(tndMarkupRevDiv).find("#PercUnitCostItaly").val(value.toFixed(2));
+
+    }
+
+    function SetFinalTotal() {
+        var value, percentUnitCost, subTotal;
+
+        subTotal = Number($(tndMarkupRevDiv).find("#SubtotalInd").val());
+        percentUnitCost = Number($(tndMarkupRevDiv).find("#PercUnitCostInd").val());
+        value = 1 + ((subTotal + percentUnitCost) / 100);
+        $(tndMarkupRevDiv).find("#FinalTotInd").val(value.toFixed(4));
+
+        subTotal = Number($(tndMarkupRevDiv).find("#SubtotalItaly").val());
+        percentUnitCost = Number($(tndMarkupRevDiv).find("#PercUnitCostItaly").val());
+        value = 1 + ((subTotal + percentUnitCost) / 100);
+        $(tndMarkupRevDiv).find("#FinalTotItaly").val(value.toFixed(4));
+
+        subTotal = Number($(tndMarkupRevDiv).find("#SubtotalBO").val());
+        percentUnitCost = Number($(tndMarkupRevDiv).find("#PercUnitCostBO").val());
+        value = 1 + ((subTotal + percentUnitCost) / 100);
+        $(tndMarkupRevDiv).find("#FinalTotBO").val(value.toFixed(4));
+    }
+
+    function SetTotalMarkup() {
+        var value;
+
+        value = Number($(tndMarkupRevDiv).find("#ContingencyItaly").val()) + Number($(tndMarkupRevDiv).find("#MarginItaly").val()) + Number($(tndMarkupRevDiv).find("#AgencyCommItaly").val());
+        $(tndMarkupRevDiv).find("#TotMarginItaly").val(value.toFixed(2));
+
+        value = Number($(tndMarkupRevDiv).find("#ContingencyInd").val()) + Number($(tndMarkupRevDiv).find("#MarginInd").val()) + Number($(tndMarkupRevDiv).find("#AgencyCommInd").val());
+        $(tndMarkupRevDiv).find("#TotMarginInd").val(value.toFixed(2));
+
+        value = Number($(tndMarkupRevDiv).find("#ContingencyBO").val()) + Number($(tndMarkupRevDiv).find("#MarginBO").val()) + Number($(tndMarkupRevDiv).find("#AgencyCommBO").val());
+        $(tndMarkupRevDiv).find("#TotMarginBO").val(value.toFixed(2));
+    }
+
+
+
+    function SetTravelLB() {
+        var noOfPersons, noOfDays, fare, lodging,travelLB,conversionRate;
+        noOfPersons = Number($(tndMarkupRevDiv).find("#txtNoOfPersons").val());
+        noOfDays = Number($(tndMarkupRevDiv).find("#txtNoOfDays").val());
+        fare = Number($(tndMarkupRevDiv).find("#txtFare").val());
+        lodging = Number($(tndMarkupRevDiv).find("#txtLodging").val());
+        if (tndType == 1) {
+            if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+                conversionRate = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+            }
+
+            travelLB = ((noOfPersons * noOfDays * lodging) + (noOfPersons * fare)) * conversionRate;
+            $(tndMarkupRevDiv).find("#TravelLBInd").val(travelLB.toFixed(0));
+        }
+        else {
+            if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+                conversionRate = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+            }
+
+            travelLB = ((noOfPersons * noOfDays * lodging) + (noOfPersons * fare)) * conversionRate;
+            $(tndMarkupRevDiv).find("#TravelLBItaly").val(travelLB.toFixed(0));
+        }
+
+        $(tndMarkupRevDiv).find("#NoOfPersons").val(noOfPersons);
+        $(tndMarkupRevDiv).find("#NoOfDays").val(noOfDays);
+        $(tndMarkupRevDiv).find("#Fare").val(fare);
+        $(tndMarkupRevDiv).find("#Lodging").val(lodging);
+        SetTotal();
+        $(tndMarkupRevDiv).find("#testmasterDtls").css('display', "none");
+    }
+
+    function CloseTravelLBModal() {
+        $(tndMarkupRevDiv).find("#testmasterDtls").css('display', "none");
+    }*@
+
+</script>

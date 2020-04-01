@@ -1,0 +1,145 @@
+﻿@model Karamtara_Application.Models.Tender.TenderStructureModel
+
+@using (@Html.BeginForm("SaveTestLineRelation", "TenderPricing", FormMethod.Post, new { @class = "formClass", @id = "testLineRelationForm" }))
+{
+    <div class="modal-dialog modal-dialog-centered  " role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader p-0">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body overflowModel">
+                <div class="BomRefDtls">
+
+                    <div class="col-sm-12 row BomRefHeader m-0">
+                        Test Line Details
+                    </div>
+                    <div class="col-sm-12 row BomRefHeader m-0 testMasterheader">
+                        SELECT TEST FOR :<span> @Model.ProductName</span>
+                        @Html.HiddenFor(x => Model.ProductIdentityId)
+                        @Html.HiddenFor(x => Model.ProdType)
+                        @Html.HiddenFor(x => Model.TenderId)
+                        @Html.HiddenFor(x => Model.TenderRevisionNo)
+                    </div>
+                    <div class="col-sm-12 row BomRefHeader m-0 testMasterheader">
+                        Description:
+                        
+                            @if (Model.TestNames != null && Model.TestNames.Count > 0)
+                            {
+                        <span>
+                            <ul class="testMasterUL">
+                                @foreach (var testName in Model.TestNames)
+                                {
+                                    <li>@testName</li>
+                                }
+                            </ul>
+                        </span>
+                            }
+                        
+                        else
+                        {
+                            <span class="font-italic"> No Tests have been added for this Product </span>
+                        }
+
+                    </div>
+                    @if (Model.TestNames != null && Model.TestNames.Count > 0)
+                    {
+                        <div class="tableBlock newCompoTable">
+                            <table class="table m-0 modalTable" id="compModalTable">
+                                @for (int i = 0; i < Model.LineList.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="lineHead">@Model.LineList[i].Name</td>
+                                        <td class="lineCheckBox">
+                                            <div class="col-sm-12 p-0">
+                                                <div class="row">
+                                                    <div class="col-sm-3 d-flex align-items-center">
+                                                        <label class="container checkbox">
+                                                            @Html.CheckBoxFor(x => @Model.LineList[i].IsSelected, new { @id = "chbox_" + Model.LineList[i].Id, @onchange = "check(" + Model.LineList[i].Id + ");" })
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-sm-9">
+                                                        <span class="bmd-form-group searchInput">
+                                                            @if(Model.LineList[i].IsSelected)
+                                                            {
+                                                                @Html.TextBoxFor(x => Model.LineList[i].TestQuantity, new { @class = "whiteBgInput p-1", @placeholder = "Quantity", @id = "qty_" + Model.LineList[i].Id })
+                                                            }
+
+                                                            else
+                                                            {
+                                                                @Html.TextBoxFor(x => Model.LineList[i].TestQuantity, new { @class = "whiteBgInput p-1", @placeholder = "Quantity", @id = "qty_" + Model.LineList[i].Id, @style = "display:none" })
+                                                            }
+
+
+                                                            @*<input class="whiteBgInput" id="Size" name="Size" type="text" value="" placeholder="Quantity">*@
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @Html.HiddenFor(x => Model.LineList[i].Id)
+                                    @Html.HiddenFor(x => Model.LineList[i].IsSelected)
+                                    @Html.HiddenFor(x => Model.LineList[i].TestQuantity)
+                                }
+                            </table>
+                            <div class="text-right p-2">
+                                <span id="errorSpan" class="errorBlock" style="display:none">Error</span>
+                                <button type="button" class="createComponent sucessEnq" id="testLineSubmit">Submit</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+<script>
+
+   
+    function check(num) {
+        if ($('#chbox_' + num).is(":checked")) {
+            $("#qty_" + num).attr('style', '');
+        }
+        else {
+            $("#qty_" + num).attr('style', 'display:none');
+        }
+    };
+
+
+    $("#testLineSubmit").on('click', function () {
+        var form = $("#testLineRelationForm").serialize();
+
+        $.ajax({
+            type: 'Post',
+            url: '/TenderPricing/SaveTestLineRelation',
+            data: form,
+            dataType: 'JSON',
+            success: function (data) {
+                $("#testmasterDtls").modal('hide');
+                successTestLineSave();
+            },
+            error: function (err) {
+                failedTestLineSave();
+            }
+        });
+
+    });
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $("input").attr('disabled', 'disabled');
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").not(".close").hide();
+        $("input[type='button']").hide();
+    };
+
+
+
+
+</script>

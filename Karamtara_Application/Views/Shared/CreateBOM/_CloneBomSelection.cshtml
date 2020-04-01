@@ -1,0 +1,106 @@
+﻿@model Karamtara_Application.Models.BOMListModel
+
+<div class="Catgdetails tableBlock TenderDtlModelTable" id="divProdEdit">
+    <div class="col-sm-12">
+        <div class="row">
+            @if (Model.DataList != null && Model.DataList.Count > 0)
+            {
+                <table class="table prodDetails" id="prodTbl2">
+                    <tr>
+                        <td style="display:none">
+                            <input id="hidEnqId" type="hidden" value="@Model.EnquiryId" />
+                            <input id="hidBomId" type="hidden" value="@Model.BomId" />
+                            <input id="hidRevId" type="hidden" value="@Model.RevisionNo" />
+                        </td>
+                        <th class="tendDeptNo">Tender File No</th>
+                        <th class="ProjName">Project Name</th>
+                        <th class="enqDt">Enquiry Date</th>
+                        <th class="dueDt">Due Date</th>
+                        <th class="expDt">Expiry Date</th>
+                        <th class="cutName">Customer Name</th>
+                        <th class="country">Country</th>
+                        <th class="revision">Revision</th>
+                        <th class="cloneMasterBtn text-center">Clone From Master</th>
+                        <th class="cloneMasterBtn text-center">Clone From BOM</th>
+                    </tr>
+
+                    @foreach (var item in Model.DataList)
+                    {
+                        <tr>
+                            <td>@item.ProjectNo</td>
+                            <td>@item.ProjectName</td>
+                            <td>@item.EnquiryDate.ToString("dd-MM-yyyy")</td>
+                            <td>@item.EnquiryDuteDate.ToString("dd-MM-yyyy")</td>
+                            <td>@item.ProjectDueDate.ToString("dd-MM-yyyy")</td>
+                            <td>@item.EpcCustomerName</td>
+                            <td>@item.Country</td>
+                            <td>@item.RevNo </td>
+                            <td> <Button type="button" class="commonBtn saveBtn p-2" onclick='location.href="@Url.Action("GetCloneData", "BOMClone", new { fromBomId = item.BomId, fromRevNo = item.RevNo, toBomId = Model.BomId, toRevNo = Model.RevisionNo, enqId = Model.EnquiryId, refreshFrom = "Master" })"'>Clone BOM </Button></td>
+                            @*<td> <Button type="button" class="commonBtn" onclick='CreateCloneData(@item.BomId,@item.RevNo,@Model.BomId,@Model.RevisionNo,@item.EnquiryId)'>Clone</Button></td>*@
+                            @*<td> <Button type="button" class="commonBtn" onclick='location.href="@Url.Action("GetRevisionData","BOMRevision",new { @bomId=item.BomId,@revNo=item.RevNo,@enqId=item.EnquiryId})"'> Edit </Button></td>*@
+                            <td> <Button type="button" class="commonBtn saveBtn p-2 " onclick='location.href="@Url.Action("GetCloneData", "BOMClone", new { fromBomId = item.BomId, fromRevNo = item.RevNo, toBomId = Model.BomId, toRevNo = Model.RevisionNo, enqId = Model.EnquiryId, refreshFrom = "BOM" })"'>Clone BOM</Button></td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <div style="height:100px;">No BOM has been published yet</div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="bomCloneRefreshModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="divEditSubAssmModel">
+                <label>Refresh the Cloned Data from </label>
+                <input type="hidden" id="hidRefreshFrom" />
+                <div class="saveProddtls position-relative mb-2 w-100">
+                    <button type="button" class="submitBomBtn saveBtn " id="btnRefreshFromMaster">From Master</button>
+                    <button type="button" class="submitBomBtn publishBtn " id="btnRefreshFromBom">From BOM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function CreateCloneData(fromBomId, fromRevNo, toBomId, toRevNo, enqId) {
+        $("#bomCloneRefreshModal").modal('show');
+    }
+
+    $("#btnRefreshFromMaster").click(function () {
+        $("#hidRefreshFrom").val("Master");
+        var refreshFrom = $("#hidRefreshFrom").val();
+        $.ajax({
+            type: "POST",
+            url: '/BOMClone/CreateCloneData',
+            data: { fromBomId: fromBomId, fromRevNo: fromRevNo, toBomId: toBomId, toRevNo: toRevNo, enqId: enqId, refreshFrom: refreshFrom },
+            dataType: "html",
+            success: function (data) { },
+            error: function (data) { }
+        });
+    });
+
+    $("#btnRefreshFromBom").click(function () {
+        $("#hidRefreshFrom").val("BOM");
+        var refreshFrom = $("#hidRefreshFrom").val();
+        $.ajax({
+            type: "POST",
+            url: '/BOMClone/CreateCloneData',
+            data: { fromBomId: fromBomId, fromRevNo: fromRevNo, toBomId: toBomId, toRevNo: toRevNo, enqId: enqId, refreshFrom: refreshFrom },
+            dataType: "html",
+            success: function (data) { },
+            error: function (data) { }
+        });
+    });
+</script>

@@ -1,0 +1,136 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+<script type="text/javascript">
+    @{ var rowNum = 0; }
+</script>
+
+
+<div class="BOMdetails tableBlock">
+    <div class="row">
+        <table class="table">
+            <tr rowspan="2">
+                <td colspan="7" class="BOMHeader">@Model.DisplayText</td>
+            </tr>
+            <tr>
+                <th class="srNo">Sr.No</th>
+                <th class="srNo">CatNo</th>
+                <th class="asemblyId">Product Name</th>
+                <th class="asemblyNm">Size</th>
+                <th class="techAsemblyNm">Qty</th>
+                <th class="techAsemblyNm">Gr Wt</th>
+                <th class="techAsemblyNm">Net Wt</th>
+            </tr>
+
+            @if (Model.ProductType == 2)
+            {
+                if (Model.AssemblyList != null && Model.AssemblyList.Count > 0)
+                {
+                    foreach (var assm in Model.AssemblyList)
+                    {
+                        rowNum++;
+                        <tr>
+                            <td class="srNo">@rowNum</td>
+                            <td class="srNo">@assm.CatalogueNo</td>
+                            <td><label>@assm.AssemblyName</label></td>
+                            <td><label></label></td>
+                            <td><label>@assm.Quantity</label></td>
+                            <td><label></label></td>
+                            <td><label></label></td>
+
+                        </tr>
+                        if (Model.SubAssemblyList != null && Model.SubAssemblyList.Count > 0)
+                        {
+                            int charCount = 65;
+                            foreach (var subAssm in Model.SubAssemblyList)
+                            {
+                                if (subAssm.AssemblyId.Equals(assm.AssemblyId))
+                                {
+                                    <tr>
+                                        <td>@((char)charCount).</td>
+                                        <td><label>@subAssm.CatalogueNo</label></td>
+                                        <td><label>@subAssm.SubAssemblyName</label></td>
+                                        <td><label>@subAssm.Size</label></td>
+                                        <td><label>@subAssm.Quantity</label></td>
+                                        <td><label>@subAssm.UnitGrWt</label></td>
+                                        <td><label>@subAssm.UnitNetWt</label></td>
+
+                                    </tr>
+                                }
+                                charCount++;
+                                if (Model.ComponentList != null && Model.ComponentList.Count > 0)
+                                {
+                                    int smallCount = 97;
+                                    foreach (var comp in Model.ComponentList)
+                                    {
+                                        if (comp.SubAssemblyId.Equals(subAssm.SubAssemblyId))
+                                        {
+                                            <tr>
+                                                <td>@((char)smallCount).</td>
+                                                <td>@comp.CatalogueNo</td>
+                                                <td><label>@comp.ComponentName</label></td>
+                                                <td><label>@comp.Size</label></td>
+                                                <td><label>@comp.Qty</label></td>
+                                                <td><label>@comp.UnitGrWt</label></td>
+                                                <td><label>@comp.UnitNetWt</label></td>
+                                            </tr>
+                                        }
+                                        smallCount++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            @if (Model.ProductType == 3 && Model.SubAssemblyList != null && Model.SubAssemblyList.Count > 0)
+            {
+                foreach (var subAssm in Model.SubAssemblyList)
+                {
+                    <tr>
+                        <td></td>
+                        <td><label>@subAssm.SubAssemblyName</label></td>
+                        <td><label>@subAssm.Size</label></td>
+                        <td><label>@subAssm.Quantity</label></td>
+                        <td><label>@subAssm.UnitGrWt</label></td>
+                        <td><label>@subAssm.UnitNetWt</label></td>
+                    </tr>
+                    if (Model.ComponentList != null && Model.ComponentList.Count > 0)
+                    {
+                        foreach (var comp in Model.ComponentList)
+                        {
+                            if (comp.SubAssemblyId.Equals(subAssm.SubAssemblyId))
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td><label>@comp.ComponentName</label></td>
+                                    <td><label>@comp.Size</label></td>
+                                    <td><label>@comp.Qty</label></td>
+                                    <td><label>@comp.UnitGrWt</label></td>
+                                    <td><label>@comp.UnitNetWt</label></td>
+                                </tr>
+                            }
+                        }
+                    }
+
+                }
+            }
+            @if (Model.ProductType == 4 && Model.ComponentList != null && Model.ComponentList.Count > 0)
+            {
+                foreach (var comp in Model.ComponentList)
+                {
+                    <tr>
+                        <td></td>
+                        <td><label>@comp.ComponentName</label></td>
+                        <td><label>@comp.Size</label></td>
+                        <td><label>@comp.Qty</label></td>
+                        <td><label>@comp.UnitGrWt</label></td>
+                        <td><label>@comp.UnitNetWt</label></td>
+
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+<script>
+    //  window.onload = AddRows;
+</script>

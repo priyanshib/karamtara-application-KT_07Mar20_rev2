@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" ></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js" ></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <!--
+                    
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"><img src="images/user.png" /> Mr. Sachin Sawant</div>
+                    <div class="logOut col-12">Logout</div>
+                </div>-->
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+
+
+        <div class="main-content">
+            <div class="row loginBlock">
+                <span>Login</span>
+
+                <form class="loginForm">
+                    <div class="form-group">
+                        <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                        <label for="email" class="bmd-label-floating">EMAIL ID</label>
+                        <input type="text" class="form-control" id="email">
+                    </div>
+                    <div class="form-group bmd-form-group">
+                        <!-- manually specified -->
+                        <label for="password" class="bmd-label-floating">PASSWORD</label>
+                        <input type="text" class="form-control" id="password">
+                    </div>
+                </form>
+                <div class="loginBtn">
+                    <button type="button" class="btn">LOGIN</button>
+                </div>
+                <div class="forgetPassBtn">
+                    <button type="button" class="btn">FORGET PASSWORD</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

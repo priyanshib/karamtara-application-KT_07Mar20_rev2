@@ -1,0 +1,182 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+@using Karamtara_Application.Models.Tender;
+
+@{
+    int count = 1;
+    int value = 0;
+    var tndDetails = new IntTenderDetails();
+}
+
+<div class="BomRefDtls">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        TEST MASTER PRICING
+
+    </div>
+    @using (Html.BeginForm("SaveTestPricing", "TenderPricing", FormMethod.Post, new { @id = "TMPrice" }))
+    {
+        <div class="col-sm-12 row BomRefItem m-0">
+            <div class="col-sm-8 ">
+                <div class="row addMarkInput">
+                    <div class="col-sm-4 IncrementByPercentage">
+                        Increment By
+                        @{
+                            value = 0;
+                            tndDetails = new IntTenderDetails();
+                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                            {
+                                tndDetails = Model.IntTndValues.Where(x => x.Description == "IncrementByPercentage").FirstOrDefault() ?? new IntTenderDetails();
+                                Model.IncrementByPercentage = tndDetails.Value;
+                            }
+                        }
+                        <p class="d-flex align-items-center mt-1">@Html.TextBoxFor(x => Model.IncrementByPercentage, Model.IncrementByPercentage.ToString("G29"), new { @onblur = "SetIncrementedPrices()", @id = "IncrementByPercentage", @class = "whiteBgInput" })%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                @*<input type="button" class="submitEnq revisionBtn" value="Cancel" onclick="closeModal();"/>
+                    <input type="button" class="submitEnq publishBtn" id="btnTndSaveForm" value="Submit" />*@
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal();">Cancel</button>
+                <button type="button" class="submitEnq publishBtn" id="btnTndSaveForm">Submit</button>
+            </div>
+        </div>
+        for (int i = 0; i < Model.DummyList.Count; i++)
+        {
+            @Html.HiddenFor(model => Model.DummyList[i].Id)
+            @Html.HiddenFor(model => Model.DummyList[i].Price)
+            @Html.HiddenFor(model => Model.DummyList[i].Inr)
+            @Html.HiddenFor(model => Model.DummyList[i].Euro)
+            @Html.HiddenFor(model => Model.DummyList[i].Usd)
+            @Html.HiddenFor(model => Model.DummyList[i].Quantity)
+        }
+        <div class="TestMasterdetails tableBlock">
+            <div class="">
+                <table class="table m-0 TenderDtlModelTable">
+                    <tr>
+                        <th class="srNo" rowspan="2">Sr.No</th>
+                        <th class="testType" rowspan="2">Test Name</th>
+                        <th class="testDes" rowspan="2">Description of Test</th>
+                        <th class="testType" rowspan="2">Type</th>
+                        <th class="testLine" rowspan="2">kV Line</th>
+                        <th class="testUTS" rowspan="2">UTS</th>
+                        <th class="testBundle" rowspan="2">Bundle</th>
+                        <th class="testBundle" rowspan="2">Summary</th>
+                        <th class="priceItem" colspan="3">Price</th>
+                        <th class="priceItem" rowspan="2">Quantity</th>
+                        <th class="priceItem incrementedPrice" rowspan="2">Incremented Price (INR)</th>
+                    </tr>
+                    <tr>
+                        <th class="priceItem">INR</th>
+                        <th class="priceItem">EURO</th>
+                        <th class="priceItem">USD</th>
+                    </tr>
+                    @for (int i = 0; i < Model.TestList.Count; i++)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@Model.TestList[i].TestName</td>
+                            <td class="Model.TestList[i]DesTD">@Model.TestList[i].TestDescription</td>
+                            <td>@Model.TestList[i].Type</td>
+                            <td>@Model.TestList[i].KVLine</td>
+                            <td>@Model.TestList[i].UTS</td>
+                            <td>@Model.TestList[i].Bundle</td>
+                            <td class="text-center">
+                                @Model.TestList[i].Summary
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Inr, Model.TestList[i].Inr.ToString("G29"), new { @onblur = "SetIncrementedPrices()", @id = "tpInr", @class = "whiteBgInput" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Euro, Model.TestList[i].Euro.ToString("G29"), new { @id = "tpEuro", @class = "whiteBgInput" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Usd, Model.TestList[i].Usd.ToString("G29"), new { @id = "tpUsd", @class = "whiteBgInput" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Quantity, Model.TestList[i].Quantity.ToString("G29"), new { @id = "tpQuantity", @class = "whiteBgInput" })
+                            </td>
+                            <td class="incrementedPrice"></td>
+                        </tr>
+                        count++;
+                        @Html.HiddenFor(x => Model.TenderId, new { @id = "testTenderId" })
+                        @Html.HiddenFor(x => Model.TenderRevisionId, new { @id = "testTenderRevId" })
+                        @Html.HiddenFor(x => Model.TestList[i].Id)
+                        @Html.HiddenFor(x => Model.TestList[i].Usd)
+                        @Html.HiddenFor(x => Model.TestList[i].Euro)
+                        @Html.HiddenFor(x => Model.TestList[i].Inr)
+                        @Html.HiddenFor(x => Model.TestList[i].Quantity)
+                    }
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+    if (intTenderType == 2) {
+        $(".IncrementByPercentage,.incrementedPrice").hide();
+    }
+    else {
+        $(".IncrementByPercentage,.incrementedPrice").show();
+        SetIncrementedPrices();
+    }
+
+    function SetIncrementedPrices() {
+        var elements, incrementPercent = 0, parentItem, inrValue, value;
+        elements = $("td.incrementedPrice");
+        incrementPercent = $("#IncrementByPercentage").val();
+        $(elements).each(function (index, item) {
+            parentItem = $(item).parent();
+            inrValue = Number($(parentItem).find("#tpInr").val());
+            value = inrValue + (inrValue * (incrementPercent / 100));
+            $(item).text(value.toFixed(3));
+        });
+
+    }
+
+    $("#btnTndSaveForm").click(function () {
+
+        $("#testTenderId").val($("#tndId").val());
+
+        $("#testTenderRevId").val($("#tndRevId").val());
+
+        var form = $("#TMPrice").serialize();
+
+        $.ajax({
+            type: "post",
+            url: '/IntTenderPricing/SaveTestPricing',
+            dataType: "json",
+            data: form,
+            success: function (data) {
+                debugger;
+                if (data) {
+                    $(".modal").modal('hide');
+                    SubmitMarkup();
+                    //SubmitFreight();
+                    window.location.reload();
+                    //successModal();
+                }
+                else {
+                    failureModal('creation');
+                }
+            },
+            error: function (courses) {
+                // failureModal();
+            }
+        });
+    })
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").not(".close").hide();
+        $("input[type='button']").hide();
+    }
+
+</script>

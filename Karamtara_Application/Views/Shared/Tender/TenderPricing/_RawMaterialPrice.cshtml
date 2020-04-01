@@ -1,0 +1,116 @@
+﻿@model Karamtara_Application.Models.Tender.RawMaterialPricingDetail
+<div class="BomRefDtls">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        RAW MATERIAL PRICING
+
+    </div>
+    @using (Html.BeginForm("SaveRMPricing", "TenderPricing", FormMethod.Post, new { @id = "RMPrice" }))
+    {
+        <div class="col-sm-12 row BomRefItem m-0">
+            <div class="col-sm-8 ">
+                Raw Material List
+            </div>
+            <div class="col-sm-4 text-right">
+                @*<input type="button" class="submitEnq revisionBtn" value="Cancel" onclick="closeModal();"/>
+                    <input type="button" class="submitEnq publishBtn" id="btnTndSaveForm" value="Submit" />*@
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal();">Cancel</button>
+                <button type="button" class="submitEnq publishBtn" id="btnTndSaveForm">Submit</button>
+            </div>
+        </div>
+
+
+        <div class="tableBlock TenderDtlModelTable">
+            <table class="table m-0" id="rmPricingTable">
+                <tr>
+                    <th class="TendSrNo" style="display:none;"></th>
+                    <th class="TendSrNo">S.NO.</th>
+                    <th class="RawitemNm">Raw Material Name</th>
+                    <th class="itemCat">Raw Material Group</th>
+                    <th class="RawTendPrc">Price</th>
+                </tr>
+                @{
+                    if (Model != null)
+                    {
+                        int i = 1;
+                        foreach (var item in Model.RawMaterialList.ToList())
+                        {
+
+                            <tr>
+                                <td class="RawTendPrc" style="display:none;">@Html.TextBoxFor(o => o.RawMaterialList[i - 1].Id, new { @id = "Id_" + (i - 1) }) </td>
+                                <td class="TendSrNo">@i </td>
+                                <td class="RawitemNm">@item.MaterialDesc</td>
+                                <td class="itemCat">@item.MaterialGroup</td>
+                                <td class="RawTendPrc">@Html.TextBoxFor(o => o.RawMaterialList[i - 1].Price, new { @id = "Price_" + (i - 1), @class = "whiteBgInput" }) </td>
+                                @Html.HiddenFor(o => o.RawMaterialList[i - 1].TndId, new { @id = "TndId_" + (i - 1) })
+                                @Html.HiddenFor(o => o.RawMaterialList[i - 1].TndRevNo, new { @id = "TndRevNo_" + (i - 1) })
+                            </tr>
+                            i = i + 1;
+                        }
+                    }
+                }
+            </table>
+        </div>
+
+    }
+</div>
+<script>
+
+    console.log($("input[id*='TndId_']"));
+
+    $("input[id*='TndId_']").val($("#tndId").val());
+    $("input[id*='TndRevNo_']").val($("#tndRevId").val());
+
+    $("#btnTndSaveForm").click(function () {
+        var flag = true;
+        var inputElements = $("input[id^=Price_]");
+        console.log(inputElements);
+        $(inputElements).each(function (index, item) {
+            if (Number($(item).val()) <= 0) {
+                flag = false;
+                return false;
+            }
+        });
+
+        if (!flag) {
+            ShowSnackBar("Raw material price should be greater than 0");
+            return false;
+        }
+            
+
+        var form = $("#RMPrice").serialize();
+
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/SaveRMPricing',
+            dataType: "json",
+            data: form,
+            success: function (data) {
+                if (data) {
+                    $(".modal").modal('hide');
+                    //successModal();
+                    window.location.reload();
+                }
+                else {
+                    failureModal('creation');
+                }
+            },
+            error: function (courses) {
+                // failureModal();
+            }
+        });
+    })
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").not(".close").hide();
+        $("input[type='button']").hide();
+    }
+
+</script>

@@ -1,0 +1,289 @@
+﻿@model Karamtara_Application.Models.RMMasterModel
+@{
+    ViewBag.Title = "RawMaterialMaster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Index", "RawMaterialMaster", FormMethod.Post))
+{
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="row ProdNmBlock p-2">
+                    <div class="col-sm-8 align-items-center d-flex">
+                        <img src="~/Assets/images/RawMaterialMaster.png" height="20px">  RAW MATERIAL MASTER
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="createRawMater tableBlock" id="rawMaterialInput">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="addRawMateHead">ADD NEW MATERIAL</div>
+                            <div class="addMaterForm">
+                                <div class="form-group" id="txtMatCategory">
+                                    <label>Material Name</label>
+                                    @Html.TextBoxFor(x => x.MaterialName, new { @id = "txtMatName" })
+                                </div>
+                                <div class="form-group">
+                                    <label>Material Group</label>
+                                    @Html.TextBox("MaterialType", string.Empty, new { @id = "txtGroupName", @class = "autoComp", @onclick= "AutoCompleteType();" })
+                                    @Html.HiddenFor(x=>x.GroupId, new { @id = "groupId"})
+                                </div>
+                                @*<div class="form-group">
+                                    <label>Material Type</label>
+                                    @Html.TextBoxFor(x => x.MaterialType, new { @id = "txtMType" })
+                                </div>*@
+                                @*<div class="form-group">
+            <label>Select Material Category</label>
+            @Html.DropDownListFor(x => x.MaterialCategoryTxt, new SelectList(Model.CategoryList), "Select Raw Material Category", new { @id = "MaterialCateDdl", @class = "browser-default custom-select" })
+        </div>*@
+                                @*<div class="textLabel" id="txtOR">OR</div>*@
+
+                            </div>
+                            <div class="saveRawMater">
+                                <button type="button" class="submitBomBtn saveBtn" id="btnSave">Add</button>
+                                <button type="button" class="submitBomBtn publishBtn" id="btnCancel">Cancel </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8" id="rmList">
+                <div class="RawMasterdetails tableBlock">
+                    <div class="row">
+                        <div class="addRawMateHead col-sm-12">
+                            raw material list
+                            @*<button type="button" class="btn SearchBtn" id="btnSearch"><img src="~/Assets/images/search.png" /></button>
+                            <input id="txtSearchName" name="MaterialName" type="text" value="" placeholder="Search Raw Material" autocomplete="off" class="selectpicker">
+                            <input type="hidden" id="hidRMSearch" name="searchText" />*@
+                            <div class="searchBlock pb-3">
+                                <div class="inputSerachDiv ">
+                                    <span class="bmd-form-group"> 
+                                        <input id="txtSearchName" name="MaterialName" type="text" value="" placeholder="Search Raw Material" autocomplete="off" class="selectpicker">
+                                         <button type="button" class="btn SearchBtn" id="btnSearch"><img src="~/Assets/images/search.png" /></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table mt-4 RawMaterialTable" id="tblRMList">
+                            <tr>
+                                <th class="materNm">Raw Material Name</th>
+                                <th class="materID">Material Group</th>
+                                @*<th class="materCode">Material Type</th>*@
+                            </tr>
+                            @foreach (var item in Model.RawMaterialList)
+                            {
+                            <tr>
+                                <td>@item.MaterialDesc</td>
+                                <td>@item.Material</td>
+                                @*<td>@item.MaterialType</td>*@
+                            </tr>
+                            }
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type = "button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id = "modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type = "button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}
+<script>
+
+    function successModal() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Raw Material Created Successfully');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    function failureModal() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Raw Material Creation Failed');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    $(document).ready(function () {
+
+        $("#MaterialCateDdl").change(function () {
+            var codeVal = $("#MaterialCateDdl").val();
+            if (codeVal) {
+                $("#txtMatCodeDiv").attr("style", "display:none");
+                $("#txtOR").attr("style", "display:none");
+            }
+            if (codeVal == null || codeVal == undefined || codeVal === '') {
+                $("#txtOR").removeAttr("style", "display:none");
+                $("#txtMatCodeDiv").removeAttr("style", "display:none");
+            }
+
+        });
+    });
+
+    //function myFunction() {
+    //    var x = document.getElementById("snackbar");
+    //    x.className = "show";
+    //    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+    //}
+
+    $("#btnCancel").click(function () {
+        $("#txtMatName").val('');
+        $("#txtGroupName").val('');
+        $("#groupId").val('');
+        //$("#txtcategory").val('');
+    });
+    
+     $(function () {
+        var arr = @Html.Raw(Json.Encode(Model.SearchAutoComplete))
+            $("#txtSearchName").autocomplete({
+
+            source: arr,
+                minLength: 2,
+                select: function (event, ui) {
+                    var value = ui.item.value;
+                    RawMaterialList(value);
+                }
+        });
+    });
+
+    $("#btnSearch").click(function () {
+        if ($("#txtSearchName").val().length != 0) {
+            event.preventDefault();
+            var value = $("#txtSearchName").val();
+            RawMaterialList(value);
+        }
+    })
+
+    $("#txtSearchName").keydown(function (event) {
+        if (event.keyCode == 13) {
+            if ($("#txtSearchName").val().length != 0) {
+                event.preventDefault();
+                var value = $("#txtSearchName").val();
+                RawMaterialList(value);
+            }
+        }
+    })
+
+    $("#btnSave").click(function () {
+        var name = $("#txtMatName").val();
+        var groupId = $("#groupId").val();
+
+        if (name && groupId) {
+            $.ajax({
+                type: "post",
+                url: "/RawMaterialMaster/CreateRawMaterial",
+                dataType: "json",
+                data: { materialName: name, groupId: groupId },
+                //contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    if (data == true) {
+                        //$("#txtMatName").val('');
+                        //$("#txtMType").val('');
+                        //$("#txtcategory").val('');
+                        successModal();
+                    }
+                    else {
+                        failureModal();
+                    }
+                },
+                error: function (courses) {
+                    failureModal();
+                }
+            });
+        }
+        else {
+            ShowSnackBar("Please fill both fields");
+        }
+    })
+
+    function RawMaterialList(value) {
+        var count = 0;
+        if (count != undefined && value != undefined) {
+            $.ajax({
+                type: "get",
+                url: "/RawMaterialMaster/SearchRawMaterial",
+                dataType: "html",
+                data: { searchText: value},
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#tblRMList').html(data);
+                },
+                error: function (courses) { }
+            });
+        }
+    }
+
+    function AutoCompleteType() {
+        $(".autoComp").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/RawMaterialMaster/GetAllRawMaterialGroups",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.GroupName, value: item.GroupId }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                //var countId = $(this).attr('data-value');
+                //var objectId = i.item.value;
+                //AutoFillSelectedRow(countId, objectId, i.item.Type);
+                $("#groupId").val(i.item.value);
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    $("#groupId").val('');
+                    //var num = $(this).attr('data-value');
+                    //$("#ObjectId_" + num).val("");
+                    //$("#type_" + num).val("");
+                    //ClearRow(num);
+                }
+            },
+            //create: function () {
+            //    $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+            //        return $("<li>")
+            //            .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/2.png' width='20px'></span></div>")
+            //            .appendTo(ul);
+            //    };
+            //},
+            minLength: 2
+        });
+    }
+
+
+
+</script>
+

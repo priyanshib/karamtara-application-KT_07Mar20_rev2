@@ -1,0 +1,234 @@
+﻿@model Karamtara_Application.Models.MasterDataModel
+
+@{
+    ViewBag.Title = "Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Master</h2>
+
+
+@using (Html.BeginForm("Index", "Master", FormMethod.Post))
+{
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row p-2">
+                    <div class="col-sm-8 align-items-center">
+                        <img src="~/Assets/images/RawMaterialMaster.png" height="20px">  RAW MATERIAL MASTER
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="tableBlock" id="MasterlInput">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="">ADD NEW MATERIAL</div>
+                            <div class="">
+                                <div class="form-group" id="txtMastCategory">
+                                    <label>Material Name</label>
+                                    @Html.DropDownListFor(x => x.Id, new SelectList(Model.MasterList, "Value", "Text"), new { @class = "browser-default custom-select autoComp", @id = "ddlMasterType" })
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <label>Material Group</label>
+                                    @Html.TextBox("MasterName", string.Empty, new { @id = "txtMasterName" })
+                                    @Html.HiddenFor(x => x.Id, new { @id = "MasterId" })
+                                </div>
+                                
+                            </div>
+                            <div class="saveMaster">
+                                <button type="button" class="submitBomBtn saveBtn" id="btnSave">Add</button>
+                                <button type="button" class="submitBomBtn publishBtn" id="btnCancel">Cancel </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8" id="MasterList">
+                <div class="MasterDetails tableBlock">
+                    <div class="row">
+                        <div class="addMasterHead col-sm-12">
+                            Master List
+                            @*<button type="button" class="btn SearchBtn" id="btnSearch"><img src="~/Assets/images/search.png" /></button>
+            <input id="txtSearchName" name="MaterialName" type="text" value="" placeholder="Search Raw Material" autocomplete="off" class="selectpicker">
+            <input type="hidden" id="hidRMSearch" name="searchText" />*@
+                            <div class="searchBlock pb-3">
+                                <div class="inputSerachDiv ">
+                                    <span class="bmd-form-group">
+                                        <input id="txtSearchName" name="MaterialName" type="text" value="" placeholder="Search Raw Material" autocomplete="off" class="selectpicker">
+                                        <button type="button" class="btn SearchBtn" id="btnSearch"><img src="~/Assets/images/search.png" /></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        @*<table class="table mt-4 MasterTable" id="tblMasterList">
+                            <tr>
+                                <th class="materNm">Master Name</th>
+                                <th class="materID">Delete</th>
+                            </tr>
+                            @foreach (var item in Model.MasterDataList)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>Delete</td>
+                                </tr>
+                            }
+                        </table>*@
+
+                        <div id="tblMasterList"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modelHeader">
+                    <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="modalBody" class="lableMsg">  </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+
+    $("#btnCancel").click(function () {
+        $("#txtMasterName").val('');
+        $("#MasterId").val('');
+    });
+
+    function successModal() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Successfully Done');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    function failureModal() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Failed');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    $("#btnSave").click(function () {
+        var Name = $("#txtMasterName").val();
+        var Type = $("#ddlMasterType").val();
+
+
+        if (Name && Type) {
+            $.ajax({
+                type: "post",
+                url: "/Master/CreateMaster",
+                dataType: "json",
+                data: { name: Name, type: Type },
+                //contentType: "application/x-www-form-urlencoded;charset=utf-8", 
+                success: function (data) {
+                    if (data == true) {
+                        successModal();
+                    }
+                    else {
+                        failureModal();
+                    }
+                },
+                error: function (courses) {
+                    failureModal();
+                }
+            });
+        }
+        else {
+            alert("Please fill both fields");
+        }
+    });
+
+    $("#ddlMasterType").on('change', function () {
+
+        LoadList();
+
+    });
+
+    function LoadList() {
+
+        var Type = $("#ddlMasterType").val();
+
+        $.ajax({
+            type: "get",
+            url: "/Master/MasterList",
+            dataType: "html",
+            data: { type: Type },
+            //contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $('#tblMasterList').html(data);
+            },
+            error: function (courses) { }
+        });
+    }
+
+
+    $(function () {
+        var arr = @Html.Raw(Json.Encode(Model.SearchAutoComplete))
+            $("#txtSearchName").autocomplete({
+
+            source: arr,
+                minLength: 2,
+                select: function (event, ui) {
+                    var value = ui.item.value;
+                    MasterlList(value);
+                }
+        });
+    });
+
+    $("#btnSearch").click(function () {
+        if ($("#txtSearchName").val().length != 0) {
+            event.preventDefault();
+            var value = $("#txtSearchName").val();
+            MasterlList(value);
+        }
+    });
+
+    $("#txtSearchName").keydown(function (event) {
+        if (event.keyCode == 13) {
+            if ($("#txtSearchName").val().length != 0) {
+                event.preventDefault();
+                var value = $("#txtSearchName").val();
+                MasterlList(value);
+            }
+        }
+    });
+
+    function MasterlList(value) {
+        var count = 0;
+        if (count != undefined && value != undefined) {
+            $.ajax({
+                type: "get",
+                url: "/Master/MasterList",
+                dataType: "html",
+                data: { searchText: value },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#tblMasterList').html(data);
+                },
+                error: function (courses) { }
+            });
+        }
+    }
+
+
+
+</script>
+

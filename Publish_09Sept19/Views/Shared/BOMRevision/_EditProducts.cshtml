@@ -1,0 +1,352 @@
+﻿@model Karamtara_Application.Models.BOMRevisionModel
+
+@using (Html.BeginForm("GetRevisionData", "BOMRevision", FormMethod.Post, new { @id = "EditProduct_BomRevForm" }))
+{
+    <div class="Catgdetails tableBlock" id="divProdEdit">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row col-sm-12 mb-4">
+                    <div class="col-sm-6">
+                        <span class="font-weight-bold mr-1">Code/Catalogue No : </span>
+                        <label id="lblProdName" value="Name">@Model.ProductName</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="font-weight-bold mr-1">Product Name : </span>
+
+                        <input type="hidden" id="hidBomId" value="@Model.BomId" name="BomId" />
+                        <input type="hidden" id="hidRevNo" value="@Model.RevisionNo" name="revNo" />
+                        <input type="hidden" id="hidProdId" value="@Model.ProductId" name="ProdId" />
+                        <input type="hidden" id="hidPgId" value="@Model.ProductGroupId" name="PgId" />
+                        <input type="hidden" id="hidAssmId" value="@Model.AssemblyId" name="AssmId" />
+                        <input type="hidden" id="hidSubAssmId" value="@Model.SubAssemblyId" name="SubAssmId" />
+                        <input type="hidden" id="hidCompId" value="@Model.ComponentId" name="CompId" />
+                        <input type="hidden" id="hidType" value="@Model.Type" name="ProdType" />
+                        <label id="lblCatNo">@Model.CatalogueNo</label>
+                        @*<input type="hidden" value="@Model.ProductId" id="hidProductId" name="SubAssemblyId" />*@
+                    </div>
+
+                </div>
+                <table class="table prodDetails" id="prodTbl2">
+                    <tr>
+                        <th class="srNo">Sr.No</th>
+                        <th class="catNo">Code / Catalogue Number</th>
+                        <th class="productNm">Name</th>
+                        <th class="prodNo">Quantity</th>
+                    </tr>
+                    @{int rowCount = 1;
+
+                    }
+                    @foreach (var item in Model.MasterList)
+                    {
+                        <tr>
+                            <td><input type="text" value="@rowCount" class="prods" /></td>
+                            <td>
+                                <input type="text" value="@item.CatalogueNo" class="prods autocompCode" name="editAssmCode" data-value=@rowCount id="ObjectCode_@rowCount" onclick="AutoCompleteCode();" />
+                                <input type="hidden" value="@item.Id" name="ItemId" data-value=@rowCount id="ObjectId_@rowCount" />
+                            </td>
+                            <td><input type="text" value="@item.Name" class="prods autocompName" name="ItemName" data-value=@rowCount id="ObjectName_@rowCount" onclick="AutoCompleteName();" /></td>
+                            <td>
+                                <input type="text" value="@item.Quantity" class="prods" name="ItemQty" />
+                                <input type="hidden" value="@item.Type" class="prods" name="ItemType" />
+                                <input type="hidden" value="@item.ProductGroupId" class="prods" name="ItemPGId" />
+                                <input type="hidden" value="@item.AssemblyId" class="prods" name="ItemAssmId" />
+                                <input type="hidden" value="@item.SubAssemblyId" class="prods" name="ItemSubAssmId" />
+                                <input type="hidden" value="@item.ComponentId" class="prods" name="ItemCompId" />
+                            </td>
+                            @*<td><input type="text" value="X" class="prods" name="editQty" onclick="RemoveProduct(@item.Id, @Model.BomId, @Model.RevisionNo, @item.Type, @item.ProductGroupId,@item.AssemblyId,@item.SubAssemblyId,@item.ComponentId)" /></td>*@
+                            @*<td><input type="text" value="X" class="prods" name="editQty" onclick="RemoveProduct(@item.Id, @item.Type,@Model.BomId,@Model.RevisionNo,@Model.ProductId,@Model.Type,@Model.SubAssemblyId,@Model.AssemblyId,@Model.ProductGroupId)" /></td>*@
+
+                        </tr>
+                        rowCount++;
+                    }
+                </table>
+                <div class="saveProddtls position-relative mb-2 w-100">
+                    @*<button type="button" class="submitBomBtn saveBtn " id="addRowsBtn" onclick="AddRowFunction();">Cancel</button>*@
+                    <button type="submit" class="submitBomBtn saveBtn " id="btnCancel">Cancel</button>
+                    <button type="submit" class="submitBomBtn publishBtn " id="btnSaveEditChanges" onclick="SaveData(@Model.ProductId,@Model.Type)">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    function AutoCompleteName() {
+        $(".autocompName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/ProductGroup/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                //$("#ObjectId_" + countId).val(objectId);
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+                //var type = i.item.Type;
+
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num = $(this).attr('data-value');
+                    $("#ObjectId_" + num).val("");
+                    $("#type_" + num).val("");
+                    ClearRow(num);
+                }
+            },
+            minLength: 2
+        });
+    }
+
+    function AutoCompleteCode() {
+        $(".autocompCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/ProductGroup/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                //$("#ObjectId_" + countId).val(objectId);
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+                //var type = i.item.Type;
+
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num = $(this).attr('data-value');
+                    $("#ObjectId_" + num).val("");
+                    $("#type_" + num).val("");
+                    ClearRow(num);
+                }
+            },
+            minLength: 2
+        });
+    }
+
+    function AutoFillSelectedRow(num, objectId, type) {
+        let obj = autoData.find(x => x.Id == objectId && x.MasterType == type);
+        console.log(obj);
+        if (type == 2) {
+            $("#ObjectCode_" + num).val(obj.Code);
+        }
+        else {
+            $("#ObjectCode_" + num).val(obj.CatalogueNo);
+        }
+        $("#ObjectId_" + num).val(objectId);
+        $("#ObjectName_" + num).val(obj.Name);
+        $("#ObjectTech_" + num).val(obj.TechnicalName);
+        $("#ObjectType_" + num).val(type);
+    };
+
+    function ClearRow(num) {
+        $("#ObjectCode_" + num).val("");
+        $("#ObjectId_" + num).val("");
+        $("#ObjectName_" + num).val("");
+        $("#ObjectTech_" + num).val("");
+        $("#ObjectType_" + num).val("");
+    };
+
+    function AddRowFunction() {
+        var oldCount = $('#prodTbl2 tr').length;
+        $.each(new Array(5), function (index) {
+            var newCount = oldCount + index;
+            $('.prodDetails tr:last')
+                .after('<tr> <td><input type="text" value=' + newCount + ' class= "prods" /></td > <td>' +
+                    '<input type="text" class="prods autocompCode" name="editAssmCode" data-value=' + newCount + ' id = ObjectCode_' + newCount + ' onclick = "AutoCompleteCode();" />' +
+                    '<input type="hidden" class="prods autocompCode" name="editAssmId" data-value=' + newCount + ' id = ObjectId_' + newCount + ' /></td>' +
+                    '<input type="hidden" name="ObjectType" data-value=' + newCount + ' id=ObjectType_' + newCount + '  />' +
+                    '<td><input type="text" class="prods autocompName" name="editAssmName" data-value=' + newCount + ' id = ObjectName_' + newCount + ' onclick= "AutoCompleteName();"/></td>' +
+                    '<td><input type="text" class="prods autocompTech" name="editAssmTech" data-value=' + newCount + ' id = ObjectTech_' + newCount + ' /></td>' +
+                    '<td><input type="text" class="prods" name="editQty" /></td></tr>');
+            index++;
+        });
+
+    };
+
+    function RemoveProduct(prodId, prodType, bomId, revNo, parentId, parentType, subAssmId, assmId, pgId) {
+        if (parentType == 3) {
+            $.ajax({
+                type: "GET",
+                url: '/BOMRevision/RemoveSubAssmProd',
+                dataType: "json",
+                data: { prodId: prodId, prodType: prodType, bomId: bomId, revNo: revNo, parentId: parentId, parentType: parentType, subAssmId: subAssmId, assmId: assmId, pgId: pgId },
+                success: function (data1) {
+                    console.log(data1);
+                    if (data1 > 0) {
+
+                        EditProduct(parentId, parentType, pgId, assmId, subAssmId)
+                    }
+                },
+                error: function (data1) {
+                    console.log(data1);
+                }
+            });
+        }
+        if (parentType == 2) {
+            $.ajax({
+                type: "GET",
+                url: '/BOMRevision/RemoveAssmProd',
+                dataType: "json",
+                data: { prodId: prodId, prodType: prodType, bomId: bomId, revNo: revNo, parentId: parentId, parentType: parentType, subAssmId: subAssmId, assmId: assmId, pgId: pgId },
+                success: function (data1) {
+                    console.log(data1)
+                    if (data1 > 0) {
+                        EditProduct(parentId, parentType, pgId, assmId, subAssmId)
+                    }
+                },
+                error: function (data1) {
+                    console.log(data1);}
+            });
+        }
+        if (parentType == 1) {
+            $.ajax({
+                type: "GET",
+                url: '/BOMRevision/RemovePgProd',
+                dataType: "json",
+                data: { prodId: prodId, prodType: prodType, bomId: bomId, revNo: revNo, parentId: parentId, parentType: parentType, subAssmId: subAssmId, assmId: assmId, pgId: pgId },
+                success: function (data1) {
+                    console.log(data1);
+                    if (data1 > 0) {
+                        EditProduct(parentId, parentType, pgId, assmId, subAssmId)
+                    }
+                },
+                error: function (data1) {
+                    console.log(data1);}
+            });
+        }
+    }
+
+    //function RemoveProduct(prodId, bomId, revNo, type, pgId, assmId, subAssmId, compId) {
+    //    alert('remove clicked')
+    //    alert(type);
+    //    if (type == 2) {
+    //        alert('product group');
+    //        $.ajax({
+    //            type: "GET",
+    //            url: '/BOMRevision/RemovePgProd',
+    //            dataType: "html",
+    //            data: { prodId: prodId, bomId: bomId, revNo: revNo, type: type, pgId: pgId, assmId: assmId, subAssmId: subAssmId, compId: compId },
+    //            success: function (data) {
+    //                $("#divEditSubAssmModel").html(data);
+    //                $('#editSubAssmModal').modal('show');
+    //            },
+    //            error: function (data) { }
+    //        });
+    //    }
+    //    if (type == 3) {
+    //        alert('assm');
+    //        $.ajax({
+    //            type: "GET",
+    //            url: '/BOMRevision/RemoveAssmProd',
+    //            dataType: "html",
+    //            data: { prodId: prodId, bomId: bomId, revNo: revNo, type: type, pgId: pgId, assmId: assmId, subAssmId: subAssmId, compId: compId },
+    //            success: function (data) {
+    //                $("#divEditSubAssmModel").html(data);
+    //                $('#editSubAssmModal').modal('show');
+    //            },
+    //            error: function (data) { }
+    //        });
+    //    }
+    //    if (type == 4) {
+    //        alert('comp');
+    //        $.ajax({
+    //            type: "GET",
+    //            url: '/BOMRevision/RemoveSubAssmProd',
+    //            dataType: "html",
+    //            data: { prodId: prodId, bomId: bomId, revNo: revNo, type: type, pgId: pgId, assmId: assmId, subAssmId: subAssmId, compId: compId },
+    //            success: function (data) {
+    //                $("#divEditSubAssmModel").html(data);
+    //                $('#editSubAssmModal').modal('show');
+    //            },
+    //            error: function (data) { }
+    //        });
+    //    }
+
+    //}
+      $("#btnCancel").click(function () {
+        $('#editSubAssmModal').modal('toggle');
+    })
+
+    function SaveData(prodId, prodType) {
+        var form = $("#EditProduct_BomRevForm").serialize();
+        var bomId ='@Model.BomId';
+        var revNo ='@Model.RevisionNo';
+        if (prodType == 3) {
+            $.ajax({
+                type: "POST",
+                url: '/BOMRevision/SaveSubAssmChanges',
+                dataType: "html",
+                data: form,
+                success: function (data) {
+                    alert('Data saved successfully');
+                    window.location.reload();
+                },
+                error: function (data) { }
+            });
+        }
+        if (prodType == 2) {
+            $.ajax({
+                type: "POST",
+                url: '/BOMRevision/SaveAssmChanges',
+                dataType: "html",
+                data: form,
+                success: function (data) {
+                    alert('Data saved successfully');
+                    window.location.reload();
+                },
+                error: function (data) { }
+            });
+        }
+        if (prodType == 1) {
+            $.ajax({
+                type: "POST",
+                url: '/BOMRevision/SavePGChanges',
+                dataType: "html",
+                data: form ,
+                success: function (data) {
+                    alert('Data saved successfully');
+                    window.location.reload();
+                },
+                error: function (data) { }
+            });
+        }
+
+    }
+</script>

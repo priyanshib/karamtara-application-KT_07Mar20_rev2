@@ -1,0 +1,350 @@
+﻿@model Karamtara_Application.Models.SubAssemblyMasterModel
+@{
+    /**/
+
+    ViewBag.Title = "SubAssembly Master";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    //var cat_val = TempData["CreateProd_Cat"] ?? string.Empty;
+}
+<script type="text/javascript">
+    @*$(document).ready(function () {
+        var category = '@cat_val';
+        if (category) {
+            SelectCat(category);
+        }
+    });*@
+
+</script>
+
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row ProdNmBlock p-1">
+                <div class="col-sm-8 align-items-center d-flex">
+                    <span class="collapseHideSide c-pointer"><img src="~/Assets/images/leftDir.svg" width="15px" /></span>
+                    <span class="collapseShowSide c-pointer"><img src="~/Assets/images/rightDir.svg" width="15px" /></span>
+                    @*<img src="~/Assets/images/prodMaster.png" height="28px">*@ <span class="titleHead"> Sub Assembly Master</span>
+                </div>
+                <div class="col-sm-4 text-right">
+                    @*<button type="button" class="createComponent blueBtn" id="btnCreateComponent" data-toggle="modal" onclick="openCompModal();" @*data-target="#createComponentModal"@>Create new Component</button>*@
+                    <button type="button" class="createProdBtn saveBtn" id="btnCreateSubAssm" data-toggle="modal" data-target="#CreateSubAssmModal">Create Sub Assembly</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-12">
+            <div class="row categoryList">
+                
+            </div>
+        </div>
+        <div class="col-sm-4 collapseSide" id="SubAssmListDiv">
+            @Html.Partial("~/Views/Shared/SubAssemblyMaster/_SubAssmList.cshtml", Model)
+        </div>
+
+        <div class="col-sm-8 FullCollapse" id="SubProdListDiv">
+            @if (Model.RenderPartialView)
+            {
+                @Html.Partial("~/Views/Shared/SubAssemblyMaster/_SubAssmDetailsEdit.cshtml", Model)
+            }
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="CreateSubAssmModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" id="crossClose" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="CreateCatDiv">
+                    <label>Catlogue Number:</label>
+                    <input type="text" value="" id="txtCatNumber" />
+                </div>
+                <div class="CreateCatDiv abc">
+                    <label>Sub Assembly Name:</label>
+                    <input type="text" value="" id="txtSubAssmNameNew" />
+                </div>
+                <div class="CreateCatDiv abc">
+                    <label>Drawing Number:</label>
+                    <input type="text" value="" id="txtDrawingNo" />
+                </div>
+                <div class="CreateCatDiv">
+                    <label style="display:none" id="FieldsError">Please fill all fields</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn" id="CancelButton" data-dismiss="modal">Cancel</button>
+                <button type="button" class="submitBomBtn saveBtn" id="btnDismissModalProduct" onclick="PopuplateBoxes();">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+    $("#CancelButton").click(function () {
+        $("#txtCatNumber").val('');
+        $("#txtSubAssmNameNew").val('');
+        $("#txtDrawingNo").val('');
+    })
+
+    $("#crossClose").click(function () {
+        $("#txtCatNumber").val('');
+        $("#txtSubAssmNameNew").val('');
+        $("#txtDrawingNo").val('');
+    })
+
+    function clearModal() {
+        $("#CreateSubAssmModal").find('input').val('');
+    }
+    function createSuccess(id) {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Sub assembly created successfully');
+        $("#modalOkButton").attr('onclick', 'GetComponentsWithoutRow('+id+');');
+        $("#successModel").modal('show');
+    }
+        
+    function createFailure() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Sub assembly could not be created due to some error. Please try again');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function editSuccess(id) {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Sub assembly edited successfully');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    function editFailure() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Sub assembly could not be edited due to some error. Please try again');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    $(document).ready(function () {
+
+        $(".collapseHideSide").click(function () {
+            $(".collapseSide").css("display", "none");
+            $(".FullCollapse").removeClass("col-sm-8").addClass("col-sm-12");
+            $(".collapseShowSide").css("display", "block");
+            $(".collapseHideSide").css("display", "none");
+        })
+        $(".collapseShowSide").click(function () {
+            $(".collapseSide").css("display", "block");
+            $(".FullCollapse").removeClass("col-sm-12").addClass("col-sm-8");
+            $(".collapseShowSide").css("display", "none");
+            $(".collapseHideSide").css("display", "block");
+        })
+
+        //$("#btnSaveSubAssm").click(function () {
+        //    var form = $("#SubAssemlyMasterForm").serialize();
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: "/SubAssemblyMaster/SaveComponents",
+        //        data: form,
+        //        dataType: 'json',
+        //        success: function (data) {
+        //            $('#SubProdListDiv').html(data);
+        //        }
+        //    });
+        //});
+    });
+
+    function radioSelected(e, i) {
+        $(e).val(i);
+    }
+
+    function AddRowsModal() {
+            $.each(new Array(5), function (index) {
+                index++;
+                $('.modalTable tr:last')
+                    .after('<tr> <td class="catNo"> <input type="text" class="whiteBgInput" name="CatNum" id="CatNum_' + index + '" > </td >' +
+                        '<td class="compoentNm"> <input type="text" class="whiteBgInput" name="CompName" id="CompName_' + index + '"> </td>' +
+                    '<td> <input type="text"  class="whiteBgInput" name="RawMat" id="RawMat_' + index + '" class="rawMater"> </td>' +
+                    '<td class="prodNo"> <input type="text" class="whiteBgInput" name="Size" id="Size_' + index + '"> </td>' +
+                    '<td class="prodNo"> <input type="text" class="whiteBgInput" name="Quantity" id="Quantity_' + index + '"> </td>' +
+                    '<td class="drawNo"> <input type="text" class="whiteBgInput" name="DrawingNo" id="DrawingNo_' + index + '"> </td>' +
+                    '<td class="prodUnit"> <input type="text" class="whiteBgInput" name="UGW" id="UGW_' + index + '"> </td>' +
+                    '<td class="prodUnit"> <input type="text" class="whiteBgInput" name="UNW" id="UNW_' + index + '"> </td> <td class="galReq">' +
+                    '<label class="container checkbox" id="lab_' + index + '">' +
+                    '<input type="checkbox" name="checkbox" id="chbox' + index + '" value="' + index +'" onchange="CheckBoxClicked(this,'+index+')"><span class="checkmark" id="chkspan_' + index + '"></span> </label></td >' +
+                    '<td class="galMat"><div class="col-sm-12"><div class="row">'+
+                    '<div class="col-sm-6"><label class="container mb-0">Zinc<input type="radio" value="Zinc" id="radio1' + index + '" name="radio_' + index + '" onchange="radioSelected(this, 1);" disabled><span class="checkmark" ></span></label></div>'+
+                    '<div class="col-sm-6"><label class="container mb-0">EG<input type="radio" value="EGG" id="radio2' + index + '" name="radio_' + index + '" onchange="radioSelected(this, 2);" disabled><span class="checkmark" ></span> </label></div>'+
+                    '</div> </div></td></tr>');
+
+        });
+        };
+
+        function PopuplateBoxes() {
+            var catNum = $("#txtCatNumber").val();
+            var subAssName = $("#txtSubAssmNameNew").val();
+            var drawingNo = $("#txtDrawingNo").val();
+
+            if (catNum == '' || catNum == null || subAssName == '' || subAssName == null) {
+                $("#FieldsError").text('Please fill all fields');
+            $("#FieldsError").attr('style', 'display: block; color: red; font-size:12px;');
+            return;
+            }
+
+            $.ajax({
+                type: 'Post',
+                url: "/SubAssemblyMaster/CheckIfCodeOrCatNoExists",
+                data: { codeOrCatNum: catNum, type : 3 },
+                dataType: 'JSON',
+                success: function (data) {
+                    if (data == false) {
+
+                        $.ajax({
+                            type: 'GET',
+                            url: "/SubAssemblyMaster/CreateSubAssembly",
+                            data: null,
+                            dataType: 'html',
+                            success: function (data) {
+                                $("#txtCatNumber").val('');
+                                $("#txtSubAssmNameNew").val('');
+                                $("#txtDrawingNo").val('');
+                                $("#CreateSubAssmModal").modal('hide');
+
+                                $('#SubProdListDiv').html(data);
+                                $("#SumAssmCatNo").val(catNum);
+                                $("#SumAssName").val(subAssName);
+                                $("#DrawingNoId").val(drawingNo);
+                                $(".selectionRow").attr('style', 'font-weight:normal;');
+                            }
+                        });
+                    }
+                    else {
+                        $("#FieldsError").text('Catalogue Number Already Exists');
+                        $("#FieldsError").attr('style', 'display: block; color: red; font-size:12px;');
+                    }
+                 }
+            });
+            };
+
+    $(document).ready(function () {
+        $(".AddRow").click(function () {
+            $.each(new Array(10), function (i) {
+                $('.ParentTable1 tr:last')
+                    .after('<tr><td class="test1">@Html.TextBox("CatId",null, new { @class = "test2" })</td>' +
+                    '<td>@Html.TextBox("SumAssmName")</td>' +
+                    '<td>@Html.TextBox("CompName")</td>' +
+                    '<td>@Html.TextBox("RM")</td>' +
+                    '<td>@Html.TextBox("Qty")</td>' +
+                    '<td>@Html.TextBox("GrossWt")</td>' +
+                    '<td>@Html.TextBox("NetWt")</td>' + '</tr>');
+            });
+        });
+    });
+
+    function GetComponents(id, e) {
+        $.ajax({
+        type: "get",
+            url: "/SubAssemblyMaster/GetComponentList",
+            dataType: "html",
+            data: { subAssId: id },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $('#SubProdListDiv').html(data);
+                $(".selectionRow").attr('style', 'font-weight:normal;');
+                $(e).attr('style', 'font-weight:bold;');
+            },
+            error: function (error) {
+            }
+        });
+    };
+
+    function GetComponentsWithoutRow(id) {
+
+        $.ajax({
+            type: "get",
+            url: "/SubAssemblyMaster/GetSubAssemblyList",
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $("#successModel").modal('hide');
+                $('#SubAssmListDiv').html(data);
+
+                $.ajax({
+                    type: "get",
+                    url: "/SubAssemblyMaster/GetComponentList",
+                    dataType: "html",
+                    data: { subAssId: id },
+                    contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                    success: function (data) {
+                        $("#successModel").modal('hide');
+                        $("#selectionRow_" + id).attr('style', 'font-weight:bold;');
+                        $('#SubProdListDiv').html(data);
+                    },
+                    error: function (error) {
+                    }
+                });
+            },
+            error: function (error) {
+            }
+        });
+    };
+
+    function CheckBoxClickedd(sender)
+    {
+        if (document.getElementById('chbox').checked) {
+            document.getElementById("radio1").removeAttribute('disabled');
+            document.getElementById("radio2").removeAttribute('disabled');
+            document.getElementById("radio1").checked = true;
+        }
+        else {
+            document.getElementById("radio1").disabled = true;
+            document.getElementById("radio2").disabled = true;
+            document.getElementById('radio1').checked = false;
+            document.getElementById('radio2').checked = false;
+        }
+    }
+
+    function CheckBoxClicked(e,i) {
+        if (document.getElementById('chbox' + i +'').checked) {
+            document.getElementById('radio1' + i +'').removeAttribute('disabled');
+            document.getElementById('radio2' + i + '').removeAttribute('disabled');
+            document.getElementById('radio1' + i + '').checked = true;
+        }
+        else {
+            document.getElementById('radio1' + i +'').disabled = true;
+            document.getElementById('radio2' + i + '').disabled = true;
+            document.getElementById('radio1' + i + '').checked = false;
+            document.getElementById('radio2' + i + '').checked = false;
+        }
+    }
+</script>
+
+

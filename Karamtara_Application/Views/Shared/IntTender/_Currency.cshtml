@@ -1,0 +1,122 @@
+﻿@using Karamtara_Application.Models.Tender
+@model CurrencyDetailModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    decimal value = 0;
+}
+
+<div class="BomRefDtls main-container">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        Currency
+    </div>
+    <div class="col-sm-12 row BomRefItem m-0">
+        <div class="col-sm-8 ">
+            <div class="col-sm-4">
+                Cross Currency Margin
+                @{
+                    value = 0;
+                    if (Model.intTenderDetails != null && Model.intTenderDetails.Any())
+                    {
+                        dynamic = new ExpandoObject();
+                        dynamic = Model.intTenderDetails.Where(x => x.Description == "ConversionRate").FirstOrDefault();
+                        value = dynamic == null ? 0 : dynamic.Value;
+                    }
+                }
+                <p class="d-flex align-items-center mt-1"><input name="conversionRate" onblur="SetConversionRate(this)" value="@value" type="number" id="conversionRate" />%</p>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right">
+            <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+            <button type="button" id="btnSubmitCurrency" class="submitEnq publishBtn">Submit</button>
+        </div>
+    </div>
+    <div class="col-sm-12 p-0">
+        <div class="tableBlock overflowModel">
+            <table class="table ">
+                <tr>
+                    <th class="intCurr">International Currency</th>
+                    <th class="convertRs">Convert into INR</th>
+                    <th class="convertRs">Display In View</th>
+                </tr>
+                @foreach (var item in Model.List)
+                {
+                <tr>
+                    <td class="intCurr">@item.Name</td>
+                    <td class="convertRs currencyValue"><input type="text" id="currencyName" currencyid="@item.Id" currencyname="@item.Name" value="@item.Value" onchange="SetCurrency(this)" class="whiteBgInput" /></td>
+                    <td class="convertRs displayInView text-center">@Html.CheckBox("DisplayInView", @item.DisplayInView, new { @class = "displayInViewChkBox", @id = "displayInView", @onchange = "SetCurrency(this)" })</td>
+                </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tndCurrency = [], conversionRate =@value, euroValue = 0, usdValue = 0, value, currencyValue;
+
+    if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+        $("input").attr('readonly', true);
+        $(".bgBlue").find(".whiteBgInput").css("color", "#fff");
+        //$(".bgBlue").find(".whiteBgInput").css("font-weight","bold");
+        $("input").removeClass("whiteBgInput");
+        $("input").removeClass("p-1");
+        $("button").not(".close").hide();
+        $("input[type='button']").hide();
+        $("select").attr("disabled", true);
+    }
+
+    function SetCurrency(element) {
+        var parentItem, inputElement, chkElement;
+        parentItem = $(element).closest("tr");
+        inputElement = $(parentItem).find("#currencyName");
+        chkElement = $(parentItem).find("#displayInView");
+        
+
+        tndCurrency = tndCurrency.filter((x) => x.CurrencyId != $(inputElement).attr("currencyid"));
+        tndCurrency.push({ CurrencyId: $(inputElement).attr("currencyid"), CurrencyName: $(inputElement).attr("currencyname"), Value: $(inputElement).val(), DisplayInView: $(chkElement).prop("checked") });
+    }
+    function SetConversionRate(element) {
+        conversionRate = $(element).val();
+    }
+
+    $("#btnSubmitCurrency").click(function () {
+        
+
+        if (!conversionRate) {
+            ShowSnackBar("Please enter conversion rate");
+        }
+        
+        var array = JSON.stringify(tndCurrency);
+        var tndId = $("#tndId").val();
+        var tndRevId = $("#tndRevId").val();
+        isControlChanged = false;
+        $.ajax({
+            type: "post",
+            data: { currencies: array, tndId: tndId, tndRevNo: tndRevId, conversionRate: conversionRate },
+            url: '/IntTenderPricingKT/SaveCurrency',
+            async: false,
+            success: function (data) {
+                
+                if (data) {
+                    $(".modal").modal('hide');
+                    SubmitTestPrice();
+                    //SubmitMarkup();
+                    //SubmitFreight();
+                    //window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,166 @@
+﻿@model Karamtara_Application.Models.AssemblyMasterModel
+@{
+    int count = 1;
+}
+
+@using (Html.BeginForm("AssmProductsEditSave", "SubAssemblyMaster", FormMethod.Post, new { @id = "EditAssemblyForm" }))
+{
+    <div class="Catgdetails tableBlock">
+        <div class="row">
+            <table class="table m-0">
+                <tr>
+                    <th>Assemebly Code</th>
+                    <th>Assembly Name</th>
+                    <th>Technical Name</th>
+                    <th>Drawing No</th>
+                </tr>
+                <tr>
+                    <td>
+                        <label id="lbl1" value="Assemebly Code">@Model.AssemblyCode</label>
+                        <input type="hidden" name="AssmId" value="@Model.AssemblyId">
+                    </td>
+                    <td>
+                        <label id="lbl2" value="Assemebly Name">@Model.AssemblyName</label>
+                    </td>
+                    <td>
+                        <label id="lbl3" value="Technical Name">@Model.AssmTechName</label>
+                    </td>
+                    <td>
+                        <label id="lbl3" value="Technical Name">@Model.DrawingNo</label>
+                    </td>
+                </tr>
+
+            </table>
+            <table class="table mb-5" id="EditSubAssemlyTable">
+                <tr>
+                    <th class="productNm">Product Name</th>
+                    <th class="prodNo">Quantity</th>
+                    <th class="prodNo"> Remove </th>
+                </tr>
+                @if (Model.MasterList != null && Model.MasterList.Count > 0)
+                {
+                    foreach (var item in Model.MasterList)
+                    {
+                <tr>
+                    <td>
+                        <input type="text" name="SubAssmName" placeholder="Product Name" readonly="readonly" id="SubAssmName_@count" value="@item.Name" disabled="disabled" class="autoComp autoCompEdit" data-val="@count" onclick="AutoComp();" />
+                        <input type="hidden" name="SubAssmIds" id="SubAssmId_@count" value="@item.Id" />
+                        <input type="hidden" name="ItemType" id="type_@count" value="@item.MasterType" />
+                    </td>
+                    <td>
+                        <input type="text" name="SubAssmQty" placeholder="Quantity" id="Quantity_@count" value="@item.Quantity" data-val="@item.Id" />
+                    </td>
+                    <td class="closesTD c-pointer text-center">
+                        <img src="/Assets/images/collapseClose.svg" width="12px" id=Rem_@count onclick="ClearRow('@count')">
+                    </td>
+                </tr>
+                        count++;
+                    }
+                }
+            </table>
+            <div class="saveProddtls saveAssblProd">
+                <button type="button" class="submitBomBtn Add saveBtn opacityBtnyelow" onclick="AddMoreRows();">Add More Rows </button>
+                <button type="button" class="submitBomBtn EditProdSaveButton opacityBtngreen" id="EditAssmSaveButton">Save </button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    var finalCount = @count;
+
+    if (finalCount == 1) {
+        AddMoreRows();
+    }
+
+    function AutoComp() {
+        $(".autoCompEdit").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/AssemblyMaster/GetAssemblyDetailsSearch",
+                    data: { prefix: request.term},
+                    dataType: 'json',
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Name + (item.CatalogueNo ? '( ' + item.CatalogueNo + ' )' : ''), value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-val');
+                var subId = i.item.value;
+                $("#SubAssmId_" + countId).val(subId);
+                var type = i.item.Type;
+                $("#type_" + countId).val(type);
+                return false;
+            },
+            change: function (e, i) {
+                if (!i.item) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num= $(this).attr('data-val');
+                    $("#SubAssmId_" + num).val("");
+                    $("#type_" + num).val("");
+                    //ClearRow(dataAttrib);
+                }
+            },
+            minLength: 1
+        });
+    };
+
+    $("#EditAssmSaveButton").click(function () {
+            var form = $("#EditAssemblyForm").serialize();
+            $.ajax({
+                type: 'POST',
+                url: "/AssemblyMaster/AssmProductsEditSave",
+                data: form,
+                dataType: 'html',
+                success: function (data) {
+                    if (data != false) {
+                        $("#subAssmDiv").html(data);
+                        editSuccess();
+                    }
+                    else {
+                        editFailure();
+                    }
+                    
+                }
+            });
+        });
+
+    function AddMoreRows() {
+            $.each(new Array(3), function (tempCount) {
+                tempCount = finalCount;
+                $('#EditSubAssemlyTable tr:last')
+                    .after('<tr> <td> <input type="text" name="SubAssmName" placeholder="Product Name" id="SubAssmName_' + tempCount + '" onclick="AutoComp();"  value="" class="autoComp autoCompEdit whiteBgInput" data-val="' + tempCount + '"/>' +
+                        '<input type="hidden" name="SubAssmIds" id="SubAssmId_' + tempCount + '"/>' +
+                        '<input type="hidden" name="ItemType" id="type_' + tempCount + '"/></td > <td>' +
+                    '<input type="text" name="SubAssmQty" placeholder="Quantity" id="Quantity_' + tempCount + '" value="" class="whiteBgInput"/>' +
+                    '<td class="closesTD c-pointer text-center">' +
+                    '<img src="/Assets/images/collapseClose.svg" width="12px" id="Rem_' + tempCount + '" onclick="ClearRow(' + tempCount + ')"> </td></td> </tr>');
+                finalCount++;
+            });
+
+            //AutoCompleteList();
+    };
+
+    function ClearRow(num) {
+        $("#SubAssmName_" + num).val("");
+        $("#SubAssmName_" + num).removeAttr('readonly');
+        $("#SubAssmName_" + num).removeAttr('disabled');
+        $("#SubAssmName_" + num).addClass("whiteBgInput");
+        $("#Quantity_" + num).val("");
+        $("#Quantity_" + num).addClass("whiteBgInput");
+        $("#SubAssmId_" + num).val("");
+        $("#type_" + num).val("");
+    }
+
+</script>

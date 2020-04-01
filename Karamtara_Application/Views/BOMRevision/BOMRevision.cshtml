@@ -1,0 +1,394 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+@{
+    ViewBag.Title = "ViewBOM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="Catgdetails tableBlock" id="divProdEdit">
+    <input type="hidden" id="hidBomId" />
+    <input type="hidden" id="hidRevNo" />
+
+    <div class="row">
+        <div class="col-sm-12 d-flex mt-2 mb-2 align-items-center">
+            <span class="publishNo">Reference T Number:</span>
+            <span class="inputData"> <input type="text" id="txtTNumber" placeholder="Enter Reference T Number" name="TNumber" class="whiteBgInput" value="@Model.TNumber" /></span>
+        </div>
+        <table class="table prodDetails" id="prodTbl2">
+            <tr>
+                <td colspan="11" class="text-right">
+                    <button type="button" class="createProdBtn saveBtn mt-2 mb-2" data-target="#addProduct" data-toggle="modal">Add Product</button>
+                    <button type="button" class="createProdBtn saveBtn mt-2 mb-2" onclick="PublishRevision(@Model.BomId,@Model.RevisionNo)">Pubish Revision</button>
+                    <button type="button" class="createProdBtn saveBtn mt-2 mb-2" onclick="CancelRevision(@Model.BomId,@Model.RevisionNo)">Cancel Revision</button>
+                </td>
+            </tr>
+            <tr>
+                <th class="srNo">Sr.No</th>
+                <th class="catNo">Catalogue No</th>
+                <th class="catNo">Code</th>
+                <th class="productNm">Item Name</th>
+                <th class="rawMater">Raw Material</th>
+                <th class="prodNo">Size</th>
+                <th class="prodNo">Quantity</th>
+                <th class="prodNo">Unit Gross Weight</th>
+                <th class="prodNo">Unit Net Weight</th>
+                <th class="prodNo">Action</th>
+            </tr>
+
+            @{int foreachCount = 1; }
+            @foreach (var item in Model.MasterList)
+            {
+                //  if (item.Type.Equals(1) || item.Type.Equals(2) || item.Type.Equals(3))
+                {
+                    if (item.IsRelated)
+                    {
+                        <tr>
+                            <td style="display:none"><input type="hidden" value="@item.ComponentId"></td>
+                            <td style="display:none"><input type="hidden" value="@item.SubAssemblyId"></td>
+                            <td style="display:none"><input type="hidden" value="@item.AssemblyId"></td>
+                            <td style="display:none"><input type="hidden" value="@item.ProductGroupId"></td>
+                            <td><input type="text" value="@item.SrNo" readonly="readonly" class="prods bold" name="srno" /></td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.CatalogueNo" readonly="readonly" class="prods bold c-pointer" name="editCatNo" />
+                                    <span class="tooltipShow">@item.CatalogueNo</span>
+                                </span>
+                            </td>
+                            <td><input type="text" value="@item.Code" readonly="readonly" class="prods bold" name="editCode" /></td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.Name" readonly="readonly" class="prods bold c-pointer" name="editProdName" />
+                                    <span class="tooltipShow">@item.Name</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.Material" readonly="readonly" class="prods bold c-pointer" name="editRM">
+                                    <span class="tooltipShow">@item.Material</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.Size" readonly="readonly" class="prods bold c-pointer" name="Size">
+                                    <span class="tooltipShow">@item.Size</span>
+                                </span>
+                            </td>
+                            <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods bold" name="editQty" /></td>
+                            <td><input type="text" value="@item.UnitGrWt.ToString("N3")" readonly="readonly" class="prods bold" name="editUnitGr" /></td>
+                            <td><input type="text" value="@item.UnitNetWt.ToString("N3")" readonly="readonly" class="prods bold" name="editUnitNet" /></td>
+                            @if (item.Type.Equals(4) || item.Type.Equals(1))
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td><label id="lbl_" @foreachCount onclick="EditProduct(@item.Id,@item.Type,@item.ProductGroupId,@item.AssemblyId,@item.SubAssemblyId)" class="commonBtn"><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" /> Edit</label></td>
+                            }
+                        </tr>
+                    }
+
+                    else
+                    {
+                        <tr>
+                            <td style="display:none"><input type="hidden" value="@item.ComponentId"></td>
+                            <td style="display:none"><input type="hidden" value="@item.SubAssemblyId"></td>
+                            <td style="display:none"><input type="hidden" value="@item.AssemblyId"></td>
+                            <td style="display:none"><input type="hidden" value="@item.ProductGroupId"></td>
+                            <td><input type="text" value="@item.SrNo" readonly="readonly" class="prods" name="srno" /></td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.CatalogueNo" readonly="readonly" class="prods c-pointer" name="editCatNo" />
+                                    <span class="tooltipShow">@item.CatalogueNo</span>
+                                </span>
+                            </td>
+                            <td><input type="text" value="@item.Code" readonly="readonly" class="prods" name="editCode" /></td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.Name" readonly="readonly" class="prods c-pointer" name="editProdName" />
+                                    <span class="tooltipShow">@item.Name</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.Material" readonly="readonly" class="prods c-pointer" name="editRM">
+                                    <span class="tooltipShow">@item.Material</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="tooltipHover">
+                                    <input type="text" value="@item.Size" readonly="readonly" class="prods c-pointer" name="Size">
+                                    <span class="tooltipShow">@item.Size</span>
+                                </span>
+                            </td>
+                            <td><input type="text" value="@item.Quantity" readonly="readonly" class="prods" name="editQty" /></td>
+                            <td><input type="text" value="@item.UnitGrWt.ToString("N3")" readonly="readonly" class="prods" name="editUnitGr" /></td>
+                            <td><input type="text" value="@item.UnitNetWt.ToString("N3")" readonly="readonly" class="prods" name="editUnitNet" /></td>
+                            @if (item.Type.Equals(4) || item.Type.Equals(1))
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td><label id="lbl_" @foreachCount onclick="EditProduct(@item.Id,@item.Type,@item.ProductGroupId,@item.AssemblyId,@item.SubAssemblyId)" class="commonBtn"><img src="~/Assets/images/editPensil.svg" width="16px" class="mr-1" />Edit</label></td>
+                            }
+                        </tr>
+                    }
+                }
+                foreachCount++;
+            }
+
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="editSubAssmModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="divEditSubAssmModel">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal-->
+<div class="modal fade" id="addProduct" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12 CreateCatDiv">
+                            <label>Product Name :</label>
+                            <input type="text" value="" id="txtModalProdName" name="txtAssmCode" required="required" />
+                            <input type="hidden" id="hidModalProdId" />
+                            <input type="hidden" id="hidModalProdType" />
+                        </div>
+                    </div>
+                </div>
+                <div class="CreateCatDiv">
+                    <label style="display:none" id="FieldsError">Please fill all fields</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn " data-dismiss="modal" id="btnDismissModal">Cancel</button>
+                <button type="button" class="submitBomBtn publishBtn " id="btnModalProdAdd" data-dismiss="modal">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="refreshFromMasterConf" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-12 CreateCatDiv">
+                            <label>Do you want to refresh the latest data from the Master Tables?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn " data-dismiss="modal" id="btnDismissModal">No</button>
+                <button type="button" class="submitBomBtn publishBtn " id="btnRefreshFrmMaster" data-dismiss="modal" onclick="location.href='@Url.Action("RefreshFromMaster","BOMRevision",new {@bomId=Model.BomId,@revNo=Model.RevisionNo }) '">Yes</button>
+                @*<button type="button" class="submitBomBtn publishBtn " id="btnRefreshFrmMaster" data-dismiss="modal">Yes</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+      //  $("#refreshFromMasterConf").modal('show');
+        var masterEdit = '@Model.IsEdit'
+        //ShowSnackBar(masterEdit);
+        if (masterEdit == "True" || masterEdit=="true") {
+            $("#refreshFromMasterConf").modal('show');
+        }
+    })
+    function EditProduct(id, type, pgId, assmId, subAssmId) {
+        var bomId = @Model.BomId;
+        var revNo =@Model.RevisionNo;
+        if (type == 1) {
+            $.ajax({
+                type: "GET",
+                url: '/BOMRevision/GetPGData',
+                dataType: "html",
+                data: { prodId: id, bomId: bomId, revNo: revNo, pgId: pgId, assmId: assmId, subAssmId: subAssmId },
+                success: function (data) {
+                    $("#divEditSubAssmModel").html(data);
+                    $('#editSubAssmModal').modal('show');
+                },
+                error: function (data) { }
+            });
+        }
+        if (type == 2) {
+            $.ajax({
+                type: "GET",
+                url: '/BOMRevision/GetAssmData',
+                dataType: "html",
+                data: { prodId: id, bomId: bomId, revNo: revNo, pgId: pgId, assmId: assmId, subAssmId: subAssmId},
+                success: function (data) {
+                    $("#divEditSubAssmModel").html(data);
+                    $('#editSubAssmModal').modal('show');
+                },
+                error: function (data) { }
+            });
+        }
+        if (type == 3) {
+            $.ajax({
+                type: "GET",
+                url: '/BOMRevision/GetSubAssmData',
+                dataType: "html",
+                data: { prodId: id, bomId: bomId, revNo: revNo, pgId: pgId, assmId: assmId, subAssmId: subAssmId},
+                success: function (data) {
+                    $("#divEditSubAssmModel").html(data);
+                    $('#editSubAssmModal').modal('show');
+                },
+                error: function (data) { }
+            });
+        }
+
+
+    }
+
+    function PublishRevision(bomId, revNo) {
+        var tNumber = $("#txtTNumber").val();
+        $.ajax({
+            type: "POST",
+            url: '/BOMRevision/PublishRevision',
+            dataType: "html",
+            data: { bomId: bomId, revNo: revNo, tNumber: tNumber},
+            success: function (data) {
+                if (data > 0)
+                    ShowSnackBar('BOM Revision published successfully.')
+                else
+                    ShowSnackBar('Error while creating BOM Revision.')
+                setTimeout(function () { window.location.href = '/BomList/Index'; }, 2000);
+            },
+            error: function (data) { }
+        });
+    }
+
+    function CancelRevision(bomId, revNo) {
+        $.ajax({
+            type: "POST",
+            url: '/BOMRevision/CancelRevision',
+            dataType: "html",
+            data: { bomId: bomId, revNo: revNo },
+            success: function (data) {
+                if (data > 0)
+                    ShowSnackBar('BOM Revision Cancelled successfully.')
+                else
+                    ShowSnackBar('Error while Deleting BOM Revision.')
+                setTimeout(function () { window.location.href = '/BomList/Index'; }, 2000);
+            },
+            error: function (data) { }
+        });
+    }
+
+    $(document).ready(function () {
+
+        $('input').each(function (index) {
+            if ($(this).val().length == 0) {
+                // ShowSnackBar("valute is 0");
+                $(this).closest(".tooltipHover").remove();
+            }
+        });
+
+
+    });
+
+    $("#txtModalProdName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/CreateBOM/BOMAutoComplete/',
+                    data: "{ 'prefix': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.TName, value: item.Id, Type: item.Type }
+                        }))
+
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, ui) {
+                $(this).val(ui.item.label);
+                var id = ui.item.value;
+                var prodType = ui.item.Type;
+                $("#hidModalProdId").val(id);
+                $("#hidModalProdType").val(prodType);
+                return false;
+        },
+        create: function () {
+            $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/" + item.Type + ".png' width='20px'></span></div>")
+                    .appendTo(ul);
+            };
+        },
+            minLength: 2
+    });
+
+    $("#btnModalProdAdd").click(function () {
+        var prodId = $("#hidModalProdId").val();
+        var prodType = $("#hidModalProdType").val();
+        var bomId = '@Model.BomId';
+        var revNo = '@Model.RevisionNo';
+        var TNumber = '@Model.TNumber';
+        $.ajax({
+            type: "POST",
+            url: '/BOMRevision/AddNewComponent',
+            dataType: "html",
+            data: { bomId: bomId, revNo: revNo, prodId: prodId, prodType: prodType, TNumber: TNumber },
+            success: function (data) {
+                if (data) {
+                    ShowSnackBar('Product Added Successfully.');
+                    window.location.reload();
+                }
+                else {
+                    ShowSnackBar('Error while adding product.');
+                    window.location.reload();
+                }
+            },
+            error: function (data) { }
+        });
+    })
+
+    @*$("#btnRefreshFrmMaster").click(function () {
+        var bomId = @Model.BomId;
+        var revNo = @Model.RevisionNo;
+        $.ajax({
+            type: "POST",
+            url: '/BOMRevision/RefreshFromMaster',
+            dataType: "html",
+            data: { bomId: bomId, revNo: revNo},
+            error: function (data) { }
+        });
+    })*@
+  // window.onbeforeunload = function () {return "are you sure you want to leave?"}
+</script>
+

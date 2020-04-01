@@ -1,0 +1,165 @@
+﻿@model Karamtara_Application.Models.ForgotPasswordModel
+@{
+    ViewBag.Title = "Forgot Password";
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="~/Assets/css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="~/Assets/css/style.css" />
+    <link rel="stylesheet" href="~/Assets/css/font-awesome.min.css">
+
+    <!--<script src="js/materialize.min.js"></script>-->
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+
+    <script src="~/Assets/js/popper.js"></script>
+    <script src="~/Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <!-- Added for datepicker-->
+</head>
+<body>
+    <div class="container-fluid ">
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <!--
+
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"><img src="images/user.png" /> Mr. Sachin Sawant</div>
+                    <div class="logOut col-12">Logout</div>
+                </div>-->
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <div class="content p-0">
+
+            @using (Html.BeginForm("ForgotPassword", "ManagePassword", FormMethod.Post, new { @class = "form" }))
+            {
+                <div class="text-center loginFootr">
+                    <div class="card-body loginBody">
+                        <div class="forgrtPassImg mt-5"><img src="~/Assets/images/forgetPass.svg" width="150px" /></div>
+                        <div class="forgetPassTitle">Forgot Your Password?</div>
+                        <div class="forgetpassBody">Enter your email below to receive your password reset instructions</div>
+                        <div class="forgetpassInput ">
+                            <div class="form-group bmd-form-group">
+                                <!-- left unspecified, .bmd-form-group will be automatically added (inspect the code) -->
+                                <label for="email" class="font-weight-bold bmd-label-static">Email Id</label>
+                                <input autocomplete="off" class="form-control mt-2" style="font-size:15px;" id="email" name="email" required="required" type="text" value="" placeholder="Your registered Email ID">
+                            </div>
+                        </div>
+                        <div class="forgetPassLink">
+
+                            <button type="button" onclick="continueClick();"><img src="~/Assets/images/loader.svg" width="15px" class="mr-2 loader" style="display:none">Send Password</button>
+                        </div>
+                        @*@Html.TextBoxFor(m => m.EmailId, new { @class = "form-control", @id = "email", required = "required", pattern = "[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"})*@
+
+                    </div>
+                </div>
+
+            }
+        </div>
+        <div class="modal modalClass" id="SuccessModel" data-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+
+                <div class="modal-content">
+                    <div class="modal-header modelHeader">
+                        <span class="modal-title modalMsgTitle" id="mHeader"></span>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label id="mBody" class="lableMsg text-capitalize"></label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="submitBomBtn publishBtn" id="mButton" data-dismiss="modal" onclick="routePage();">OK</button>
+                    </div>
+                </div>
+
+
+
+
+
+
+                @*<div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title text-success" id="mHeader"></h4>
+                            <button type="button" class="close" data-dismiss="modal" onclick="routePage()">&times;</button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body f-14" id="mBodyDiv">
+                            <span id="mBody"></span>
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button id="mButton" type="button" class="btn btn-success" data-dismiss="modal" onclick="routePage();">OK</button>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+    <div id="loader" style="display:none">
+        loding
+    </div>
+    <div id="snackbar"></div>
+</body>
+</html>
+<script>
+
+     function ShowSnackBar(key) {
+         var x = document.getElementById("snackbar");
+         x.innerHTML = key;
+         x.className = "snackBarshow";
+         setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 8000);
+     }
+
+    function routePage() {
+        window.location.href = '@Url.Action("Index", "Login")';
+    }
+
+    function continueClick() {
+        var emailId = $("#email").val();
+        console.log(emailId);
+
+        $.ajax({
+            type: "post",
+            url: "/ManagePassword/ForgotPassword",
+            dataType: "json",
+            data: { emailId: emailId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            beforeSend: function () {
+                $(".loader").show();
+            },
+            success: function (data) {
+                if (data == -1)
+                    ShowSnackBar("Please fill all fields");
+                else if (data == -2)
+                    ShowSnackBar("Password and Confirm password do not match");
+                else if (data == -3)
+                    ShowSnackBar("Password must contain atleast 8 characters");
+                else if (data == 1)
+                    ShowSnackBar("An Email with the password resent link has been sent to your Email Id");
+                else if (data == 0)
+                    ShowSnackBar("This Email Id does not exist");
+                else
+                    ShowSnackBar("There was some error while resetting password. Please try again");
+            },
+            complete : function () {
+                $(".loader").hide();
+            },
+            error: function () { }
+            });
+    };
+
+</script>
+
+
+

@@ -1,0 +1,442 @@
+﻿@using System.Data
+@using System.Collections.Generic;
+@using System.Web.Mvc;
+@model DataSet
+@{
+    Layout = null;
+    int i = 0;
+    int k = 0;
+    int lineId = 0;
+    var TruckMetricTypes = TempData["TruckMetricTypes"];
+    int tndRevNo = (int)ViewData["tendorRevNo"];
+    int maxDestinationCount = Convert.ToInt32(TempData["MaxDestinationCount"]);
+}
+
+<div tndfrtrevno="@tndRevNo">
+    <div class="BomRefDtls main-container">
+
+        <div class="col-sm-12 row BomRefHeader m-0">
+            FREIGHT CHARGES
+        </div>
+        <div class="col-sm-12 row BomRefItem m-0 lineHeadingContainer pb-0 pt-0">
+            <div class="col-sm-8 ">
+                <div class="row addMarkInput">
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (DataTable table in Model.Tables)
+                            {
+                                foreach (DataRow row in table.Rows)
+                                {
+                                    if (i == 0)
+                                    {
+                                        lineId = Convert.ToInt32(row["LineId"]);
+                                    }
+                                    <div class="col-sm-2 pb-2 pt-2 pl-0 pr-0 text-center c-pointer activeLine lineList" id="activeLine" totalwt="@row["TotalNtWt"]" lineid="@row["LineId"]"
+                                         truckid="@row["MetricTruckId"]" linetruckid="@row["LineTruckId"]" loadingfactor="@row["LoadingFactor"]" contingency="@row["Contingency"]" onclick="SetActiveLine(this)">
+                                        @row["Name"]
+                                    </div>
+                                    i = i + 1;
+                                }
+                                i = 0;
+                                break;
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+                <button type="button" id="btnSubmitFreight" class="submitEnq publishBtn">Submit</button>
+            </div>
+        </div>
+        @foreach (DataTable table in Model.Tables)
+        {
+            if (k > 0)
+            {
+                <div class="lineTabs" style="display:none">
+                    <div class="tableBlock TenderDtlModelTable FrightTenderTable">
+                        <table class="table m-0   frtTable">
+                            <tr>
+
+                                @*@if (k == 1)
+                                {*@
+                                    <th colspan="2">
+                                        @Model.Tables[0].Rows[k - 1]["Name"]
+                                    </th>
+                                @*//}*@
+
+
+                            </tr>
+                            <tr>
+                                <th class="frghtDes">Description</th>
+                                <th class="frghtData" style="width: 112px;">Data</th>
+                            </tr>
+                            <tr class="font-weight-bold">
+                                <td class="frghtDes">Total Weight (MT)</td>
+                                <td class="frghtData totalWt"></td>@*437.34*@
+                            </tr>
+                            <tr>
+                                <td class="frghtDes">Total Weight of Material(KG)</td>
+                                <td class="frghtData totalMaterialWt"></td>
+                            </tr>
+                            <tr>
+                                <td class="frghtDes">Packing material weight as Percentage</td>
+                                <td class="frghtData">@Html.TextBox("loadingFactor", "1.15", new { @onchange = "ChangeLoadingFactor(this)", @id = "loadingFactor", @class = "whiteBgInput" })</td>
+                            </tr>
+                            <tr class="frghtLoctnTR">
+                                <td class="frghtDes">
+                                    @Html.DropDownList("MetricTruckType", new SelectList((System.Collections.IEnumerable)TruckMetricTypes, "Value", "Text"), "Select Truck Type", new { @class = "browser-default custom-select", @onchange = "SetLineTruck(this)" })
+                                </td>
+                                <td class="frghtData">INR</td>
+                            </tr>
+                            @{
+                                i = 1;
+                                int count = 0;
+                                if (Model != null)
+                                {
+                                    count = table.Rows.Count;
+                                    foreach (DataRow row in table.Rows)
+                                    {
+                                        <tr destid="@row["Id"]" lineid="@row["LineId"]" onclick="PushDetails(this)">
+                                            <td class="frghtDes">@Html.TextBox("frghtDes", @row["Destinations"], new { @onchange = "ChangeDetails(this)", @inputType = "Destination" })</td>
+                                            <td class="frghtData destFrght">@Html.TextBox("frghtData", @row["Charges"], new { @onchange = "ChangeDetails(this)", @inputType = "Charge", @class = "whiteBgInput" })</td>
+                                        </tr>
+                                        i = i + 1;
+                                    }
+                                }
+
+                                for (int j = 0; j < maxDestinationCount - count; j++)
+                                {
+                                    <tr destid="" lineid="" onclick="PushDetails(this)">
+                                        <td class="frghtDes">@Html.TextBox("frghtDes", "", new { @onchange = "ChangeDetails(this)", @inputType = "Destination" })</td>
+                                        <td class="frghtData destFrght">@Html.TextBox("frghtData", "", new { @onchange = "ChangeDetails(this)", @inputType = "Charge", @class = "whiteBgInput" }) </td>
+                                    </tr>
+                                }
+                            }
+                            @*<tr>
+                                    <td class="frghtDes addMoreLoctn"><span>Add more locations </span><img src="../../Assets/images/addMore.png" onclick="AddRows(this)"></td>
+                                    <td class=""></td>
+                                </tr>*@
+                            <tr class="avgFrghtTR">
+                                <td class="frghtDes">Average Frt</td>
+                                <td class="avgFrghtData"></td>
+                            </tr>
+                            <tr>
+                                <td class="frghtDes">Max freight</td>
+                                <td class="maxFrghtData"></td>
+                            </tr>
+                            <tr>
+                                <td class="frghtDes">Freight Considered</td>
+                                <td class="frghtConsidered"></td>
+                            </tr>
+                            <tr>
+                                <td class="frghtDes">Rate per truck</td>
+                                <td class="ratePerTruck"></td>
+                            </tr>
+                            <tr>
+                                <td class="frghtDes">No. of truck</td>
+                                <td class="truckCount"></td>
+                            </tr>
+                            <tr class="bgBlue">
+                                <td class="frghtDes">SUB TOTAL FREIGHT</td>
+                                <td class="subTotFrght"></td>
+                            </tr>
+                            <tr class="bgBlue">
+                                <td class="frghtDes">CONTIGENCY ON FREIGHT (%)</td>
+                                <td class="contFrght">@Html.TextBox("contFrght", "", new { @onchange = "ChangeContingency(this)", @class = "whiteBgInput p-1" })</td>
+                            </tr>
+                            <tr class="bgBlue">
+                                <td class="frghtDes">TOTAL FREIGHT</td>
+                                <td class="totalFrght"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    @*<div class="tableBlock frghtChargBlk">
+                            <table class="table m-0">
+
+                                <tr class="bgBlue">
+                                    <td class="markSrNo" style="color:transparent">S.NO.</td>
+                                    <td class="frghtDes">SUB TOTAL FREIGHT</td>
+                                    <td class="subTotFrght"></td>
+                                </tr>
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">CONTIGENCY ON FREIGHT (%)</td>
+                                    <td class="contFrght">@Html.TextBox("contFrght", "", new { @onchange = "ChangeContingency(this)", @class = "whiteBgInput p-1" })</td>
+                                </tr>
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">TOTAL FREIGHT</td>
+                                    <td class="totalFrght"></td>
+                                </tr>
+                            </table>
+                        </div>*@
+                </div>
+            }
+            k = k + 1;
+        }
+
+        <table class="parentTable iterationTable w-100" id="tempTable"></table>
+    </div>
+</div>
+
+<script>
+    var freightDetails = [], activeLineId = @lineId, selectedTruckMetrics = [], activeLineTruckId = 0, lineContingencyDt = [], activeLineElement, activeLineTab, tndFrtRevDiv = $("div[tndfrtrevno='"+@tndRevNo+"']");
+    
+    //$(tndFrtRevDiv).find(document).ready(function () {
+    var elements = $(tndFrtRevDiv).find("tr[destid='']");
+    $.each(elements, function (index, ele) {
+        $(tndFrtRevDiv).find(ele).attr("destid", RandomId());
+    });
+
+    activeLineElement = $(tndFrtRevDiv).find(".lineHeadingContainer").find("div[lineid='" + activeLineId + "']");
+
+    SetActiveLine(activeLineElement);
+    SetFreight(activeLineElement);
+
+    //if ($(tndFrtRevDiv).find("#isPageEditable").val() != "True" && $(tndFrtRevDiv).find("#isPageEditable").val() != "true") {
+        $(tndFrtRevDiv).find("input").attr('readonly', true);
+        $(tndFrtRevDiv).find(".bgBlue").find(".whiteBgInput").css("color", "#fff");
+        //$(tndFrtRevDiv).find(".bgBlue").find(".whiteBgInput").css("font-weight","bold");
+        $(tndFrtRevDiv).find("input").removeClass("whiteBgInput");
+        $(tndFrtRevDiv).find("input").removeClass("p-1");
+    //}
+
+    elements = $(tndFrtRevDiv).find('.frtTable');
+    $.each(elements, function (count, ele) {
+        if (count > 0) {
+            $(ele).find("tr").each(function (index, item) {
+                $(tndFrtRevDiv).find("#tempTable").find("tr").eq(index).append($(item).children().not(".notReq"));
+            });
+        }
+        else {
+            $(ele).find("tr").each(function (index, item) {
+                $(tndFrtRevDiv).find("#tempTable").append(item);
+            });
+        }
+    });
+    if (elements.length > 0) {
+        //$(tndFrtRevDiv).find(".iterationTable").append($(tndFrtRevDiv).find(elements).eq(0).find("tr"));
+        //$(tndFrtRevDiv).find(tndFrtRevDiv).find(".iterationTable").prepend('<tr><th class="TenderRevisonName" colspan="3">Revision' + @tndRevNo + '</th></tr>');
+        $(tndFrtRevDiv).find(".iterationTable").prepend('<tr><th class="TenderRevisonName" colspan="' + @(Model.Tables[0].Rows.Count * 2) + '">Revision' + @tndRevNo + '</th></tr>');
+
+    }
+
+    $('select').each(function () {
+        $(this).replaceWith(function () {
+            
+            if ($(this).find("option:selected").text().toUpperCase()  != "SELECT TRUCK TYPE") {
+                return '<label  value="' + $(this).find("option:selected").text() + ' Truck"> ' + $(this).find("option:selected").text() + ' Truck</label>'
+            }
+            else {
+                return '<label  value="No truck Selected" >No truck Selected</label>'
+            }
+        });
+    });
+    
+    elements = $(tndFrtRevDiv).find("#tempTable tr");
+    $.each(elements, function (count, ele) {
+        $($(ele).find("td:last-child")).addClass("borderRight");
+        $($(ele).find("th:last-child")).addClass("borderRight");
+    });
+    //});
+
+    
+    
+
+    function AddRows(element) {
+        for (var i = 0; i < 5; i++) {
+            var html =
+                '<tr destid="' + RandomId() + '"><td class="markSrNo"></td><td class="frghtDes">' +
+                '<input id="frghtDes" name="frghtDes" inputType="Destination" onchange="ChangeDetails(this)" type="text" value=""></td>' +
+                '<td class="frghtData destFrght">' +
+                '<input id="frghtData" name="frghtData" inputType="Charge" class="whiteBgInput" onchange="ChangeDetails(this)" type="text" value=""></td></tr>'
+
+            $(tndFrtRevDiv).find(html).insertBefore($(tndFrtRevDiv).find(element).parent().parent());
+        }
+    };
+
+
+
+    function SetTotalWt(element) {
+        var loadingFactor = $(tndFrtRevDiv).find(activeLineTab).find("#loadingFactor").val();
+        var totalMtWt = $(tndFrtRevDiv).find(activeLineTab).find(".totalMaterialWt").text();
+        var totalWt = (loadingFactor * totalMtWt) / 1000;
+        $(tndFrtRevDiv).find(activeLineTab).find(".totalWt").text(totalWt.toFixed(3));
+    }
+
+    $(tndFrtRevDiv).find("#btnSubmitFreight").click(function () {
+        var lineTruckDetails = [], lineContDet = [], obj = {}, lineTotFreights = [], lineLoadingFactors = [], lineUnitFreight = [];
+        var array = JSON.stringify(freightDetails);
+        //
+        var lineItems = $(tndFrtRevDiv).find(".lineHeadingContainer").find("div[truckid]");
+        $.each(lineItems, function (index, ele) {
+            //
+            var truckId = $(tndFrtRevDiv).find(ele).attr("truckid");
+            var lineId = $(tndFrtRevDiv).find(ele).attr("lineid");
+            var lineTruckId = $(tndFrtRevDiv).find(ele).attr("linetruckid");
+            //var totalFreight = $(tndFrtRevDiv).find(activeLineTab).find(".totalFrght").text();
+            var totalFreight = $(tndFrtRevDiv).find(".main-container").find('.lineTabs').eq($(tndFrtRevDiv).find(ele).index()).find(".totalFrght").text();
+            var totalWtMt = $(tndFrtRevDiv).find(".main-container").find('.lineTabs').eq($(tndFrtRevDiv).find(ele).index()).find(".totalWt").text();
+            var unitFreight = Number(totalFreight) / Number(totalWtMt);
+            lineTruckDetails.push({ Id: lineTruckId, LineId: lineId, TruckId: truckId });
+            lineContDet.push({ LineId: lineId, Contingency: $(tndFrtRevDiv).find(ele).attr("contingency")});
+            lineTotFreights.push({ lineId: lineId, value: totalFreight});
+            lineLoadingFactors.push({ lineId: lineId, value: $(tndFrtRevDiv).find(ele).attr("loadingfactor")});
+            lineUnitFreight.push({ lineId: lineId, value: unitFreight});
+        });
+        obj.values = array;
+        obj.bomId = $(tndFrtRevDiv).find("#bomId").val();
+        obj.revId = $(tndFrtRevDiv).find("#revisionId").val();
+        obj.tndId = $(tndFrtRevDiv).find("#tndId").val();
+        obj.tndRevNo = $(tndFrtRevDiv).find("#tndRevId").val();
+        obj.lineTruckDt = JSON.stringify(lineTruckDetails);
+        obj.lineContingency = JSON.stringify(lineContDet);
+        obj.lineTotFreights = JSON.stringify(lineTotFreights);
+        obj.lineLoadingFactors = JSON.stringify(lineLoadingFactors);
+        obj.lineUnitFreight = JSON.stringify(lineUnitFreight);
+        debugger;
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/SaveFreightCharges',
+            data: obj,
+            
+            success: function (data) {
+                if (data) {
+                    $(tndFrtRevDiv).find(".modal").modal('hide');
+                    successModal();
+                }
+                else {
+                   // failureModal('creation');
+                }
+            },
+            error: function (courses) {
+                //failureModal();
+            }
+        });
+    })
+
+    function ChangeDetails(element) {
+        var obj = {};
+        var destId = $(tndFrtRevDiv).find(element).closest('tr').attr("destid");
+        var index = freightDetails.findIndex(x => x.DestId == destId);
+        if (index != -1) {
+            freightDetails[index][$(tndFrtRevDiv).find(element).attr("inputtype")] = $(tndFrtRevDiv).find(element).val();
+        }
+        else {
+
+            obj.DestId = destId;
+            obj.LineId = activeLineId;
+            obj[$(tndFrtRevDiv).find(element).attr("inputtype")] = $(tndFrtRevDiv).find(element).val();
+            freightDetails.push(obj);
+            obj = {};
+        }
+        SetFreight(activeLineElement);
+
+    }
+
+    function RandomId() {
+        var S4 = function () {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        };
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+    function SetActiveLine(element) {
+        activeLineElement = element;
+        activeLineTab = $(tndFrtRevDiv).find(".main-container").find('.lineTabs').eq($(tndFrtRevDiv).find(element).index());
+
+        activeLineId = $(tndFrtRevDiv).find(element).attr("lineid");
+        activeLineTruckId = $(tndFrtRevDiv).find(element).attr("truckid");
+        activeLineTruckId = activeLineTruckId == 0 ? "" : activeLineTruckId;
+        $(tndFrtRevDiv).find('.lineTabs').css("display", "none");
+        $(tndFrtRevDiv).find(".activeLine").css("border-bottom", "none");
+        $(tndFrtRevDiv).find(element).css("border-bottom", "3px solid #4CB684");
+        $(tndFrtRevDiv).find(activeLineTab).find("#MetricTruckType").val(activeLineTruckId);
+        $(tndFrtRevDiv).find(activeLineTab).find("#contFrght").val($(tndFrtRevDiv).find(element).attr("contingency"));
+        $(tndFrtRevDiv).find(activeLineTab).find("#loadingFactor").val($(tndFrtRevDiv).find(element).attr("loadingfactor"));
+        $(tndFrtRevDiv).find(activeLineTab).find(".totalMaterialWt").text($(tndFrtRevDiv).find(element).attr("totalwt"));
+        SetTotalWt(element);
+        SetFreight(element)
+        $(tndFrtRevDiv).find(activeLineTab).removeAttr("style");
+
+    }
+
+    function SetLineTruck(element) {
+        var selectedTruck = $(tndFrtRevDiv).find(element).val();
+        selectedTruck = selectedTruck == 0 ? "" : selectedTruck;
+        $(tndFrtRevDiv).find(activeLineElement).attr("truckid", selectedTruck);
+    }
+
+    function ChangeContingency(element) {
+        var value = $(tndFrtRevDiv).find(element).val();
+        value = value == 0 ? "" : value;
+        $(tndFrtRevDiv).find(activeLineElement).attr("contingency", value);
+        SetFreight(activeLineElement);
+    }
+
+    function ChangeLoadingFactor(element) {
+        //
+        var value = $(tndFrtRevDiv).find(element).val();
+        value = value == 0 ? "" : value;
+        $(tndFrtRevDiv).find(activeLineElement).attr("loadingfactor", value);
+        var totalMtWt = $(tndFrtRevDiv).find(activeLineTab).find(".totalMaterialWt").text();
+        var totalWt = (value * totalMtWt) / 1000;
+        $(tndFrtRevDiv).find(activeLineTab).find(".totalWt").text(totalWt.toFixed(3));
+    }
+
+    function PushDetails(element) {
+        var obj = {};
+        var destId = $(tndFrtRevDiv).find(element).attr("destid");
+        //
+        var index = freightDetails.findIndex(x => x.DestId == destId);
+        if (index != -1) {
+            freightDetails[index].Destination = $(tndFrtRevDiv).find(element).find("input[inputtype='Destination']").val();
+            freightDetails[index].Charge = $(tndFrtRevDiv).find(element).find("input[inputtype='Charge']").val();
+        }
+        else {
+
+            obj.DestId = destId;
+            obj.LineId = activeLineId;
+            obj.Destination = $(tndFrtRevDiv).find(element).find("input[inputtype='Destination']").val();
+            obj.Charge = $(tndFrtRevDiv).find(element).find("input[inputtype='Charge']").val();
+            freightDetails.push(obj);
+            obj = {};
+        }
+    }
+
+    function SetFreight(element) {
+        //
+        var avgFreight, maxFreight, freightConsidered, lines = [];
+        var freights = $(tndFrtRevDiv).find(activeLineTab).find('.destFrght');
+
+        $.each(freights, function (index, ele) {
+            lines.push(Number($(tndFrtRevDiv).find(ele).find('input').val()));
+        });
+        var sum = lines.reduce(function (a, b) { return a + b; });
+        avgFreight = sum / lines.length;
+        maxFreight = Math.max.apply(Math, lines);
+        freightConsidered = (avgFreight + maxFreight) / 2;
+
+        var totalMtWt = $(tndFrtRevDiv).find(activeLineTab).find(".totalWt").text();
+        var truckCount = Number(totalMtWt) / 24;
+        if (truckCount >= 0 && truckCount < 1) {
+            truckCount = 1;
+        }
+
+        truckCount = Math.ceil(Number(truckCount).toFixed(3));
+
+        $(tndFrtRevDiv).find(activeLineTab).find(".avgFrghtData").text(avgFreight.toFixed(3));
+        $(tndFrtRevDiv).find(activeLineTab).find(".maxFrghtData").text(maxFreight);
+        $(tndFrtRevDiv).find(activeLineTab).find(".frghtConsidered").text(freightConsidered.toFixed(3));
+        $(tndFrtRevDiv).find(activeLineTab).find(".ratePerTruck").text((freightConsidered).toFixed(0));
+        $(tndFrtRevDiv).find(activeLineTab).find(".truckCount").text(truckCount.toFixed(0));
+        var subTotal = freightConsidered.toFixed(0) * truckCount.toFixed(0);
+        $(tndFrtRevDiv).find(activeLineTab).find(".subTotFrght").text(subTotal.toFixed(0));
+        var contingency = $(tndFrtRevDiv).find(activeLineTab).find("#contFrght").val();
+        var totalFrght = subTotal + ((contingency * subTotal)/100)
+
+        $(tndFrtRevDiv).find(activeLineTab).find(".totalFrght").text(totalFrght.toFixed(3));
+    }
+</script>

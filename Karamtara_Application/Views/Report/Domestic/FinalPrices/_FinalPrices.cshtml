@@ -1,0 +1,114 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@using System.Dynamic;
+@{ var count = 1;}
+@{
+    dynamic dynamic = new ExpandoObject();
+    decimal value = 0;
+}
+<div class="BomRefDtls">
+    <div class="tableBlock TenderDtlModelTable">
+       
+        <table class="table m-0 tableLayout parentTable">
+            <tr><td></td></tr>
+            <tr><td></td></tr>
+            <tr>
+                <th class="priceDesc">Description</th>
+            </tr>
+            <tr>
+                <td class="priceDesc">Exw</td>
+            </tr>
+            <tr>
+                <td class="priceDesc">Freight</td>
+            </tr>
+            <tr class="bgBlue">
+                <td class="priceDesc">GST</td>
+            </tr>
+            <tr class="bgBlue">
+                <td class="priceDesc">TOTAL</td>
+            </tr>
+            <tr class="bgBlue">
+                <td class="priceDesc">Value in Cr</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+
+    var lineNos = @Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList().Count();
+
+    CalculateTotal();
+
+    function CalculateTotal() {
+        var calcTotal = 0;
+        var crValue = 0;
+        var gstPerc = Number($("#GSTPercentage").val());
+        var gstValue = 0,totalGst = 0;
+
+        for (var i = 1; i <= lineNos; i++) {
+            calcTotal = Number($(".Ex_" + i).text()) + Number($(".Fr_" + i).text());
+
+            gstValue = calcTotal * gstPerc / 100;
+            totalGst += gstValue;
+
+            calcTotal += gstValue;
+
+            crValue = Number(calcTotal / 10000000);
+            $(".Gst_" + i).text(gstValue.toFixed(3));
+            $(".Total_" + i).text(calcTotal.toFixed(3));
+            $(".CrValue_" + i).text(crValue.toFixed(3));
+        }
+
+        $(".totalGst").text(totalGst.toFixed(4));
+
+        var totalExworks = 0;
+        for (var i = 1; i <= lineNos; i++) {
+            totalExworks += Number($(".Ex_" + i).text());
+            $(".totalExworks").text(totalExworks.toFixed(4));
+        }
+
+        var totalFreight = 0;
+        for (var i = 1; i <= lineNos; i++) {
+            totalFreight += Number($(".Fr_" + i).text());
+            $(".totalFreight").text(totalFreight.toFixed(4));
+        }
+
+        var finalPrice = Number($(".totalExworks").text()) + Number($(".totalFreight").text()) + Number($(".totalGst").text());
+        $(".finalPrice").text(finalPrice.toFixed(4))
+
+        var priceInCr = Number(finalPrice / 10000000);
+        $(".totalCrValue").text(priceInCr.toFixed(4))
+    }
+
+    function SaveFinalPrices() {
+
+        if ($("#GSTPercentage").val() == "") {
+            ShowSnackBar("Please enter GST Percentage");
+            return false;
+        }
+
+        var obj = {};
+        obj.tndId = $("#tndId").val();
+        obj.tndRevNo = $("#tndRevId").val();
+        obj.GstValue = $("#GSTPercentage").val();
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/SaveFinalPrices',
+            data: obj,
+            async: false,
+            success: function (data) {
+                if (data) {
+                    ShowSnackBar("Saved Successfully");
+                    $(".modal").modal('hide');
+                }
+                else {
+                    ShowSnackBar("Failure");
+                }
+            },
+            error: function (courses) {
+                // failureModal();
+            }
+        });
+    }
+
+
+</script>

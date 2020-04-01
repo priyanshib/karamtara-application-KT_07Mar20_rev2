@@ -1,0 +1,23 @@
+﻿@model Karamtara_Application.Models.AssemblyMasterModel
+
+<table class="table">
+    <tr>
+        <th class="CatNo">Cat. No</th>
+        <th class="" colspan="2">Assembly</th>
+    </tr>
+
+    @foreach (var item in Model.AssemblyList)
+    {
+        <tr  id="AssmTr_@item.AssemblyId" onclick="GetAssmProducts(@item.AssemblyId)" class="assmRow">
+            <td>@item.AssemblyCode</td>
+            <td>@item.AssemblyName</td>
+        </tr>
+    }
+</table>
+
+<script>
+  $(document).ready(function () {
+        var id = '@Model.AssemblyId';
+      $("#AssmTr_" + id).attr('style', 'font-weight:bold');
+    });
+</script>

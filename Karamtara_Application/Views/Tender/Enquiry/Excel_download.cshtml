@@ -1,0 +1,18 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+@{
+    ViewBag.Title = "Excel_download";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h2>Excel_download</h2>
+</div>
+@using (Html.BeginForm("DownloadExcel", "Enquiry", FormMethod.Post, new { @id = "excelDownloadForm" }))
+{
+    <div>
+        Click to Create and Download Excel,Excel Data from DB.
+        <button type="submit" id="excelDownload"> Download Excel</button>
+    </div>
+}
+
+

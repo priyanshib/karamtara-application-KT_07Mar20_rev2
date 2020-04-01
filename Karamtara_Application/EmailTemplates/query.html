@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Query</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+
+<style>
+.example_e {
+border: solid #565656 1px;
+background: #ffffff;
+color: #565656 !important;
+text-decoration: none;
+font-weight: 600;
+padding: 10px 15px;
+border-radius: 6px;
+text-transform: uppercase;
+display: inline-block;
+letter-spacing:1px;
+transition: all 0.3s ease 0s;
+margin-top:30px;
+font-size:12px;
+}
+
+.tableClass
+{
+border:solid black 1px;
+}
+</style>
+
+</head>
+
+<body style="font-family:Ubuntu,sans-serif;background:#fff;">
+    <div style="background:#fff;width:550px;margin:0 auto;">
+        <table style="width:550px;padding:20px;"class="tableClass">
+            <tr>
+                <td align="center" style="padding:10px 0 40px">
+                    {<imgSource>}
+				</td>
+            </tr>
+            <tr>
+                <td style="color:#565656;font-size:18px;font-weight:bold;text-transform:capitalize;padding-bottom:20px;">Hello,</td>
+            </tr>
+			
+			<tr>
+                <td style="color:#888;font-size:14px;line-height:1.38;font-weight:normal;padding-bottom:20px;">
+                    <span style="color:#565656;font-size:14px;font-weight:bold;text-transform:capitalize;display:block; padding-bottom:10px;">{querer} had a query</span>
+					<span style="color:#888;font-size:14px;text-transform:capitalize;display:block;">{queryValue}</span>
+                    
+                </td>
+            </tr>
+			<tr>
+                <td style="color:#888;font-size:14px;text-transform:capitalize;display:block; padding-bottom:30px;">{pfaComment}</td>
+			</tr>
+
+			<tr><td style="color:#565656;font-size:14px;font-weight:bold;text-transform:capitalize;display:block; padding-bottom:10px;"> Project Details</td></tr>
+		
+			<tr>
+                <td style="color:#888;font-size:14px;line-height:1;font-weight:normal;padding-bottom:5px;">
+                                        <span> Tender File No :</span> 
+										<span class="value">{tenderFileNo}</span>
+
+				<td>
+			<tr>
+			<tr>
+                <td style="color:#888;font-size:14px;line-height:1;font-weight:normal;padding-bottom:5px;">
+                                        <span class="label"> Project Name :</span> 
+										<span class="value">{projName}</span>
+				<td>
+			<tr>
+			<tr>
+                <td style="color:#888;font-size:14px;line-height:1;font-weight:normal;padding-bottom:5px;">
+                                        <span class="label"> Customer Name:</span>
+										<span class="value">{epcCustName}</span>
+				<td>
+			<tr>
+                <td style="color:#565656;font-size:14px;text-transform:capitalize;font-weight:bold;padding-top:20px;">
+                    Regards,
+                </td>
+            </tr>
+            <tr >
+                <td style="color:#888;font-size:14px;">
+                    Karamtara (Tender Costing Application)
+                </td>
+            </tr>
+			<tr>
+			<td>
+				<div class="button_cont" align="center">
+				<a class="example_e" href="{hrefTag}" target="_blank" rel="nofollow noopener"> Click here to go to Application </a>
+				</div>
+            </td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+</html>

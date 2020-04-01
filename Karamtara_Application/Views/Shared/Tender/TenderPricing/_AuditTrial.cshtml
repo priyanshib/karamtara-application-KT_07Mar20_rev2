@@ -1,0 +1,32 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+<div class="BomRefDtls">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row  m-0">
+        <div class="col-sm-5 BomRefHeader">
+            AUDIT TRAIL
+        </div>
+    </div>
+    <div class="tableBlock TenderDtlModelTable">
+        <table class="table m-0 ">
+            <tr>
+                <th class="lastEdit">Last Edited By</th>
+                <th class="onEdit"><img src="../../Assets/images/calender.png"> Edited On</th>
+                <th class="version">Version</th>
+            </tr>
+            @foreach (var item in Model.AuditTrialList)
+            {
+                <tr>
+                    <td class="lastEdit">@item.EditedBy</td>
+                    <td class="onEdit">@item.EditedDate</td>
+                    <td class="version">@item.Version</td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>
+

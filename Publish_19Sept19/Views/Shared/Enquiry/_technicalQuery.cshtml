@@ -1,0 +1,119 @@
+﻿@model Karamtara_Application.Models.EnquiryModel
+
+@using (Html.BeginForm("SubmitTechQuery", "Enquiry", FormMethod.Post, new { @id = "techQueryForm" }))
+{
+<div>
+    @if (Model.TechQueryList != null && Model.TechQueryList.Count > 0)
+    {
+        <input type="hidden" value="@Model.TechQueryList.FirstOrDefault().EnquiryId" id="IP" name="EnquiryId" />
+        foreach (var x in Model.TechQueryList)
+        {
+            <div class="CreateCatDiv border-bottom">
+                <label class="qutnLabel"><img src="~/Assets/images/qutnIcon.svg" width="35px" class="mr-2" />@x.Query</label>
+
+                @if (string.IsNullOrEmpty(x.Answer))
+                {
+                    <div class="ansDiv"><img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2" /> @Html.TextBoxFor(y => x.Answer, null, new { @class = "tpClass answerClass" })<input type="hidden" name="x.Id" value="@x.Id" /></div>
+                }
+                else
+                {
+                    <div class="ansDiv"> <img src="~/Assets/images/answerIcon.svg" width="35px" class="mr-2" /> @x.Answer  </div>
+                }
+            </div>
+
+            @*<table class="table m-0">
+                    <tr> <td> @x.Query </td> </tr>
+                    @if (string.IsNullOrEmpty(x.Answer))
+                    {
+                        <tr> <td> @Html.TextBoxFor(y => x.Answer, null, new { @class = "tpClass" }) <input type="hidden" name="x.Id" value="@x.Id"></td> </tr>
+                    }
+                    else
+                    {
+                        <tr> <td> @x.Answer </td> </tr>
+                    }
+                </table>*@
+
+        }
+
+        @*if (Model.TechQueryList != null && Model.TechQueryList.Count > 0)
+            {
+                @Html.HiddenFor(y => Model.TechQueryList.FirstOrDefault().EnquiryId)
+            }*@
+    }
+
+    <div class="w-100 text-right mt-3 mb-3">
+        <button type="button" id="querySubmit" class="submitBomBtn publishBtn">Submit</button>
+    </div>
+
+</div>
+}
+
+<script>
+
+    $(document).ready(function () {
+        $('#techQueryForm').validate({
+        });
+    })
+
+    $(document).ready(function () {
+        $('.answerClass').each(function () {
+            $(this).keypress(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+
+    $("#querySubmit").on('click', function () {
+        $('input[type=text]').each(function () {
+            var getText = $(this).val() + '~!'; //here you can set your pattern superseded 88
+            $(this).val(getText);
+        });
+
+        var form = $("#techQueryForm").serialize();
+
+        $.ajax({
+            type: "post",
+            url: "/Enquiry/SubmitTechQuery",
+            dataType: "json",
+            data: form,
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data.Status == true) {
+                    $("#Querymodal").modal('hide');
+                    alert('Queries updated Successfully');
+                    $("#enquirytxtSearch").val('');
+                    var num = $("#IP").val();
+                    //alert(num);
+                    if (data.AllAnswered == true) {
+                        //alert("22");
+                        $("#commentIcon_" + num).attr("src","/Assets/images/flashBulp.gif");
+                        //$("#commentIcon").image("~/Assets/images/flashBulp.gif", function () {
+                        //    alert("The image is loaded now");
+                        //});
+                        //let On = document.getElementById('commentIcon');
+                        //On.src = '~/Assets/images/RedBulp.gif';
+                    }
+                }
+                else {
+                    $("#Querymodal").modal('hide');
+                    alert('Failed to update');
+                    $("#enquirytxtSearch").val('');
+                }
+            },
+            error: function (courses) {
+
+            }
+        });
+    })
+
+    $(document).ready(function () {
+        $('[id]').each(function () {
+            var ids = $('[id="' + this.id + '"]');
+            if (ids.length > 1 && ids[0] == this)
+                console.warn('Multiple IDs #' + this.id);
+        });
+    });
+
+</script>

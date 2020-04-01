@@ -1,0 +1,101 @@
+﻿
+@{
+    ViewBag.Title = "CreateBOM2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content mainContentPaddingBtm">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row prjNmBlock">
+                <div class="col-sm-8 align-self-center">
+                    <span>Project :</span>Transmission system strengthening in Jharkhand State
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="createBomBtn saveBtn">SAVE</button>
+                    <button type="button" class="createBomBtn revisionBtn">Save Revision</button>
+                    <button type="button" class="createBomBtn publishBtn">Publish</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-5">
+            <div class="createBomDtls tableBlock">
+                <div class="row">
+                    <table class="table">
+                        <tr>
+                            <th class="srNo">Sr. No</th>
+                            <th class="desc" colspan="2">Description</th>
+                            <th class="uniWeght">Unit Weight</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="2"></td>
+                            <td class="UnitDtl">KG</td>
+                        </tr>
+                        <tr>
+                            <td class="SrNoDtl">A</td>
+                            <td class="createBomDescTd">
+                                <input type="text" value="HW Fittings: 400kv ACSR Moose Conductor" />
+                            </td>
+                            <td class="createBomImg"> <img src="../Assets/images/addMore.png"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="SrNoDtl">1</td>
+                            <td class="createBomDescTd">
+                                Double Suspension
+                            </td>
+                            <td class="createBomImg"> <img src="../Assets/images/bulb.png"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="SrNoDtl">2</td>
+                            <td class="createBomDescTd">
+                                Single Suspension Pilot (with 200kg Counter Weight)
+                            </td>
+                            <td class="createBomImg"> <img src="../Assets/images/bulb.png"></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-7">
+            <div class="BOMdetails tableBlock">
+                <div class="row">
+                    <table class="table">
+                        <tr rowspan="2">
+                            <td colspan="5" class="BOMHeader">Assembly Name: 400kv Quad ACSR Moose Conductor</td>
+                        </tr>
+                        <tr>
+                            <th class="srNo">Sr. No.</th>
+                            <th class="asemblyId">Sub Assembly ID</th>
+                            <th class="asemblyNm">Sub Assembly Name </th>
+                            <th class="techAsemblyNm">Technical Name of Sub Assembly</th>
+                        </tr>
+                        <tr>
+                            <td class="srNo">1</td>
+                            <td><input type="text" value="DIS-Q-PG-PR"></td>
+                            <td><input type="text" value="Double Suspension"></td>
+                            <td><input type="text" value="400Kv Double Suspension insulator string">
+                        </tr>
+                        <tr>
+                            <td class="srNo">2</td>
+                            <td><input type="text" value="DIS-Q-PG-PR"></td>
+                            <td><input type="text" value="Double Suspension"></td>
+                            <td><input type="text" value="400Kv Double Suspension insulator string">
+                        </tr>
+                    </table>
+                    <div class="saveBOMdtls">
+                        <button type="button" class="submitBomBtn revisionBtn">cancel</button>
+                        <button type="button" class="submitBomBtn saveBtn">SAVE</button>
+                        <button type="button" class="submitBomBtn publishBtn">save to master</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

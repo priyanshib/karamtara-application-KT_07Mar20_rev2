@@ -1,0 +1,268 @@
+﻿@using Karamtara_Application.Models.Tender
+@model IntFreightModel
+@using System.Dynamic;
+@{
+    decimal value = 0;
+    TenderPortDetails portDetails = null;
+}
+
+ 
+
+    @if (Model.TenderPortNames != null && Model.TenderPortNames.Any())
+    {
+
+      
+<table class="table m-0 parentTable">
+    <tr>
+        <th class="FreightchargeDtls" colspan="2"></th>
+    </tr>
+    <tr>
+        <th class="frightDes" colspan="2">Port Name</th>
+    </tr>
+    <tr>
+        <th class="FreightchargeDtls" colspan="2">Estimated Charges 20 Feet Container</th>
+    </tr>
+    <tr>
+        <td class="FreightchargeDtls" colspan="2">Ocean Frt/Mt</td>
+    </tr>
+    <tr class="totalFrightPrc">
+        <td class="FreightchargeDtls" colspan="2">Total in RS</td>
+    </tr>
+    <tr>
+        <th class="FreightchargeDtls" colspan="2">Estimated Charges 40 Feet Container</th>
+    </tr>
+    <tr>
+        <td class="FreightchargeDtls" colspan="2">Ocean Frt/Mt</td>
+    </tr>
+    <tr class="totalFrightPrc">
+        <td class="FreightchargeDtls" colspan="2">Total in RS</td>
+    </tr>
+    <tr>
+        <th class="markSrNo">S.NO.</th>
+        <th class="frightDes">Description</th>
+    </tr>
+    <tr class="subHeadingTH">
+        <td class="markSrNo"></td>
+        <td class="frightDes"></td>
+    </tr>
+    <tr>
+        <td class="markSrNo">1</td>
+        <td class="frightDes">Total weight(MT)</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">2</td>
+        <td class="frightDes">Supply by container(MT)</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">3</td>
+        <td class="frightDes">Supply by Air (MT)</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">4</td>
+        <td class="frightDes">Cost Estimates</td>
+    </tr>
+    <tr class="GreyHeadRow">
+        <td class="markSrNo"></td>
+        <td class="frightDes">Containers</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">a</td>
+        <td class="frightDes">No of 20 Ft Containers: @@16 MT / Container</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">a</td>
+        <td class="frightDes">Override No of 20 Ft Containers: @@16 MT / Container</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">b</td>
+        <td class="frightDes">sea freight per 20'ft container</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">a</td>
+        <td class="frightDes">No of 40 Ft Containers: @@23 MT / Container</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">b</td>
+        <td class="frightDes">sea freight per 40'ft container</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">d</td>
+        <td class="frightDes">sea freight per Mt</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">d</td>
+        <td class="frightDes">sea freight per Mt (Rounded-UP)</td>
+    </tr>
+    <tr class="font-weight-bold">
+        <td class="markSrNo"></td>
+        <td class="frightDes">Total Sea Freight</td>
+    </tr>
+    <tr class="GreyHeadRow">
+        <td class="markSrNo"></td>
+        <td class="frightDes">Air Freight Cost</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">a</td>
+        <td class="frightDes">Freight to Destination airport</td>
+    </tr>
+    <tr>
+        <td class="markSrNo">b</td>
+        <td class="frightDes">Freight per Kg</td>
+    </tr>
+    <tr class="font-weight-bold">
+        <td class="markSrNo"></td>
+        <td class="frightDes">Total Cost (Air)</td>
+    </tr>
+    <tr class="bgBlue">
+        <td class="markSrNo" style="color:transparent">S.NO.</td>
+        <td class="OverAllCost">Over All Total</td>
+    </tr>
+</table>
+       
+
+    }
+    else
+    {
+        <div class="d-flex align-center p-5">Please add port(s) to assign freight charges</div>
+    }
+
+<script>
+            //var activePortHeading, activePortTab;
+
+            //$(document).ready(function () {
+            //    $("#frtTndId").val($("#tndId").val());
+            //    $("#frtTndRevId").val($("#tndRevId").val());
+
+            //    var elements = $(".intfreightTabs").find('.portTabs');
+            //    $.each(elements, function (index, ele) {
+            //        activePortHeading = $(".portTabHeadingContainer").find('.activePort').eq(index);
+            //        activePortTab = ele;
+            //        var seaFrtElement = $(activePortTab).find("#SeaFreight");
+            //        SetOceanFrt(seaFrtElement);
+            //        SetFrtValues();
+            //    });
+
+            //    activePortHeading = $(".portTabHeadingContainer").find('.activePort').eq(0);
+            //    activePortTab = $(".intfreightTabs").find('.portTabs').eq(0);
+            //    $(activePortHeading).css("border-bottom", "3px solid #4CB684");
+            //    $(activePortTab).removeAttr("style");
+            //});
+
+            //function SetFrtValues() {
+            //    $(activePortTab).find("#TotalWeight").val($(activePortTab).find("#SupplyByContainer").val());
+
+            //    var NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 16);
+            //    $(activePortTab).find("#NoOfFtContainers").val(NoOfContainer.toFixed(0));
+
+
+            //    var totalPrice = Number($(activePortTab).find("#TotalPrice").val()).toFixed(3);
+            //    $(activePortTab).find("#SeaFrtPerContainerRs").val(totalPrice);
+
+            //    $(activePortTab).find("#TotalSeaFreightRs").val(Number(NoOfContainer * totalPrice).toFixed(3));
+
+            //    var totCostAir = Number($(activePortTab).find("#FreightToAirportRs").val()) + Number($(activePortTab).find("#FreightPerKgRs").val());
+            //    $(activePortTab).find("#TotalCostAirRs").val(totCostAir.toFixed(3))
+
+            //}
+
+            //function SetActiveTab(element) {
+            //    activePortHeading = element;
+            //    activePortTab = $(".intfreightTabs").find('.portTabs').eq($(element).index());
+            //    $('.portTabs').css("display", "none");
+            //    $(".activePort").css("border-bottom", "none");
+            //    $(element).css("border-bottom", "3px solid #4CB684");
+            //    $(activePortTab).removeAttr("style");
+            //    SetFrtValues();
+            //}
+
+            //function SubmitRemarks(portId, inputId) {
+            //    $("#testmasterDtls").css('display', "block");
+            //    var text = $("div[portid=" + portId + "]").find("." + inputId).closest("input").val();
+
+            //    text = $.trim(text);
+            //    text = text == "-" ? "" : text;
+            //    var html = '<div class="BomRefDtls">' +
+            //        '<div class="col-sm-12 row BomRefHeader m-0">' +
+            //        '<div class="col-sm-8">' +
+            //        'Add Remarks' +
+            //        '</div>' +
+            //        '<div class="col-sm-4 text-right">' +
+            //        '<button type="button" class="submitEnq revisionBtn" onclick="CloseRemarkModal()">Cancel</button>' +
+            //        '<button type="button" class="submitEnq publishBtn" onclick="SetRemark(' + portId + ',&quot;' + inputId + '&quot;)">Submit</button>' +
+            //        '</div>' +
+            //        '</div>' +
+            //        '<div class="col-sm-12 row BomRefHeader m-0 testMasterheader">' +
+            //        'Remarks:    <input type="text" id="txtRemark" value="' + text + '">' +
+            //        '</div>' +
+            //        '</div>';
+
+            //    $("#testmasterDtls").html(html);
+            //    $("#testmasterDtls").modal('show');
+            //}
+
+            //function SetRemark(portId, inputId) {
+            //    $("div[portid=" + portId + "]").find("span." + inputId).text($("#txtRemark").val());
+            //    $("div[portid=" + portId + "]").find("input." + inputId).val($("#txtRemark").val());
+            //    $("#testmasterDtls").css('display', "none");
+            //}
+
+            //function CloseRemarkModal() {
+            //    $("#testmasterDtls").css('display', "none");
+            //}
+
+            //function SetOceanFrt(element) {
+            //    var value = Number($(element).val()).toFixed(3);
+            //    var oceanFrtPerMtRs = value * Number($(activePortHeading).attr("currencyvalue"));
+            //    var NoOfContainer = Math.ceil(Number($(activePortTab).find("#SupplyByContainer").val()) / 16);
+            //    $(activePortTab).find("#OceanFrtPerMt").val(value);
+            //    $(activePortTab).find("#OceanFrtPerMtRs").val(oceanFrtPerMtRs.toFixed(3));
+            //    $(activePortTab).find("#TotalPrice").val(oceanFrtPerMtRs.toFixed(3));
+            //    $(activePortTab).find("#SeaFrtPerContainerRs").val(oceanFrtPerMtRs.toFixed(3));
+            //    $(activePortTab).find("#TotalSeaFreightRs").val(Number(NoOfContainer.toFixed(0) * oceanFrtPerMtRs).toFixed(3));
+            //    SetOverallTotal();
+            //}
+
+            //function SetTotalCostAir() {
+            //    var totCostAir = Number($(activePortTab).find("#FreightToAirportRs").val()) + Number($(activePortTab).find("#FreightPerKgRs").val());
+            //    $(activePortTab).find("#TotalCostAirRs").val(totCostAir.toFixed(3));
+            //    SetOverallTotal();
+            //}
+
+            //function SetOverallTotal() {
+            //    var total = Number($(activePortTab).find("#TotalCostAirRs").val()) + Number($(activePortTab).find("#TotalSeaFreightRs").val());
+            //    $(activePortTab).find("#OverallTotalRs").val(total.toFixed(3))
+            //}
+
+            //$("#btnSubmitFreight").click(function () {
+            //    jQuery(".intfreightTabs").find("input").not("input[class$='Rmks'],input[class$='Rmks ']").filter(function () {
+            //        return this.value == "";
+            //    }).val(0);
+
+            //    jQuery(".intfreightTabs").find("input[class$='Rmks'],input[class$='Rmks ']").filter(function () {
+            //        return $(this).val() == "";
+            //    }).val("-");
+
+            //    var form = $("#SeaFreightForm").serialize();
+
+            //    $.ajax({
+            //        type: "post",
+            //        url: '/IntTenderPricingKT/SaveFreightCharges',
+            //        dataType: "json",
+            //        data: form,
+            //        success: function (data) {
+            //            if (data) {
+            //                $(".modal").modal('hide');
+            //                //successModal();
+            //                window.location.reload();
+            //            }
+            //            else {
+            //                failureModal();
+            //            }
+            //        },
+            //        error: function (courses) {
+            //            failureModal();
+            //        }
+            //    });
+            //})
+
+</script>

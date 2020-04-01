@@ -1,0 +1,184 @@
+﻿@model Karamtara_Application.Models.TenderListModel
+@{
+    ViewBag.Title = "TenderList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+</script>
+<div class="Catgdetails tableBlock" id="divProdEdit">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row ProdNmBlock p-2">
+                <div class="col-sm-7 align-items-center d-flex">
+                    <img src="/Assets/images/invoice.svg" height="20px">  International Tender List
+                </div>
+                <div class="col-sm-2 text-right">
+                    <button type="button" class="createComponent blueBtn" data-toggle="modal" onclick="openCompareModal();">Compare</button>
+                </div>
+                <div class="col-sm-3">
+                    <div class="searchBlock ">
+                        <div class="inputSerachBlok creteEnqSearch">
+                            <input type="text" id="searchTenderList" class="input-group serachInput f-13 p-2" placeholder="Search Tender List" />
+                            <button type="button" id="btnClear" class="btn-clear searchClear" onclick="clearSearch();"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+                        </div>
+                        <button type="button" id="btnSearchbar" class="serachBtn w-40"><img src="~/Assets/images/search.svg" width="20px" /></button>
+                        @*<input type="button" id="btnSearch" value="Search" class="createProdBtn saveBtn" />*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="listView" class="w-100">
+            @Html.Partial("~/Views/Shared/Tender/TenderList/_IntlTenderList.cshtml", Model)
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="BomMasterRefreshModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="divEditSubAssmModel">
+                <label class="w-100 text-center mt-4 mb-4">Refresh the Revision Data from </label>
+                <input type="hidden" id="hidBomId" />
+                <input type="hidden" id="hidRevNo" />
+                <input type="hidden" id="hidEnqId" />
+                <div class="saveProddtls position-relative mb-2 w-100 mt-2">
+                    @*<button type="button" class="submitBomBtn saveBtn " id="addRowsBtn" onclick="AddRowFunction();">Cancel</button>*@
+                    <button type="submit" class="submitBomBtn saveBtn " id="btnRefreshFromMaster">From Master</button>
+                    <button type="submit" class="submitBomBtn publishBtn " id="btnRefreshFromBom">From BOM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--modal popup-->
+<div class="modal fade" id="compareModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="tndCompareList">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openCompareModal() {
+
+        //  $('#compareModal').modal('show');
+
+        $.ajax({
+            type: "get",
+            url: "/TenderList/GetIntTndCompareList",
+            dataType: "html",
+            success: function (data) {
+                if (data) {
+                    $("#tndCompareList").html(data);
+                    $('#compareModal').modal('show');
+                }
+            },
+            error: function (data) { }
+
+        })
+    }
+    $('#btnSearchbar').click(function () {
+        var prefix = $("#searchTenderList").val();
+        if (prefix) {
+            $.ajax({
+                type: "get",
+                url: "/TenderList/SearchInternationalTenderList",
+                dataType: "html",
+                data: { searchText: prefix },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#listView").html(data);
+                    $("#searchTenderList").val(prefix);
+                    $("#searchTenderList").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    });
+
+    $('#searchTenderList').keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $('#btnSearchbar').click();
+            return false;
+        }
+    });
+
+    function clearSearch() {
+        var prefix = $("#searchTenderList").val();
+        if (prefix) {
+
+            $.ajax({
+                type: "get",
+                url: "/TenderList/SearchInternationalTenderList",
+                dataType: "html",
+                data: { searchText: '' },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $("#listView").html(data);
+                    $("#searchTenderList").val('');
+                    $("#searchTenderList").focus();
+                },
+                error: function (got) { }
+            });
+        }
+    }
+
+    function CompareTenders() {
+        debugger;
+        var flag = true;
+        var maxAllowed = 2;
+        var count = $("input[name='checkbox']:checked").length;
+        if (count < maxAllowed) {
+            flag = false;
+            alert("Please select two tenders for comparison");
+        }
+
+        if (!flag)
+            return false;
+
+        var firstTndId, firstTndRevNo, otherTndId, otherTndRevNo;
+        var elements = $("input[name='checkbox']:checked");
+        $(elements).each(function (index, item) {
+            var parentRow = $(item).closest("tr");
+            if (index == 0) {
+                firstTndId = $(parentRow).find(".tndId").text();
+                firstTndRevNo = $(parentRow).find(".tndRevNo").text();
+            }
+            else {
+                otherTndId = $(parentRow).find(".tndId").text();
+                otherTndRevNo = $(parentRow).find(".tndRevNo").text();
+            }
+        });
+        window.location.href = "/report/IntDiffTenderCompare?firstTndId=" + firstTndId + "&firstTndRevNo=" + firstTndRevNo + "&otherTndId=" + otherTndId + "&otherTndRevNo=" + otherTndRevNo;
+    }
+
+    //$("#btnRefreshFromBom").click(function () {
+    //    var bomId = $("#hidBomId").val();
+    //    var revNo = $("#hidRevNo").val();
+    //    var enqId = $("#hidEnqId").val();
+    //    location.href = '/BOMRevision/GetRevisionData?bomId=' + bomId + '&&revNo=' + revNo + '&&enqId=' + enqId;
+    //})
+
+    //$("#btnRefreshFromMaster").click(function () {
+    //    var bomId = $("#hidBomId").val();
+    //    var revNo = $("#hidRevNo").val();
+    //    var enqId = $("#hidEnqId").val();
+    //    location.href = '/BOMRevision/GetRevisionDataFromMaster?bomId=' + bomId + '&&revNo=' + revNo + '&&enqId=' + enqId;
+    //})
+
+</script>

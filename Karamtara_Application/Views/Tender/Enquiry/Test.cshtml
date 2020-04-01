@@ -1,0 +1,291 @@
+﻿
+@{
+    ViewBag.Title = "Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="row selectedActivies ">
+        <div class="col-sm-12">
+            <div class="activities" id="createEnq"><img src="~/Assets/images/fullscreen.png" /> Create Enuiries</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5" id="CreateEnqDiv">
+            <div class="createTable tableBlock">
+                <div class="row">
+                    <table class="table">
+                        <tr>
+                            <td class="tableTH">Tender Dept File No.</td>
+                            <td colspan="2" class="TDtitle">KEPL/TE-0001</td>
+                        </tr>
+                        <tr>
+                            <td class="tableTH">Project Name</td>
+                            <td colspan="2"><input class="w-100 text-left" value="400 Kv single I suspension (pilot) string for quad moose" /></td>
+                        </tr>
+                        <tr>
+                            <td class="tableTH">Enquiry Type</td>
+                            <td colspan="2" class="SelectTD">
+                                <select>
+                                    <option>Domestic</option>
+                                    <option>Domestic1</option>
+                                    <option>Domestic2</option>
+                                    <option>Domestic3</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tableTH">End Customer Name</td>
+                            <td colspan="2" class="SelectTD">
+                                <select>
+                                    <option>NTPCL</option>
+                                    <option>NTPCL1</option>
+                                    <option>NTPCL2</option>
+                                    <option>NTPCL3</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tableTH">Enquiry Due Dte</td>
+                            <td class="calImg"><img src="~/Assets/images/calender.png" /></td>
+                            <td>DD/MM/YYYY</td>
+                        </tr>
+
+                        <tr class="CustNumber">
+                            <td class="tableTH">No. of EPC Customers</td>
+                            <td colspan="2" class="SelectTD">
+                                <select>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <!--this block going to repeted according to selection of number of customers-->
+                        <tr>
+                            <td class="tableTH">Name of EPC Customers</td>
+                            <td colspan="2"><input class="w-100 text-left TDtitle" value="Name of 1st EPC Customers" /></td>
+                        </tr>
+                        <tr>
+                            <td class="tableTH">Date of Enquiry</td>
+                            <td class="calImg"><img src="~/Assets/images/calender.png" /></td>
+                            <td>DD/MM/YYYY</td>
+                        </tr>
+                        <tr>
+                            <td class="tableTH">Expiry Date</td>
+                            <td class="calImg"><img src="~/Assets/images/calender.png" /></td>
+                            <td>DD/MM/YYYY</td>
+                        </tr>
+                        <!--this block going to repeted-->
+
+                        <tr>
+                            <td rowspan="2" class="tableTH">Add Project Summary</td>
+                            <td colspan="2" class="summaryTD">
+                                <textarea rows="8"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button type="button" class="submitEnq cancelEnq">Cancel</button>
+                                <button type="button" class="submitEnq sucessEnq">Submit</button>
+                                <button type="button" class="submitEnq attachmentBtn"><img src="~/Assets/images/attachment.png" />attachment</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-7" id="checkClass">
+            <div class="enquiryTable tableBlock">
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td colspan="10" class="tdheader text-left">All Enquiries</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Tender Dept File No.</th>
+                                <th scope="col">Type</th>
+                                <th scope="col" class="text-left">Project Name</th>
+                                <th scope="col">End customer name</th>
+                                <th scope="col">Due Date</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><button type="button" class="addRowBtn" id="addRowBtn"><img src="~/Assets/images/addBtn.png" width="10px" /></button>#KEPL123 </td>
+                                <td class="typeDOM">DOM</td>
+                                <td class="text-left">400 Kv single I suspension (pilot) string for quad moose</td>
+                                <td>NTPL</td>
+                                <td>20/04/2019</td>
+                                <td class="Status statusOpen" id="StatusMenu">
+                                    <span>Open</span>
+                                    <div class="ActnActivities">
+                                        <ul>
+                                            <li data-toggle="modal" data-target="#exampleModalCenter">View Attachment</li>
+                                            <li>Process</li>
+                                            <li>Delete</li>
+                                            <li>On Hold</li>
+                                        </ul>
+                                    </div>
+                                </td>
+
+                            </tr>
+                            <tr class="collapseTR">
+                                <td colspan="6" class="p-0">
+                                    <table class="collapseTable w-100">
+                                        <tr>
+                                            <th></th>
+                                            <th>Sr. No.</th>
+                                            <th colspan="2">Customer Name</th>
+                                            <th>Date of Enquiry</th>
+                                            <th>Expiry Date</th>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>1</td>
+                                            <td colspan="2">Tata Power Ltd</td>
+                                            <td>14/03/2019</td>
+                                            <td>14/04/2019</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>1</td>
+                                            <td colspan="2">Tata Power Ltd</td>
+                                            <td>14/03/2019</td>
+                                            <td>14/04/2019</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr class="selectedRow">
+                                <td><button type="button" class="addRowBtn"><img src="~/Assets/images/addBtn.png" width="10px" /></button>#KEPL123 </td>
+                                <td class="typeDOM">DOM</td>
+                                <td class="text-left">400 Kv single I suspension (pilot) string for quad moose</td>
+                                <td>NTPL</td>
+                                <td>20/04/2019</td>
+                                <td class="Status statusHold"> <span>hold</span> </td>
+                            </tr>
+                            <tr>
+                                <td><button type="button" class="addRowBtn"><img src="~/Assets/images/addBtn.png" width="10px" /></button>#KEPL123 </td>
+                                <td class="typeDOM">DOM</td>
+                                <td class="text-left">400 Kv single I suspension (pilot) string for quad moose</td>
+                                <td>NTPL</td>
+                                <td>20/04/2019</td>
+                                <td class="Status statusProcess"><span>in process</span></td>
+                            </tr>
+                            <tr>
+                                <td><button type="button" class="addRowBtn"><img src="~/Assets/images/addBtn.png" width="10px" /></button>#KEPL123 </td>
+                                <td class="typeDOM">DOM</td>
+                                <td class="text-left">400 Kv single I suspension (pilot) string for quad moose</td>
+                                <td>NTPL</td>
+                                <td>20/04/2019</td>
+                                <td class="Status statusDone"><span>done</span></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Process to create a bom</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="Modal-Header">Transmission system strengthening in Jharkhand State</div>
+                <div class="Modal-subHeader">Select Assign For This BOM</div>
+                <div class="AssigneeDtl">
+                    <table class="table">
+                        <tr>
+                            <th>S. No.</th>
+                            <th>CONTRIBUTOR NAME</th>
+                            <th>DESIGNATION</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Ramesh Raghvan</td>
+                            <td>Design Engineer</td>
+                            <td>
+                                <input type="checkbox" value="" checked />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Ramesh Raghvan</td>
+                            <td>Design Engineer</td>
+                            <td>
+                                <input type="checkbox" value="" checked />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Ramesh Raghvan</td>
+                            <td>Design Engineer</td>
+                            <td>
+                                <input type="checkbox" value="" checked />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn saveBtn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="submitBomBtn publishBtn">Assignee</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#StatusMenu span").click(function () {
+            $(".ActnActivities").toggle(1000);
+            $("#StatusMenu span").toggleClass("statuBtn");
+
+            if ($('.ActnActivities').is(':visible')) {
+                $("#StatusMenu span").text("...");
+            } else {
+                $("#StatusMenu span").text("open");
+            }
+        });
+
+        $(".addRowBtn").click(function () {
+            $(".collapseTR").toggle(1000);
+        })
+
+        $("#createEnq").click(function () {
+            if ($("#checkClass").hasClass("col-sm-12")) {
+                $("#checkClass").addClass("col-sm-7");
+                $("#checkClass").removeClass("col-sm-12");
+                document.getElementById("CreateEnqDiv").style.display = "block";
+            }
+            else { }
+
+        });
+        $(".submitEnq").click(function () {
+            $("#checkClass").addClass("col-sm-12");
+            $("#checkClass").removeClass("col-sm-8");
+            document.getElementById("CreateEnqDiv").style.display = "none";
+        });
+
+
+
+    });
+</script>

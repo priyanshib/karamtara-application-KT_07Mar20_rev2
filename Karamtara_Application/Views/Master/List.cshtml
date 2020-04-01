@@ -1,0 +1,106 @@
+﻿@using Karamtara_Application.Models;
+@model List<MasterDataModel>
+
+@{
+    Layout = null;
+}
+
+<div class="col-sm-8">
+    <table class="table mt-4" id="tblRMList">
+        <tr>
+            <th class="materNm">Name</th>
+            <th class="materNm text-center" style="width:100px">Edit</th>
+            <th class="materID text-center" style="width:100px">Delete</th>
+            @*<th class="materCode">Material Type</th>*@
+        </tr>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td style="white-space:nowrap">@item.Name</td>
+                    <td style="white-space:nowrap" class="text-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img src="~/Assets/images/editPensil.svg" class="editButton c-pointer" height="15" width="15" onclick="editMaster(this)" />
+                            <img src="~/Assets/images/save.jpg" height="15" width="15" class="saveButtons  c-pointer mr-1" style="display:none;float:left;" onclick="saveDetails(@item.Id,this)" />
+                            <img src="~/Assets/images/close.png" height="15" width="15" class="saveButtons  c-pointer ml-1" style="display:none;" onclick="cancelMaster(this)" />
+                        </div>
+
+                    </td>
+                    <td class="text-center">
+                        @if(@item.Delete== Convert.ToBoolean(1))
+                        {
+                            <img src="~/Assets/images/delete.svg" height="25" onclick="deleteMaster(@item.Id)" />
+                        }
+                        
+                    </td>
+
+                </tr>
+            }
+        }
+    </table>
+</div>
+<script>
+    function saveDetails(id, element) {
+        ////
+        var type = $('#Type option:selected').val();
+        var name = $(element).parent().parent().prev().text();
+
+        if (name && type) {
+            $.ajax({
+                type: "post",
+                url: "/Master/CreateMaster",
+                dataType: "json",
+                data: { name: name, type: type, id: id },
+                success: function (data) {
+                    if (data.Message == 'UpdatedDeleted') {
+                        $("#txtSearchName").val("");
+                        $("#modalCancelButton").hide();
+                        $("#modalOkButton").html("OK");
+                        $('#modalTitle').html('Success');
+                        $('#modalBody').html('The data is in deactive state. It has been activated.');
+                        $("#modalOkButton").attr('onclick', 'refreshList()');
+                        $("#successModel").modal('show');
+                    }
+                    else if (data.Id > 0) {
+                        successModal('updated');
+                    }
+                    else {
+                        failureModal('updation');
+                    }
+                },
+                error: function (courses) {
+                    failureModal();
+                }
+            });
+        }
+        else {
+            ShowSnackBar("Please fill both fields");
+        }
+    }
+
+    function editMaster(element) {
+        ////
+        $(".editButton").not(element).show();
+        $(".saveButtons").hide();
+        $(element).hide();
+        $("#tblRMList td").attr("contenteditable", false);
+        $(element).parent().parent().prev().attr("contenteditable", true);
+        $(element).parent().parent().find(".saveButtons").show();
+    }
+
+    function cancelMaster(element) {
+        $("#tblRMList td").attr("contenteditable", false);
+        $(".saveButtons").hide();
+        $(".editButton").show();
+    }
+
+    function ShowSnackBar(key) {
+        $("#snackbar").remove();
+        $('<div id="snackbar"></div>').appendTo('body');
+        var x = document.getElementById("snackbar");
+        x.innerHTML = key;
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    }
+</script>

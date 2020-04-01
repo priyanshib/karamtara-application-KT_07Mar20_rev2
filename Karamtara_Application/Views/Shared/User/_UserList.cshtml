@@ -1,0 +1,74 @@
+﻿@model Karamtara_Application.Models.UserModel
+
+
+    <div class="tableBlock">
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th> Name </th>
+                    <th> Email </th>
+                    <th> Status </th>
+                    <th> Type of User </th>
+                    <th style="text-align:center"> Action </th>
+                </tr>
+
+                @foreach (var user in Model.UserList)
+                {
+                    <tr>
+                        <td>
+                            <label>  @(user.FirstName + " " + user.LastName) </label>
+                        </td>
+                        <td>
+                            <label>  @user.Email </label>
+                        </td>
+                        <td>
+                            <label>  @(user.IsActive ? "Active" : "Inactive") </label>
+                        </td>
+                        <td>
+                            <label>   @user.UserType </label>
+                        </td>
+                        <td>
+                            <button type="button" value="Deactivate" class="createComponent btn-outline-danger" id="changeActClick" onclick="change('@user.UserId', @(user.IsActive? "false" : "true"));" data-userId="@user.UserId" data-act="@user.IsActive"> @(user.IsActive ? "Deactivate" : "Activate")</button>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+
+<script>
+
+    function change(num, val) {
+        console.log(num);
+        console.log(val);
+
+        $.ajax({
+            url: '/User/ChangeUserActivation',
+            type: 'POST',
+            dataType: 'JSON',
+            data: { userId: num, isEnabled: val },
+            success: function (data) {
+                if (data.Status > 0) {
+                    actSuccess('Activation Changed Successfully');
+                    $("#userListDiv").html(data.AjaxReturn);
+                }
+                else
+                    actSuccess('Activation Change Failed');
+            },
+            failure: function (data) {
+
+            },
+            error: function () {
+
+            }
+        });
+    };
+
+    function actSuccess(key) {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = key;
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 2000);
+    }
+</script>

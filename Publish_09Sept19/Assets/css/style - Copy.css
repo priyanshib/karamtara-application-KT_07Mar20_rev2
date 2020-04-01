@@ -1,0 +1,947 @@
+﻿html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+body {
+    line-height: 1;
+    font-family: 'Open Sans', sans-serif;
+    background:#fff;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+input:focus, select:focus {
+    font-size:11px;
+}
+input::-webkit-input-placeholder {
+    font-size: 11px;
+}
+    input::-moz-placeholder { /* Firefox 19+ */
+    font-size: 11px;
+}
+
+input:-ms-input-placeholder { /* IE 10+ */
+    font-size: 11px;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+    font-size: 11px;
+}
+input:focus {
+    outline: none;
+}
+
+/**** customised css  ***/
+.mainContentPaddingBtm {
+    padding-bottom: 43px;
+}
+.activiesList img {
+    height: 38px;
+}
+
+.LoginUser {
+    margin: 10px 0;
+}
+
+.logOut {
+    font-size: 14px;
+}
+
+.username {
+    font-size: 14px;
+    display: inline-flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+
+    .username img {
+        margin: 0 5px;
+    }
+
+.loginForm {
+    width: 100%;
+    margin-top: 80px;
+}
+
+.brand-logo img {
+    width: 64px;
+    height: auto;
+    margin: 10px 0 0;
+}
+
+.blueHorizLine {
+    background: #0b1d65;
+    height: 17px;
+}
+
+.loginBlock {
+    margin: 20px auto;
+    width: 50%;
+}
+
+    .loginBlock span {
+        text-align: center;
+        width: 100%;
+        font-size: 23px;
+        color: #0b1d65;
+        font-weight: 400;
+        line-height: 34px;
+        margin-top: 34px;
+    }
+
+.loginBtn button {
+    width: 254px;
+    height: 35px;
+    margin: 52px auto 0px;
+    text-align: center;
+    background: #0b1d65;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 14px;
+}
+
+.loginBtn, .forgetPassBtn {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+}
+
+    .forgetPassBtn button {
+        width: 254px;
+        color: #0b1d65;
+        font-family: "Open Sans";
+        font-size: 14px;
+    }
+
+.selectedActivies .activities {
+    display: flex;
+    align-items: center;
+}
+
+.activities, .actListHeader {
+    text-transform: uppercase;
+    color: #0b1d65;
+    font-size: 10px;
+}
+
+.activiesList {
+    background: #f5f5f5;
+    padding: 15px 0;
+}
+
+.selectedActivies {
+    font-weight: bold;
+}
+
+.tableBlock table td.tdheader {
+    font-weight: 700;
+    /*padding: 15px 10px;*/
+}
+
+.addRowBtn {
+    padding: 0px 0;
+    margin: 0 5px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    /* line-height: 12px; */
+    vertical-align: middle;
+}
+
+.collapseTR {
+    display: none;
+}
+
+.activiesList .fullscreen img {
+    height: 18px;
+    cursor: pointer;
+}
+/*floating label */
+.bmd-label-floating {
+    color: #060606;
+    font-family: "Open Sans";
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 15px;
+}
+
+.is-focused [class*=" bmd-label"], .is-focused [class^=bmd-label] {
+    color: #0b1d65;
+}
+
+.custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
+    background-image: linear-gradient(0deg,#0b1d65 2px,rgba(0,150,136,0) 0),linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
+}
+/*floating label */
+
+.typeDOM {
+    color: #2e28ff;
+    font-weight: bold;
+}
+
+.typeINTL {
+    color: #05c2c0;
+    font-weight: bold;
+}
+
+.statusOpen {
+    color: #d0021b;
+    font-weight: bold;
+}
+
+.statusHold {
+    color: #f5a623;
+    font-weight: bold;
+}
+
+.statusProcess {
+    color: #0c4da2;
+    font-weight: bold;
+}
+
+.statusDone {
+    color: #4cb684;
+    font-weight: bold;
+}
+
+.revision {
+    color: #43acab;
+    font-weight: bold;
+}
+
+.selectedRow {
+    background: #fffde0;
+}
+
+.ActnActivities {
+    position: absolute;
+    background: #0c4da2;
+    color: #fff;
+    text-align: left;
+    right: 44px;
+    display: none;
+    top: 35px;
+    z-index: 1;
+    width: 160px;
+}
+
+    .ActnActivities li {
+        padding: 10px;
+        border-bottom: 1px solid;
+        cursor: pointer;
+        font-size: 11px;
+    }
+
+.statuBtn {
+    background: url('../images/openStatus.png') no-repeat;
+    box-shadow: 1px 2px 2px 0px #bfbcbc;
+    color: transparent;
+    /* width: 200px; */
+    padding: 5px 15px 5px 10px;
+    border-radius: 4px;
+}
+
+/* .table, .table .table { */
+    /* background: #fff; */
+/* } */
+
+.tableBlock table td.Status {
+    cursor: pointer;
+}
+
+.tableBlock.createTable table td {
+    border-style: solid;
+    text-align: left;
+    text-transform: capitalize;
+}
+
+.tableTH {
+    font-weight: bold;
+    width: 200px;
+}
+
+.tableBlock.createTable table .calImg {
+    padding-right: 5px;
+    padding-left: 5px;
+    text-align: center;
+}
+
+.GreyBg {
+    background: #f5f5f5;
+}
+
+.createTable .GreyBg select {
+    font-weight: bold;
+}
+
+.TDtitle {
+    color: #0c4da2;
+    font-weight: bold;
+}
+
+td.calImg {
+    width: 40px;
+}
+
+.tableBlock.createTable table td.summaryTD,
+.tableBlock.createTable table td.textAreaTd,
+.tableBlock.createTable table td.InputTd {
+    padding: 0;
+}
+
+    .tableBlock.createTable table td.InputTd input {
+        text-align: left;
+        padding: 0 5px
+    }
+
+.summaryTD textarea,
+.textAreaTd textarea,
+.InputTd input {
+    width: 100%;
+    background: #fafafa;
+    box-shadow: inset 0 0 6px #969393;
+    height: 100%;
+    text-align: left;
+    padding: 5px;
+}
+
+.submitEnq, .createBomBtn, .submitBomBtn, .createProdBtn {
+    width: 74px;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0 5px;
+}
+.createBomBtn {
+    width: 110px;
+}
+.createProdBtn{width:150px}
+.submitBomBtn {
+    width: 120px;
+}
+    .cancelEnq, .revisionBtn {
+        background: #a4a4a4
+    }
+
+.sucessEnq, .publishBtn {
+    background: linear-gradient(153deg, #009688, #4CB684);
+    color: #fff;
+}
+.saveBtn {
+    background: #ecc509
+}
+
+.attachmentBtn {
+    background: transparent;
+    width: auto;
+}
+
+    .attachmentBtn img {
+        margin-right: 5px;
+        position: relative;
+        top: 5px;
+    }
+
+
+
+/**common css for table*/
+.tableBlock table td, .tableBlock table th {
+    border: 1px solid #d1d1d1;
+    /*border-style: dashed;*/
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.tdheader {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.tableBlock table th {
+    font-weight: bold;
+    font-size: 11px;
+    background: #f5f5f5;
+    color: #000;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+.tableBlock table td {
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: center;
+    position: relative;
+    vertical-align: middle;
+    padding: 0 12px;
+    height: 38px;
+}
+
+    .tableBlock table td input {
+        border: none;
+        background: transparent;
+        text-align: left;
+        width:100%;
+    }
+
+.DeptNo {
+    width: 170px;
+}
+
+.Type {
+    width: 64px;
+}
+
+.ProjName {
+    text-align: left;
+    width: 485px
+}
+
+.ProjNameTD {
+    width: 485px;
+}
+/*.EndCustName{width:162px;}*/
+.DueDt {
+    width: 90px;
+}
+
+.Status {
+    width: 105px;
+}
+
+.DtStatus {
+    width: 150px;
+}
+th.srNo {
+    width: 60px;
+}
+
+.tableBlock table td.ProjNameTD, .tableBlock table td.createBomDescTd {
+    border-right: none;
+}
+
+.tableBlock table td.attachmentTD, .tableBlock table td.createBomImg {
+    border-left: 0;
+}
+
+.collapseTable {
+    font-weight: bold;
+}
+
+.tableBlock table.collapseTable th {
+    background: #d9d9d9;
+}
+.createBomDescTd {
+    width: 400px;
+}
+td.UnitDtl {
+    color: #e57560;
+}
+.SrNoDtl{font-weight:700;}
+/** modal popup customization*/
+.modal-dialog .close {
+    position: absolute;
+    top: -5px;
+    right: 3px;
+    background: #000;
+    padding: 3px 8px;
+    border-radius: 50px;
+    opacity: 1;
+    color: #fff;
+    border: 3px solid;
+    font-weight: normal;
+}
+
+.modal-content {
+    background: #f3f3f3;
+}
+
+    .modal-content .modal-body {
+        padding: 0;
+    }
+
+.Modal-Header {
+    border-top: 1px solid #e2e2e2;
+    border-bottom: 1px solid #e2e2e2;
+    padding: 15px 24px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0);
+    max-width: 700px;
+}
+
+.Modal-subHeader {
+    padding: 15px 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e2e2;
+    font-size: 11px;
+}
+
+.modal-title {
+    color: #0c4da2;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.AssigneeDtl table th {
+    background: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.AssigneeDtl table td, .AssigneeDtl table th {
+    border: 1px solid #d1d1d1;
+    border-style: dashed;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.AssigneeDtl table td {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.modalCancel {
+    background: #ecc509;
+    color: #000;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.modalAssignee {
+    background: linear-gradient(153deg, #009688, #4CB684);
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.modal-content .modal-footer .btn {
+    margin: 0 5px;
+}
+
+
+/** modal popup customization*/
+#CreateEnqDiv {
+    display: none;
+}
+
+#createEnq {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+}
+/*.SelectTD:before {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #000;
+    position: absolute;
+    content: '';
+    top: 5px;
+    margin: 0 -14px;
+    z-index: 0;
+    right: 0;
+}*/
+.SelectTD {
+    position: relative;
+    max-width: 30%;
+}
+
+.createTable select:focus,
+.enquiryTable select:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.createTable select, .enquiryTable select {
+    background-color: transparent;
+    width: auto;
+    border: none;
+    /*padding: 0px 0;*/
+    z-index: 1;
+    /*min-width: 100px;*/
+}
+
+.borderTopBlue {
+    border-top: 2px solid #0c4da2;
+}
+
+.borderBottomBlue {
+    border-bottom: 2px solid #0c4da2;
+}
+
+
+.addSubAsmbl {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    color: #9b9b9b;
+    font-size: 12px;
+    font-style: italic;
+    cursor: pointer;
+}
+
+/*.PkgTDAppend {
+    height: 166px;
+    overflow-y: auto;
+}*/
+
+.assmbleNm {
+    width: 450px;
+}
+
+.assmbleId {
+    width: 180px;
+}
+
+.summary {
+    width: 50px;
+}
+/**calender CSS*/
+.calenderInput .gj-datepicker {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.calenderInput .calenderClass {
+    border-left: 1px solid #d1d1d1;
+}
+
+.calenderInput button.btn.btn-outline-secondary,
+.btn.btn-outline-secondary.active, .btn.btn-outline-secondary.focus, .btn.btn-outline-secondary:active, .btn.btn-outline-secondary:focus,
+secondary:not(:disabled):not(.disabled):active:focus {
+    border-color: #fff;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.btn-outline-secondary:not(:disabled):not(.disabled):active {
+    background-color: transparent;
+    border-color: transparent;
+    color: #6c757d;
+}
+
+.is-focused .form-control {
+    background-image: none;
+}
+
+.form-control, input {
+    font-size: 12px;
+}
+/**calender CSS*/
+
+.hiddenPkgTR {
+    display: none;
+}
+.CreateNotfn {
+    background: #3f51b5;
+    color: #fff;
+    font-size: 16px;
+    padding: 22px 15px;
+    display: flex;
+    align-items: center;
+	position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 78px;
+}
+    .CreateNotfn img, .ProdNmBlock  img{
+        margin-right: 15px;
+    }
+    .CreateNotfn .notificationBtn {
+        width: 80px;
+        background: transparent;
+        border: 1px solid #fff;
+        color: #fff;
+        height: 31px;
+        border-radius: 3px;
+        margin: 0 10px;
+        cursor: pointer;
+    }
+.prjNmBlock, .ProdNmBlock {
+    padding: 12px 10px;
+    color: #0c4da2;
+    font-weight: 700;
+    font-size: 14px;
+    border-bottom: 1px solid #e9e9e9;
+}
+.prjNmBlock .col-sm-8 span{color:#000;text-transform:uppercase;}
+.AddOptnDtl {
+    padding: 12px 10px;
+    align-self: center;
+    font-size: 14px;
+    border-bottom: 1px solid #e9e9e9;
+    font-weight:700;
+}
+.AddOptn {
+    line-height: 20px;
+    align-self: auto;
+    display: flex;
+    font-size:12px;
+    cursor:pointer;
+}
+.AddOptn  img{margin-right:5px;}
+.footerStatus {
+    position: fixed;
+    bottom: 0;
+    box-shadow: 0px -1px 10px rgba(0,0,0,0.2);
+    width: 100%;
+    padding: 10px;
+   height: 40px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0b1d65;
+    display: flex;
+    align-items: center;
+	background:#fff;
+}
+.left-footer .footerStatus {
+    width: 41.66667%;
+}
+.right-footer .footerStatus {
+    background: #3f51b5;
+    height: 43px;
+    width: 58.33333%;
+    margin:0;
+}
+
+    .footerStatus button {
+        background: #0b1d65;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        margin: 0 5px;
+        height: 23px;
+        cursor:pointer;
+    }
+    .footerStatus button img{margin-right:5px;}
+	.uniWeght {    width: 88px;}
+	.BOMdetails .table{box-shadow: -5px 1px 8px -2px #a8a6a6;margin-bottom: 84px;}
+	.tableBlock table td.BOMHeader {
+    text-align: left;
+    font-weight: 700;}
+	.srNo {
+    font-weight: bold;
+}
+.BOMdetails.tableBlock table td input,
+.createBomDtls.tableBlock table td.createBomImg,
+.tableBlock table .txtCenterTD input 
+{
+    text-align: center;
+}
+.saveBOMdtls, .saveProddtls {
+    width: 58%;
+    /* background: #fff; */
+    position: fixed;
+    bottom: 46px;
+    text-align: right;
+}
+    .saveProddtls{bottom:5px;}
+    .techAsemblyNm {
+        width: 410px;
+    }
+.asemblyId {
+    width: 115px;
+}
+.createBomDtls.tableBlock table td,
+.createProdDtls.tableBlock table td,
+.TestMasterDesc.tableBlock table .textCenterTD,
+.TestMasterDtls.tableBlock table .textCenterTD {
+    text-align: left;
+}
+.createBomDescTd input{font-weight:700;}
+.modal-title span{color:#000;font-size:10px;}
+/* .tooltip { */
+    /* display:inline-block; */
+    /* position:relative; */
+    /* border-bottom:1px dotted #666; */
+    /* text-align:left; */
+/* } */
+
+.BomRefHeader {
+    font-size: 14px;
+    color: #0c4da2;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px;
+	border-bottom:1px solid #e9e9e9;
+}
+.BomRefSubHead,.BomRefItem {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 12px;
+    border-bottom: 1px solid #e9e9e9;
+	align-items: center;
+}
+.BomRefItem span {
+    color: #59bb8d;
+    margin-right: 5px;
+}
+.BomRefTable{width:100%;overflow:auto;}
+.BomRefTable .table {
+    table-layout: fixed;
+}
+.BOMSrNo{width:50px;}
+.BomItemNm{width:200px;}
+.BomCatNon{width:110px;}
+.BomSapNo,.BomSize{width:150px}
+.BomMatType,.BomUnit{width:100px;}
+.BomQty,.BomRemark{width:70px;}
+.BomTotalWt{width:90px;}
+.modal.show .modal-dialog.fullscreenModal{max-width:90%;}
+.tableBlock table .tableFooter td {
+    background: #3f51b5;
+    color: #fff;
+}
+.BomRefDtls {
+    box-shadow: -5px 1px 8px -2px #a8a6a6;
+    background: #f3f3f3;
+}
+.BomRefTable.tableBlock table th {
+    background: #fff;
+}
+.categoryList ul {
+    background: #f5f5f5;
+    padding: 18px 0;
+}
+    .categoryList ul li {
+        font-size: 12px;
+        padding:  13px;
+        cursor:pointer;
+    }
+        .categoryList ul li:hover, .selctedCatg {
+            border-bottom: 3px solid #0c4da2;
+        }
+.catNo {
+    width: 100px;
+}
+.productNm {
+    width: 250px;
+}
+.compoentNm {
+    width: 200px;
+}
+.rawMater {
+    width: 150px;
+}
+.prodNo {
+    width: 45px;
+}
+.prodUnit {
+    width: 115px;
+}
+.tableBlock table .catDtlsHead td input,
+.tableBlock table .catDtlsTotal td input {
+    font-weight: 700;
+}
+.addRawMateHead {
+    color: #0b1d65;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform:uppercase
+}
+.createRawMater,
+.RawMasterdetails ,
+.createTestMaster{
+    padding: 30px;
+}
+.addMaterForm label,
+.TestMaterForm label {
+    font-size: 12px;
+    color: #4a4a4a;
+    width: 100%;
+}
+.addMaterForm input[type="text"],
+.addMaterForm select,
+.TestMaterForm input[type="text"],
+.TestMaterForm textarea {
+    box-shadow: inset 0px 1px 3px rgba(0,0,0,0.5);
+    height: 40px;
+    width: 90%;
+    margin: 16px 0;
+    border: none;
+}
+    .TestMaterForm textarea{height:60px;}
+
+    .textLabel {
+        font-size: 12px;
+        color: #4a4a4a;
+        margin-top: -8px;
+    }
+.RawMasterdetails.tableBlock
+{
+    border-left: 1px solid #d1d1d1;
+}
+.tableBlock table td.testDesTD {
+    text-align: left;
+    line-height: 1.6;
+}
+.TestMasterdetails.tableBlock table td {
+    line-height: 1.6
+}
+.TestMaterForm .form-check-input,
+.TestMasterDtls .form-check-input {
+    height: 18px;
+    width: 18px;
+    margin: 16px 0;
+}
+.TestMasterDtls .form-check-inline {
+    margin: 0;
+}
+.TestMaterForm .form-check-label {
+    margin-left: 5px;
+    font-weight: 700;
+}
+.rightBorder{
+    border-right: 1px solid #d1d1d1;
+}
+.HeadTD{font-weight:bold;}
+.TestMasterHeading{font-weight:bold}
+.TestMasterHeading span{color:#0c4da2;text-transform:uppercase;margin-right:5px;}
+/** css for toast*/
+#snackbar-container {
+    bottom: 40%;
+    text-align: center;
+}
+.snackbar.toast .snackbar-content {
+    border-radius: 20px;
+}
+.snackbar-content {
+    background-color: #0b1d65;
+}
+/** css for toast*/

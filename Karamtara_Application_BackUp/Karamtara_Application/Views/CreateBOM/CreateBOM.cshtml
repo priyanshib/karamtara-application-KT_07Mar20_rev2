@@ -1,0 +1,594 @@
+﻿@model Karamtara_Application.Models.CreateBOMModel
+@{
+    ViewBag.Title = "CreateBOM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("CreateBOM", "CreateBOM", FormMethod.Post, new { @id = "CreateBOMForm", autocomplete = "off" }))
+{
+    <div class="main-content mainContentPaddingBtm">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="row prjNmBlock">
+                    <div class="col-sm-8 align-self-center">
+                        <div class="col-sm-12">
+                            <span class="mr-2 publishNo">Project :</span>@Model.ProjectName
+                            @Html.HiddenFor(m => m.ProjectId, new { @id = "hidProjId" })
+                            @Html.HiddenFor(m => m.EnquiryId, new { @id = "hidEnqId" })
+                            @Html.HiddenFor(m => m.BomId, new { @id = "hidBomId" })
+                            @Html.HiddenFor(m => m.RevisionNo, new { @id = "hidRevId" })
+                            <span style="display:none"><label id="lblEnqId">@Model.EnquiryId</label></span>
+                            @*<button type="button" class="createBomBtn AddAssembly" data-toggle="modal" data-target="#addAssemblyModal">Add Assembly</button>*@
+                        </div>
+                        <div class="col-sm-12 mt-3">
+                            <span class="mr-2 publishNo">Customer Name :</span>@Model.CustomerName
+                            @*<button type="button" class="createBomBtn AddAssembly" data-toggle="modal" data-target="#addAssemblyModal">Add Assembly</button>*@
+                        </div>
+                        <div class="col-sm-12 d-flex  align-items-center">
+                            <span class="publishNo">Reference T Number:</span>
+                            <span class="inputData"> <span class="bmd-form-group"><input type="text" id="txtTNumber" placeholder="Enter Reference T Number" name="TNumber" class="whiteBgInput"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4 text-right align-self-center">
+                        <button type="button" class="createBomBtn saveBtn" id="btnClone">Clone BOM</button>
+                        <button type="button" class="createBomBtn saveBtn" id="btnBOMSave" style="display:none">SAVE</button>
+                        @*<button type="button" class="createBomBtn revisionBtn" id="btnSaveRevision">Save Revision</button>*@
+                        <button type="button" class="createBomBtn publishBtn" id="btnPublishBOM" style="display:none">Publish BOM</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-5" id="SubAssmList">
+                @*@Html.Partial("~/Views/Shared/CreateBOM/_SubAssemblyList.cshtml", Model)*@
+                <div class="createBomDtls tableBlock">
+                    <div class="row">
+                        <table class="table addAssmRow">
+                            <tr>
+                                <th class="desc">Description</th>
+                                <th class="closesTD"></th>
+                            </tr>
+                            <tr id="prodId_1">
+                                <td class="createBomDescTd">
+                                    <input name="prodName" type="text" id="prodId_1" class="form-control pl-15px form-control selectpicker col-sm-8 txtAssmAutoComp" onclick="autoComplete(1); assmDetails(1);" placeholder="Type here to add products" />
+                                </td>
+                                <td class="closesTD c-pointer text-center">
+                                    <img src="/Assets/images/collapseClose.svg" width="12px" id="Rem_1" onclick="RemoveProduct(1);">
+                                </td>
+                                <td style="display:none"><input type="hidden" name="hidType" id="hidProdType_1" /></td>
+                                <td style="display:none"><input type="hidden" name="hidId" id="hidId_1" /></td>
+                            </tr>
+
+                        </table>
+                        <div class="col-sm-12 text-right" style="display:none">
+                            <button type="button" class="submitBomBtn saveBtn AddRow" id="AddRowEdit">Add More Rows</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-sm-7 editbomblock" id="divAssmDetails">
+                @*@Html.Partial("~/Views/Shared/CreateBOM/_SubAssmDetails.cshtml", Model)*@
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addAssemblyModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="CreateCatDiv">
+                        <label>Assembly Name:</label>
+                        <input type="text" id="txtModalAssmName" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn saveBtn " id="btnAssmAdd" data-dismiss="modal">Submit</button>
+                    <button type="button" class="submitBomBtn publishBtn " data-dismiss="modal" id="btnDismissModal">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="publishConfModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="CreateCatDiv">
+                        <label>A BOM Revision will be created after publishing the BOM. Do you still want to continue?</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="submitBomBtn publishBtn " id="btnPublishConf" data-dismiss="modal">Publish</button>
+                        <button type="button" class="submitBomBtn saveBtn " data-dismiss="modal" id="btnPublishDeny">Cancel</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="BomSelectionModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            Select BOM to clone from
+                        </div>
+                        <div id="bomSelectModal">
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modelHeader">
+                    <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="modalBody" class="lableMsg">  </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn publishBtn" id="modalOkButton" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+
+    function createSuccess(id) {
+        if (id == 1) {
+            $('#modalTitle').html('Success');
+            $('#modalBody').html('BOM Saved successfully.');
+            $("#successModel").modal('show');
+            $("#modalOkButton").attr('data-dismiss', 'modal');
+        }
+        if (id == 2) {
+            $('#modalTitle').html('Success');
+            $('#modalBody').html('BOM Revision created successfully.');
+            $("#successModel").modal('show');
+            $("#modalOkButton").attr('data-dismiss', 'modal');
+        }
+    }
+
+    function createFailure(id) {
+        if (id == 1) {
+            $('#modalTitle').html('Failure');
+            $('#modalBody').html('Error: While saving BOM data.');
+            $("#modalOkButton").attr('data-dismiss', 'modal');
+            $("#successModel").modal('show');
+        }
+        if (id == 2) {
+            $('#modalTitle').html('Failure');
+            $('#modalBody').html('Error: While publishing Revision');
+            $("#modalOkButton").attr('data-dismiss', 'modal');
+            $("#successModel").modal('show');
+        }
+    }
+
+
+
+    var glCount = 2;
+    $(document).ready(function () {
+        $("#notificationClose").click(function () {
+
+            $(".CreateNotfn").slideUp(1000);
+        });
+
+        //$(".AddRow").click(function () {
+        //    $.each(new Array(1), function () {
+        //        $('.addAssmRow tr.createListTR:last')
+        //            .after('<tr> <td class= "SrNoDtl" > <span id="srno_1"></span></td><td class="createBomDescTd 1">' +
+        //                ' <input type="text" id="txtAssmAutoComplete" class="form-control pl-15px form-control selectpicker col-sm-8 txtAssmAutoComp" onclick="autoComplete(1); assmDetails(this.value); details(this.Id,this.Type);" />' +
+        //                '</td></tr> <tr class="createListTR"><td class="SrNoDtl"><span id="srno_1"></span></td><td class="p-0 appendTable"></td></tr>');
+        //    });
+        //});
+    });
+
+    //function AddProdRows() {
+    //    $.each(new Array(1), function () {
+    //        var count = 2;
+    //        $('.addAssmRow tr.createListTR:last')
+    //            .after('<tr> <td class= "SrNoDtl" > <span id=srno_' + count + ' ></span></td><td class="createBomDescTd 2">' +
+    //                ' <input placeholder="Type here to add" type="text" id=prodId_' + count + ' class="form-control pl-15px form-control selectpicker col-sm-8 txtAssmAutoComp" onclick="autoComplete(1); assmDetails(this.value);" />' +
+    //                '</td><td style="display:none"> <input name="prodType" type="hidden" id="hidT" /></td></tr> <tr class="createListTR"><td class="SrNoDtl"><span id="srno_1"></span></td><td class="p-0 appendTable"></td></tr>');
+    //        count++;
+    //    });
+    //}
+
+    function addMoreRows() {
+        $.each(new Array(1), function () {
+            var count = glCount;
+            $('.addAssmRow tr:last')
+                .after('<tr id=prodId_' + count + ' > <td class="createBomDescTd">' +
+                    ' <input name="prodName" type="text" id=prodId_' + count + ' class="form-control pl-15px form-control selectpicker col-sm-8 txtAssmAutoComp" onclick="autoComplete(' + count + '); assmDetails(' + count + ');" /></td>' +
+                    '<td class="closesTD c-pointer text-center"><img style="visibility:hidden" src="/Assets/images/collapseClose.svg" width="12px" id=Rem_' + count + ' onclick="RemoveProduct(' + count + ');" ></td > ' +
+                    '<td style="display:none"><input type="hidden" name="hidType" id=hidProdType_' + count + ' /></td>' + '<td style="display: none"><input type="hidden" name="hidId" id=hidId_' + count + ' /></td > ' +
+                    '</tr> </tr>');
+
+            glCount++;
+        });
+    }
+
+    $('#btnClone').click(function () {
+        var enqId = $("#hidEnqId").val();
+        var bomId = $("#hidBomId").val();
+        var revId = $("#hidRevId").val();
+
+        $.ajax({
+            type: "GET",
+            url: "/CreateBOM/GetBomListForCloneSelection",
+            dataType: "html",
+            data: { enqId: enqId, bomId: bomId, revId: revId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $('#bomSelectModal').html(data);
+                //$("#txtAddAssmName").val(assmName);
+                //$("#txtModalAssmName").val('');
+                //AddRows();
+                $("#BomSelectionModal").modal('show');
+            },
+            error: function (data) { }
+        });
+    });
+
+    //load add assembly partial view
+    $("#btnAssmAdd").click(function () {
+        var assmName = $("#txtModalAssmName").val();
+        if (assmName);
+        {
+            $.ajax({
+                type: "GET",
+                url: "/CreateBOM/AddSubAssemblies",
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#divAssmDetails').html(data);
+                    $("#txtAddAssmName").val(assmName);
+                    $("#txtModalAssmName").val('');
+                    AddRows();
+                },
+                error: function (data) { }
+            });
+        }
+    })
+
+    function assmDetails(num) {
+        // alert('3232323');
+        var prodType = $("#hidProdType_" + num).val();
+        var prodId = $("#hidId_" + num).val();
+        if (prodType == 1) {
+            $.ajax({
+                type: "GET",
+                url: "/ProductGroup/GetProductGroupHierarchyById",
+                dataType: "html",
+                data: { groupId: prodId },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#divAssmDetails').html(data);
+                    $("#btnProdsEdit").attr('style', "visibility:hidden");
+                    $("#btnDel").attr('style', "visibility:hidden");
+                },
+                error: function (data) { }
+            });
+        }
+        if (prodType == 2) {
+            $.ajax({
+                type: "GET",
+                url: "/AssemblyMaster/GetAssmProducts",
+                dataType: "html",
+                data: { assmId: prodId },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#divAssmDetails').html(data);
+                    $("#btnSubAssmEdit").attr('style', "visibility:hidden");
+                    $("#btnDel").attr('style', "visibility:hidden");
+                    // $("#txtAssmAutoComplete").val(value);
+                    //  AddRows();
+                },
+                error: function (data) { }
+            });
+        }
+
+        if (prodType == 3) {
+            $.ajax({
+                type: "GET",
+                url: "/SubAssemblyMaster/GetComponentList",
+                dataType: "html",
+                data: { subAssId: prodId },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#divAssmDetails').html(data);
+                    $("#btnEdit").attr('style', "visibility:hidden");
+                    $("#AddRowEdit").attr('style', "visibility:hidden");
+                    // $("#txtAssmAutoComplete").val(value);
+                    //  AddRows();
+                },
+                error: function (data) { }
+            });
+        }
+        if (prodType == 4) {
+            $.ajax({
+                type: "GET",
+                url: "/ComponentMaster/GetComponentMaster",
+                dataType: "html",
+                data: { ComponentId: prodId },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#divAssmDetails').html(data);
+                    $("#btnEdit").attr('style', "visibility:hidden");
+                    $("#AddRowEdit").attr('style', "visibility:hidden");
+                    $("#btnProdSaveBtn").attr('style', 'visibility:hidden');
+                    $("input[type=text]").removeClass("whiteBgInput");
+                    $("#GalvanizedRequiredInt").attr('disabled', 'disabled');
+                    $("#GalvanizedMaterial").attr('disabled', 'disabled');
+                    $("#GalvanizedRequiredInt").removeClass("whiteBgInput");
+                    $("#GalvanizedMaterial").removeClass("whiteBgInput");
+                },
+                error: function (data) { }
+            });
+        }
+    }
+
+
+    function SubAssemblyList(value) {
+        $.ajax({
+            type: "GET",
+            url: "/CreateBOM/GetAssemblyDetails",
+            dataType: "html",
+            data: { assmId: value },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $('#divAssmDetails').html(data);
+                // $("#txtAssmAutoComplete").val(value);
+                //  AddRows();
+            },
+            error: function (data) { }
+        });
+    }
+
+    function autoComplete(count) {
+        $(".txtAssmAutoComp").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '/CreateBOM/BOMAutoComplete/',
+                    data: "{ 'prefix': '" + request.term + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.TName, value: item.Id, Type: item.Type }
+                        }))
+
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, ui) {
+                $(this).val(ui.item.label);
+                var id = ui.item.value;
+                var prodType = ui.item.Type;
+                $("#prodId_" + count).attr("data-ProdId", id)
+                $("#prodId_" + count).attr("data-ProdType", prodType)
+                $("#hidId_" + count).val(id);
+                $("#hidProdType_" + count).val(prodType);
+                $("#btnBOMSave").removeAttr("style");
+                $("#Rem_" + count).removeAttr("style");
+                addMoreRows();
+                return false;
+            },
+            create: function () {
+                $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/" + item.Type + ".png' width='20px'></span></div>")
+                        .appendTo(ul);
+                };
+            },
+            minLength: 2
+        });
+    }
+
+    //function UpdateBomTable(id, prodType) {
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/CreateBOM/UpdateBOMTables",
+    //        dataType: "JSON",
+    //        data: { prodId: id, projType: prodType},
+    //        contentType: "application/x-www-form-urlencoded;charset=utf-8",
+    //        success: function (data1) {
+    //            if (data1 > 0)
+    //                alert('data updated successfully');
+    //        },
+    //        error: function (data1) { }
+    //    });
+    //}
+
+
+    function GetProdDetails(value, type) {
+        $.ajax({
+            type: "POST",
+            url: "/CreateBOM/UpdateBOMMaster",
+            dataType: "JSON",
+            data: { assmName: assmName, projId: projId, enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data1) {
+                if (data1 > 0)
+                    alert('data updated successfully');
+            },
+            error: function (data1) { }
+        });
+
+    }
+
+    function UpdateBomTable(assmName) {
+        var projId = $("#hidProjId").val();
+        var enqId = $("#hidEnqId").val();
+        $.ajax({
+            type: "POST",
+            url: "/CreateBOM/GetDetails",
+            dataType: "JSON",
+            data: { assmName: assmName, projId: projId, enqId: enqId },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data1) {
+                if (data1 > 0)
+                    alert('data updated successfully');
+                addMoreRows();
+            },
+            error: function (data1) { }
+        });
+
+    }
+
+    /*Method to fetch all the assemblies inside a product group*/
+    function GetProductGroupList(value) {
+        $.ajax({
+            type: "GET",
+            url: "/CreateBOM/GetProductGroupList",
+            dataType: "html",
+            data: { groupId: value },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data1) {
+                $('.addAssmRow .appendTable:last')
+                    .append(data1);
+                addMoreRows();
+            },
+            error: function (data1) { }
+        });
+    }
+
+    $("#txtModalAssmName").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: '/CreateBOM/AssemblyAutoCompleteList/',
+                data: "{ 'prefix': '" + request.term + "'}",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return item;
+                    }))
+                },
+                error: function (response) {
+                },
+                failure: function (response) {
+                }
+            });
+        },
+        select: function (e, i) {
+
+            var value = i.item.value;
+            $("#srno_" + count).html(count);
+
+        },
+        minLength: 2
+    });
+
+    $("#btnBOMSave").click(function () {
+        $("#btnClone").attr('style', 'visibility:hidden');
+        var form = $("#CreateBOMForm").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "/CreateBOM/SaveBOMDetails",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+               // alert('Data saved successfully.');
+                createSuccess(1);
+                $("#btnPublishBOM").removeAttr("style");
+            }
+        })
+    })
+
+    $("#btnPublishBOM").click(function () {
+        $("#publishConfModal").modal('show');
+    });
+
+    $("#btnPublishConf").click(function () {
+        var bomId = $("#hidBomId").val();
+        var revNo = $("#hidRevId").val();
+        var enqId = $("#hidEnqId").val();
+
+        $("#publishConfModal").modal('toggle');
+        var form = $("#CreateBOMForm").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "/CreateBOM/PublishBOM",
+            data: form,
+            dataType: 'json',
+            success: function (data) {
+                if (data > 0) {
+                   // alert('Revision created successfully.')
+                    createSuccess(2)
+                    var redirectURL= '@Url.Action("ViewBOM","CreateBOM")?enqId=' + enqId + '&&bomId=' + bomId + '&&revNo=' + revNo;
+                    var delay = 2000;
+                    setTimeout(function () { window.location.href = redirectURL; }, delay);
+                   
+                }
+                else if (data == 0) {
+                  //  alert('Error while creating Revision.')
+                    createFailure(2);
+                }
+              //  window.location.href = '/BomList/Index';
+            }
+        })
+    });
+
+    function RemoveProduct(count) {
+        var bomId = $("#hidBomId").val();
+        var revNo = $("#hidRevId").val();
+        var prodType = $("#hidProdType_" + count).val();
+        var prodId = $("#hidId_" + count).val();
+        $.ajax({
+            type: 'POST',
+            url: "/EditBOM/RemoveProduct",
+            data: { bomId: bomId, revNo: revNo, prodId: prodId, prodType: prodType },
+            dataType: 'json',
+            success: function (data) {
+                $("#prodId_" + count).val('');
+                $("#Rem_" + count).attr('style', 'visibility:hidden');
+                $("#hidProdType_" + count).val('');
+                $("#hidId_" + count).val('');
+                $("#prodId_" + count).val('');
+                $("#tr_" + count).removeAttr('onclick');
+                $("#prodId_" + count).remove();
+                $('#divAssmDetails').html('');
+            }
+        })
+    }
+</script>

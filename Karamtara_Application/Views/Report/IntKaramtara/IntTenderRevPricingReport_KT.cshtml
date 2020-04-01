@@ -1,0 +1,579 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@using Karamtara_Application.Models.Tender
+@{
+    ViewBag.Title = "TenderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    int colCount = 0;
+    if (Model.LineList != null && Model.LineList.Count > 0)
+    {
+        colCount = Model.LineList.Count;
+    }
+    TenderLineValues lineValues = new TenderLineValues();
+    decimal lineValue = 0;
+    decimal margin = 0;
+    decimal sCostExWorks = 0;
+    bool isRevisionCreated = TempData["IsRevisionCreated"] == null ? false : (bool)TempData["IsRevisionCreated"];
+    List<dynamic> otherCurrencies = Model.CurrencyList.Where(x => x.DisplayInView == true && x.Name.ToLower() != "usd" && x.Name.ToLower() != "euro").ToList<dynamic>();
+}
+
+<div class="main-content mainContentPaddingBtm">
+    <input type="hidden" value="@Model.EnquiryId" id="hidEnqId" name="enquiryId" />
+    <input type="hidden" id="bomId" value="@Model.BomId" />
+    <input type="hidden" id="revisionId" value="@Model.RevisionNo" />
+    <input type="hidden" id="tndId" value="@Model.TenderId" />
+    <input type="hidden" id="tndRevId" value="@Model.TenderRevisionNo" />
+    <input type="hidden" id="tndUnitCost" value="@Model.UnitCost" />
+    <input class="finalWeighttMt" id="finalWeighttMt" type="hidden" />
+
+    @Html.HiddenFor(x => x.IsEdit, new { @id = "isPageEditable" })
+    @Html.Hidden("totalCostINR", "5011009", new { @id = "totalCostINR" })
+
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row prjNmBlock">
+                <div class="col-sm-8 align-self-center">
+                    <span>Project :</span>@Model.ProjectName
+                </div>
+                <div class="col-sm-4 text-right ">
+                    <button type="button" id="btnEditBom" class="createBomBtn buttonContainer saveBtn">Add Wastage</button>
+                    <button type="button" id="btnSubmit" class="createBomBtn buttonContainer saveBtn">SAVE</button>
+                    <button type="button" class="createBomBtn buttonContainer publishBtn" id="btnPublish">Publish</button>
+                    <button type="button" class="createBomBtn publishBtn" id="btnCancelRev" style="display:@(isRevisionCreated == true ? "inline-block" : "none")">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 ">
+            <div class="row AddOptnDtl tabsAction p-0">
+                <div class="AddOptn" id="viewTab">
+                    View
+                </div>
+                <div class="AddOptn" id="currencyTab">
+                    CURRENCY
+                </div>
+                <div class="AddOptn" id="rawMatTab">
+                    RAW MATERIAL PRICE
+                </div>
+                <div class="AddOptn" id="bankTab">
+                    BANK GUARANTEE
+                </div>
+                <div class="AddOptn" id="markupTab">
+                    ADD MARKUP
+                </div>
+                <div class="AddOptn" id="frghtTab">
+                    FREIGHT CHARGES
+                </div>
+                @*<div class="AddOptn" id="finalPrcTab">
+                    CONTAINER DETAILS
+                </div>*@
+                <div class="AddOptn" id="tesPrcTab">
+                    ADD TEST PRICE
+                </div>
+                @*<div class="AddOptn">
+                    AUDIT TRIAL
+                </div>
+                <div class="AddOptn">
+                   REPORT
+                </div>*@
+            </div>
+        </div>
+
+        <div class="TenderDtlTable tableBlock tablePrctender containerTab">
+
+            <table class="table tableLayout parentTable">
+                <tr class="rowHeadings">
+                    <th class="TendSrNoDtl">Sr. No</th>
+                    <th class="Tenddesc">Description</th>
+                    <th class="TendBulb"></th>
+                    <th class="TendDrawNo">Drawing No</th>
+                    <th class="TendUnit">UOM</th>
+                    <th class="TendUnitWt exclude">Unit Wt.</th>
+                </tr>
+
+                <tr class="rowHeadings">
+                    <td class="TendSrNoDtl"></td>
+                    <td class="Tenddesc"></td>
+                    <td class="TendBulb"></td>
+                    <td class="TendDrawNo"></td>
+                    <td class="TendUnit"></td>
+                    <td class="TendUnitWt exclude">KG</td>
+                </tr>
+                <tr class="rowHeadings">
+                    <td class="TendSrNoDtl"></td>
+                    <td class="Tenddesc"></td>
+                    <td class="TendBulb"></td>
+                    <td class="TendDrawNo"></td>
+                    <td class="TendUnit"></td>
+                    <td class="TendUnitWt exclude"></td>
+                </tr>
+
+
+
+                @if (Model.MasterList != null && Model.MasterList.Count > 0)
+                {
+                    foreach (var data in Model.MasterList)
+                    {
+                        if (data.IsRelated)
+                        {
+                            <tr class="rowHeadings">
+                                <td class="TendSrNoDtl">@data.SrNo</td>
+                                <td class="Tenddesc">@data.Name</td>
+                                <td class="TendBulb"></td>
+                                <td class="TendDrawNo"></td>
+                                <td class="TendUnit"></td>
+                                <td class="TendUnitWt exclude"></td>
+                            </tr>
+                        }
+                        else if (data.IsDirectChild)
+                        {
+                            <tr>
+
+                                <td scope="col" class="TendSrNoDtl"></td>
+                                <td scope="col" class="Tenddesc">@data.Name</td>
+                                <td class="TendBulb"><img src="../Assets/images/bulb.png" id="bulbElement" onclick="OpenTestLine(this, @Model.BomId, @Model.RevisionNo, @Model.TenderId, @Model.TenderRevisionNo, @data.PrimaryId, @data.Type);"></td>
+                                <td class="TendDrawNo">@data.DrawingNo</td>
+                                <td class="TendUnit">@data.Unit</td>
+                                <td class="TendUnitWt">@Math.Round(data.TotalUnitNetWt, 3)</td>
+                            </tr>
+                        }
+                    }
+                }
+                <tr class="totalWtRow">
+                    <td class="TendSrNoDtl"></td>
+                    <td class="Tenddesc" colspan="5">Total</td>
+                </tr>
+                <tr class="totalWtINRRow">
+                    <td class="TendSrNoDtl"></td>
+                    <td class="Tenddesc" colspan="5">Total (RS)</td>
+                </tr>
+                <tr class="totalWtCrRow">
+                    <td class="TendSrNoDtl"></td>
+                    <td class="Tenddesc" colspan="5">Total (Cr.)</td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div id="CurrencyRpt" class="containerTab tableBlock w-100"></div>
+        <div id="RMPricingRpt" class="containerTab tableBlock w-100"></div>
+        <div id="BGRpt" class="containerTab tableBlock w-100"></div>
+        <div id="MarkupRpt" class="containerTab tableBlock w-100 tablePrctender "></div>
+        <div id="FrtRpt" class="containerTab tableBlock w-100"></div>
+        @*<div id="FinalPriceRpt" class="containerTab tableBlock w-100">
+        </div>*@
+        <div id="TestPriceRpt" class="containerTab tableBlock w-100"></div>
+
+    </div>
+</div>
+
+<!-- Modal for Currency -->
+<div class="modal fade" id="CurrencyModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for Report -->
+<div class="modal fade" id="ReportModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Raw Material -->
+<div class="modal fade" id="RMModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Bank Guarantee -->
+<div class="modal fade" id="BankGtyModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add marks Up -->
+<div class="modal fade" id="markupModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:80%">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Freight charges -->
+<div class="modal fade" id="FrghtChargModel1" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Freight distrubution -->
+<div class="modal fade" id="FrghtChargModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+        <div class="modal-content">
+            <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" id="xbtn">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class=" modal-body overflowModel" style="overflow:hidden">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Final Price -->
+<div class="modal fade" id="FinalPrcModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Audit Trial -->
+<div class="modal fade" id="auditTrial" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Test Charges -->
+<div class="modal fade" id="TestChgModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="BomRefDtls">
+                    <div class="closeMenu">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="col-sm-12 row  m-0 BomRefHeader">
+                        <div class="col-sm-5 align-self-center">
+                            ADD TEST CHARGES
+                        </div>
+                        <div class="col-sm-7 text-right">
+                            <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                            <button type="button" class="submitEnq publishBtn">Submit</button>
+                        </div>
+                    </div>
+                    <div class="tableBlock TenderDtlModelTable addTestChargModel">
+                        <table class="table m-0 ">
+                            <tr>
+                                <th class="markSrNo">Sr.No</th>
+                                <th class="descTest">Description</th>
+                                <th class="uomTest">UOM</th>
+                                <th class="testCharg">Test Charges</th>
+                                <th class="overCharg">Override Charges</th>
+                            </tr>
+                            <tr class="otherTotalBlock">
+                                <td colspan="5" class="descTest">HW FITINGS: 220kv zebra conductor</td>
+                            </tr>
+                            <tr>
+                                <td class="markSrNo">1</td>
+                                <td class="descTest">Double Suspension</td>
+                                <td class="uomTest">Set</td>
+                                <td class="testCharg">3280</td>
+                                <td class="overCharg"><input type="text" /></td>
+                            </tr>
+                            <tr>
+                                <td class="SrNoDtl">2</td>
+                                <td class="descTest">Single Tension</td>
+                                <td class="uomTest">Set</td>
+                                <td class="testCharg">3280</td>
+                                <td class="overCharg"><input type="text" /></td>
+                            </tr>
+                            <tr class="subTotalTR">
+                                <td class="markSrNo"></td>
+                                <td class="descTest"></td>
+                                <td class="uomTest">Sub-Total</td>
+                                <td class="testCharg">6572</td>
+                                <td class="overCharg"><input type="text" /></td>
+                            </tr>
+                            <tr class="otherTotalBlock">
+                                <td colspan="5" class="descTest">HW FITINGS: 220kv zebra conductor</td>
+                            </tr>
+                            <tr>
+                                <td class="markSrNo">1</td>
+                                <td class="descTest">Double Suspension</td>
+                                <td class="uomTest">Set</td>
+                                <td class="testCharg">3280</td>
+                                <td class="overCharg"><input type="text" /></td>
+                            </tr>
+                            <tr>
+                                <td class="markSrNo">2</td>
+                                <td class="descTest">Single Tension</td>
+                                <td class="uomTest">Set</td>
+                                <td class="testCharg">3280</td>
+                                <td class="overCharg"><input type="text" /></td>
+                            </tr>
+                            <tr class="subTotalTR">
+                                <td class="markSrNo"></td>
+                                <td class="descTest"></td>
+                                <td class="uomTest">Sub-Total</td>
+                                <td class="testCharg">6572</td>
+                                <td class="overCharg"><input type="text" /></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="tableBlock frghtChargBlk">
+                        <table class="table m-0">
+                            <tr class="bgBlue">
+                                <td class="markSrNo"></td>
+                                <td class="descTest"></td>
+                                <td class="uomTest" colspan="2">Total Test Charges</td>
+                                <td class="testCharg">6572</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Test Prices -->
+<div class="modal fade TPriceModal" id="TPriceModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton" onclick="closeModal()">OK</button>
+                @*<button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="refreshList()">cancel</button>*@<button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="refreshList()"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="testmasterDtls" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+<!--Model for assigning Port-->
+<div class="modal fade" id="PortModel" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="closeMenu">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body ">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="snackbar"></div>
+<div id="test"></div>
+@*<div class="loaderGif TenderLoader"  id="TenderLoader">
+    <img src="~/Assets/images/loader2.gif" style="width:80px; height:80px" />
+</div>*@
+<script type="text/javascript">
+
+    var isControlChanged = false, qtyDetails = [], lineGrWt = [], tndQtyDetails = [],tndPorts = [],currencyList= @Html.Raw(Json.Encode(Model.CurrencyList))
+        portFrtDetails= @Html.Raw(Json.Encode(Model.TndPortFrtDetails)),inttndValues=@Html.Raw(Json.Encode(Model.IntTndValues)),
+        tndMarkupDetails = @Html.Raw(Json.Encode(Model.TndMarkupDetails)),intTndPortName = @Html.Raw(Json.Encode(Model.TndPortDetails)), tenderRevlist =  @Html.Raw(Json.Encode(Model.RevList)),
+        intTenderType = @Model.TenderType, otherCurrencies =@Html.Raw(Json.Encode(otherCurrencies));
+
+    var redirectURL;
+
+ 
+
+    $(document).ready(function () {
+
+        //tabs
+        $('.AddOptn:first').addClass('selectedAddOptn');
+        $('.containerTab').hide();
+        $('.containerTab:first').show();
+
+        $('.AddOptn').click(function () {
+            $('.AddOptn').removeClass('selectedAddOptn');
+            $(this).addClass('selectedAddOptn');
+            $('.containerTab').hide();
+
+            var indexr = $(this).index();
+            console.log(indexr);
+            $('.containerTab:eq(' + indexr + ')').fadeIn();
+
+        });
+
+
+        @foreach (var item in Model.TndPortDetails)
+        {
+            @:tndPorts.push({PortId:"@item.Id",PortName:"@item.PortName"});
+        }
+        $('.modal').on('show.bs.modal', function (e) {
+            if (isControlChanged) {
+                ShowSnackBar("Please save changes before proceeding further");
+                return e.preventDefault();
+            }
+            else
+                return true;
+        });
+        if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+            $("input").attr('readonly', true);
+            $("input").removeClass("whiteBgInput");
+            $("input").removeClass("p-1");
+            $(".buttonContainer").hide();
+            $("button").hide();
+            $("input[type='button']").hide();
+        }
+
+        $(tenderRevlist).each(function (index, item) {
+            redirectURL = "/Report/TenderRevPricingPartialKT?enqId=" + $("#hidEnqId").val() + "&bomId=" + $("#bomId").val() + "&revNo=" +
+                $("#revisionId").val() + "&tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+
+            $.ajax({
+                type: "post",
+                url: redirectURL,
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                async: false,               
+                success: function (data) {
+                    $("#test").empty();
+                    $("#test").append(data);
+                    var table = $("#test").find(".tablePrctender");
+                    $(table).find("tr").each(function (index, item) {
+                        $(".parentTable").find("tr").eq(index).append($(item).children().not(".notReq"));
+                    });
+                },                
+                error: function (courses) { }
+            });
+
+        });
+
+        $(tenderRevlist).each(function (index, item) {
+            if (index == 0) {
+                redirectURL = "/Report/RMPricing?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+                LoadCommonColumns(redirectURL, "RMPricingRpt");
+
+                redirectURL = "/Report/BGCommision?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+                LoadCommonColumns(redirectURL, "BGRpt");
+
+                redirectURL = "/Report/MarkupPricing?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+                LoadCommonColumns(redirectURL, "MarkupRpt");
+
+                redirectURL = "/Report/Freight?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+                LoadCommonColumns(redirectURL, "FrtRpt");
+
+                redirectURL = "/Report/Currency?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+                LoadCommonColumns(redirectURL, "CurrencyRpt");
+                debugger;
+                redirectURL = "/Report/TestPricing?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+                LoadCommonColumns(redirectURL, "TestPriceRpt");
+            }
+
+            redirectURL = "/Report/RMPricingIteration?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+            LoadRepeatedColumns(redirectURL, "RMPricingRpt")
+
+            redirectURL = "/Report/BGCommisionIteration?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+            LoadRepeatedColumns(redirectURL, "BGRpt");
+
+            redirectURL = "/Report/MarkupPricingIteration?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+            LoadRepeatedColumns(redirectURL, "MarkupRpt");
+
+            redirectURL = "/Report/FreightIteration?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+            LoadRepeatedColumns(redirectURL, "FrtRpt");
+
+            redirectURL = "/Report/CurrencyIteration?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+            LoadRepeatedColumns(redirectURL, "CurrencyRpt");
+            debugger;
+            redirectURL = "/Report/TestPricingIteration?tndId=" + $("#tndId").val() + "&tndRevNo=" + item.RevisionNo;
+            LoadRepeatedColumns(redirectURL, "TestPriceRpt");
+        });
+        $('#TenderLoader').hide();
+        $("#test").remove();
+        $('input[type!="hidden"]').each(function () {
+            $(this).replaceWith(function () {
+                return '<label class=' + this.className + ' value=' + this.value + ' > ' + this.value + '</label >'
+            });
+        });
+
+    });
+
+    function LoadCommonColumns(url,divId) {
+        $.ajax({
+            type: "post",
+            url: url,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            async: false,
+            success: function (data) {
+                $("#" + divId).append(data);
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function LoadRepeatedColumns(url, divId) {
+        $.ajax({
+            type: "post",
+            url: url,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            async: false,
+            success: function (data) {
+
+                $("#test").empty();
+                $("#test").append(data);
+                var table = $("#test").find(".iterationTable");
+                //$("#" + divId).find(".parentTable").find("tr").eq(0).append($(table).find("tr").eq(0).children().not(".notReq"));
+                $(table).find("tr").each(function (index, item) {
+                    $("#" + divId).find(".parentTable").find("tr").eq(index).append($(item).children().not(".notReq"));
+                });
+            },
+            error: function (courses) { }
+        });
+    }
+
+</script>

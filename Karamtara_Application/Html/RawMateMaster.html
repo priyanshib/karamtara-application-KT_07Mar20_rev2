@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../Assets/js/popper.js"></script>
+    <script src="../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <!--script for toast messages-->
+    <script src="https://cdn.rawgit.com/FezVrasta/snackbarjs/1.1.0/dist/snackbar.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+		<div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen">
+                    <img src="../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+      
+
+        <div class="main-content">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="row ProdNmBlock">
+                        <div class="col-sm-8 align-items-center d-flex">
+                            <img src="../Assets/images/RawMaterialMaster.png" height="28px">  RAW MATERIAL MASTER
+                        </div>
+                       
+                    </div>
+                   
+                </div>
+                <div class="col-sm-12">
+                    <div class="row AddOptnDtl">
+                        <div class="AddOptn col-sm-3">
+                            <img src="../Assets/images/plusIcon.png" />  ADD TESTS FOR COMPONENTS
+                        </div>
+                        <div class="AddOptn col-sm-2 p-0">
+                            <img src="../Assets/images/plusIcon.png" />  VIEW RAW MATERIALS
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4">
+                    <div class="createRawMater tableBlock">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="addRawMateHead">ADD NEW MATERIAL</div>
+                                <div class="addMaterForm">
+                                    <div class="form-group">
+                                        <label>Material Name</label>
+                                        <input type="text" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Select Material / Item Code</label>
+                                        <select class="browser-default custom-select">
+                                            <option>option 1</option>
+                                            <option>option 2</option>
+                                            <option>option 3</option>
+                                            <option>option 4</option>
+                                        </select>
+                                    </div>
+                                    <div class="textLabel">OR</div>
+                                    <div class="form-group">
+                                        <label>Create New Material / Item Code</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                                <div class="saveRawMater">
+                                    <button type="button" class="submitBomBtn saveBtn">Add</button>
+                                    <button type="button" class="submitBomBtn publishBtn" data-toggle="snackbar" data-style="toast" data-content="Data is cancel.">Cancel </button>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="RawMasterdetails tableBlock">
+						<div class="row">
+                            <div class="addRawMateHead">raw material list</div>
+                            <table class="table mt-4 RawMaterialTable">
+                                <tr>
+                                    <th class="materID">Material ID</th>
+                                    <th class="materNm">Raw Material Name</th>
+                                    <th class="materCode">Item Code</th>
+                                </tr>
+                                <tr>
+                                    <td>#KEP123</td>
+                                    <td>M.S. Plate</td>
+                                    <td>P</td>
+                                </tr>
+                            </table>
+							
+						</div>
+					</div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+
+
+
+</body>
+</html>
+<script>
+
+    function AddRows() {
+        //alert('ok');
+        $.each(new Array(10), function (i) {
+            $('.RawMaterialTable tr:last')
+                .after('<tr><td></td>' + '<td></td>' + '<td></td>' +  '</tr>');
+
+           });
+    }
+    window.onload = AddRows;
+
+    $('body').bootstrapMaterialDesign();
+   
+</script>

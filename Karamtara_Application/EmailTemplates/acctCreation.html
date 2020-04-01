@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Account Creation</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+	
+<style>
+.example_e {
+border: solid #565656 1px;
+background: #ffffff;
+color: #565656 !important;
+text-decoration: none;
+font-weight: 600;
+padding: 10px 15px;
+border-radius: 6px;
+text-transform: uppercase;
+display: inline-block;
+letter-spacing:1px;
+transition: all 0.3s ease 0s;
+margin-top:30px;
+font-size:12px;
+}
+
+.tableClass
+{
+border:solid black 1px;
+}
+</style>
+
+
+</head>
+<body style="font-family:Ubuntu,sans-serif;background:#fff;">
+    <div style="background:#fff;width:550px;margin:0 auto;">
+        <table style="width:550px;padding:20px;"class="tableClass">
+            <tr>
+                <td align="center" style="padding:10px 0 40px">
+				{<imgSource>}
+                    <!-- <img src="../assets/images/logo.png" /> -->
+                </td>
+            </tr>
+			<tr>
+                <td style="color:#565656;font-size:18px;font-weight:bold;text-transform:capitalize;padding-bottom:20px;">hello,</td>
+            </tr>
+            <tr>
+                <td style="color:#888;font-size:16px;line-height:1.38;font-weight:normal;padding-bottom:5px;">
+                    Your account for Karamtara Web Application has been created.
+                </td>
+            </tr>
+            <tr>
+                <td style="color:#888;font-size:16px;line-height:1.38;font-weight:normal;padding-bottom:20px;">
+                    You can use your Email and Code mentioned below to Signup on the website
+                </td>
+            </tr>
+            <tr>
+                <td style="color:#888;font-size:16px;line-height:1.38;font-weight:normal;padding-bottom:5px;">
+                    <span style="font-weight:bold;margin-right:5px;">Email :</span><a href="#" style="color:#285FAA;font-size:16px;">{emailIdHere}</a>
+                </td>
+            </tr>  
+            <tr>
+                <td style="color:#888;font-size:16px;line-height:1.38;font-weight:normal;padding-bottom:5px;">
+                    <span style="font-weight:bold;margin-right:5px;">Signup Code :</span> {signupCodeHere}
+                </td>
+            </tr>
+
+            <tr>
+                <td style="color:#565656;font-size:16px;text-transform:capitalize;font-weight:bold;padding-top:20px;">
+                    Regards,
+                </td>
+            </tr>
+            <tr>
+                <td style="color:#888;font-size:16px;">
+                    Karamtara (Tender Costing Application)
+                </td>
+            </tr>
+			<tr>
+			<td>
+				<div class="button_cont" align="center">
+				<a class="example_e" href="{hrefTag}" target="_blank" rel="nofollow noopener"> Click here to go to Application </a>
+				</div>
+            </td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+</html>

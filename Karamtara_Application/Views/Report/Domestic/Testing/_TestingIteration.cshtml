@@ -1,0 +1,63 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+@{
+    int count = 1;
+}
+<div class="BomRefDtls">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        TEST MASTER PRICING
+
+    </div>
+    @using (Html.BeginForm("SaveTestPricing", "TenderPricing", FormMethod.Post, new { @id = "TMPrice" }))
+    {
+        <div class="col-sm-12 row BomRefItem m-0">
+            <div class="col-sm-8 ">
+                Test List
+            </div>
+            <div class="col-sm-4 text-right">
+                @*<input type="button" class="submitEnq revisionBtn" value="Cancel" onclick="closeModal();"/>
+                    <input type="button" class="submitEnq publishBtn" id="btnTndSaveForm" value="Submit" />*@
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal();">Cancel</button>
+                <button type="button" class="submitEnq publishBtn" id="btnTndSaveForm">Submit</button>
+            </div>
+        </div>
+        for (int i = 0; i < Model.DummyList.Count; i++)
+        {
+            @Html.HiddenFor(model => Model.DummyList[i].Id)
+            @Html.HiddenFor(model => Model.DummyList[i].Price)
+        }
+        <div class="TestMasterdetails tableBlock">
+            <div class="">
+                <table class="table m-0 TenderDtlModelTable iterationTable">
+                    <tr>
+                        <th class="priceItem">Revision @Model.TenderRevisionId Price</th>
+                    </tr>
+                    @for (int i = 0; i < Model.TestList.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.TextBoxFor(x => Model.TestList[i].Price, Model.TestList[i].Price.ToString("G29"), new { @id = "tp", @class = "whiteBgInput" })
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                </table>
+            </div>
+        </div>
+    }
+</div>
+<script>
+
+    //if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+    $("input").attr('readonly', true);
+    $("input").removeClass("whiteBgInput");
+    $("input").removeClass("p-1");
+    $("button").not(".close").hide();
+    $("input[type='button']").hide();
+    //}
+
+</script>

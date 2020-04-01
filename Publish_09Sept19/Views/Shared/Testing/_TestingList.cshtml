@@ -1,0 +1,14 @@
+﻿<table class="table">
+    <tr>
+        <th class="CatNo">Cat. No</th>
+        <th class="" colspan="2">Product</th>
+    </tr>
+
+    @foreach (var item in Model.SubAssemblyList)
+    {
+        <tr id="subAssmTr_@item.SubAssemblyId" onclick="GetAssmProducts(@item.SubAssemblyId)" class="subAssm">
+            <td>@item.SubAssemblyCode</td>
+            <td>@item.SubAssmTechName</td>
+        </tr>
+    }
+</table>

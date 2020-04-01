@@ -1,0 +1,61 @@
+﻿@model Karamtara_Application.Models.ProductGroupModel
+
+
+<table class="table" id="AssemblyList">
+    <tbody>
+        @*<tr>
+            <td colspan="5">
+                <button type="button" onclick="ClearFilter();" class="clearFilters blueBtn">Clear Filters</button>
+            </td>
+        </tr>*@
+        <tr>
+            <td colspan="5" class="p-0">
+                <table class="table m-0">
+                    <tr>
+
+                        <th scope="col" class="assmbleId text-left">Product Group ID</th>
+                        <th scope="col" class="assmbleNm text-left">Product Group Name</th>
+                        @*<th scope="col" class="lastUpdate">Last Updated On</th>*@
+                        @*<th scope="col" class="summary">Summary</th>*@
+                    </tr>
+                    @foreach (var item in Model.ProductGroupList)
+                    {
+                        <tr onclick="AssemblySelect(@item.ProductGroupId);" id="selectedAssemblyRow_@item.ProductGroupId" class="assemblies">
+                            <td class="text-left">@item.ProductGroupCode</td>
+                            <td class="text-left">@item.ProductGroupName</td>
+                            @*<td>@item.LastUpdateDate.ToShortDateString()</td>*@
+                            @*<td><img src="~/Assets/images/assebleSummary.png" /></td>*@
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+    <script>
+
+    function AssemblySelect(id) {
+        $.ajax({
+            type: 'GET',
+            url: "/ProductGroup/GetProductGroupHierarchyById",
+            data: { groupId: id },
+            dataType: 'html',
+            success: function (data) {
+                $('#AssemblyListDetails').html(data);
+                $(".assemblies").removeAttr('style');
+                $("#selectedAssemblyRow_" + id).attr('style', 'font-weight:bold');
+            },
+            error: function (err) {
+
+            }
+        });
+    };
+
+    $(document).ready(function () {
+        var id = '@Model.ProductGroupId';
+        $("#selectedAssemblyRow_" + id).attr('style', 'font-weight:bold');
+    });
+
+
+
+    </script>

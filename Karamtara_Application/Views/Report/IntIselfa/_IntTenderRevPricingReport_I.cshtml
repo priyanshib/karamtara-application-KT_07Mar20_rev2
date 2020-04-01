@@ -1,0 +1,1637 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@using Karamtara_Application.Models.Tender
+@using System.Dynamic;
+@{
+    ViewBag.Title = "TenderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    int colCount = 0;
+    if (Model.LineList != null && Model.LineList.Count > 0)
+    {
+        colCount = Model.LineList.Count;
+    }
+    TenderLineValues lineValues = new TenderLineValues();
+    decimal lineValue = 0;
+    decimal margin = 0;
+    decimal sCostExWorks = 0;
+    bool isRevisionCreated = TempData["IsRevisionCreated"] == null ? false : (bool)TempData["IsRevisionCreated"];
+    List<dynamic> otherCurrencies = Model.CurrencyList.Where(x => x.DisplayInView == true && x.Name.ToLower() != "usd" && x.Name.ToLower() != "euro").ToList<dynamic>();
+    decimal value = 0;
+    dynamic dynamic = new ExpandoObject();
+}
+<div revId="@Model.TenderRevisionNo">
+    <div class="main-content mainContentPaddingBtm">
+        <input type="hidden" value="@Model.EnquiryId" id="hidEnqId" name="enquiryId" />
+        <input type="hidden" id="bomId" value="@Model.BomId" />
+        <input type="hidden" id="revisionId" value="@Model.RevisionNo" />
+        <input type="hidden" id="tndId" value="@Model.TenderId" />
+        <input type="hidden" id="tndRevId" value="@Model.TenderRevisionNo" />
+        <input type="hidden" id="tndUnitCost" value="@Model.UnitCost" />
+        <input class="finalWeighttMt" id="finalWeighttMt" type="hidden" />
+
+        @Html.HiddenFor(x => x.IsEdit, new { @id = "isPageEditable" })
+        @Html.Hidden("totalCostINR", "5011009", new { @id = "totalCostINR" })
+
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="row prjNmBlock">
+                    <div class="col-sm-8 align-self-center">
+                        <span>Project :</span>@Model.ProjectName
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <button type="button" id="btnEditBom" class="createBomBtn buttonContainer saveBtn">Add Wastage</button>
+                        <button type="button" id="btnSubmit" class="createBomBtn buttonContainer saveBtn">SAVE</button>
+                        <button type="button" class="createBomBtn publishBtn buttonContainer" id="btnPublish">Publish</button>
+                        <button type="button" class="createBomBtn publishBtn " id="btnCancelRev" style="display:@(isRevisionCreated == true ? "inline-block" : "none")">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="row AddOptnDtl">
+                    <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#PortModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />ASSIGN PORT
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0 pr-3" data-toggle="modal" data-target="#CurrencyModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />CURRENCY
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#RMModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />RAW MATERIAL PRICE
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#BankGtyModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />BANK GUARANTEE
+                    </div>
+                    @*<div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#markupModel" onclick="loadForm(this)">
+                        <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#markupModel" onclick="loadForm(this)">*@
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#markupModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />ADD MARKUP
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#FrghtChargModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />Freight charges to Customer
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#FinalPrcModel">
+                        <img src="../../Assets/images/plusIcon.png" />Freight : KEPL - ISELFA
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#TPriceModal" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />ADD TEST PRICE
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#auditTrial" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />AUDIT TRAIL
+                    </div>
+                    <div class="AddOptn col-sm-0 p-0  pr-3" data-toggle="modal" data-target="#ReportModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />REPORT
+                    </div>
+                </div>
+            </div>
+
+            <div class="TenderDtlTable tableBlock tablePrctender mt-3">
+
+                <table class="table tableLayout">
+                    <tr class="rowHeadings">
+                        <th class="TendQty">Quantity</th>
+                        @foreach (var item in Model.TndPortDetails)
+                        {
+                            <th class="TendUnitPrice exclude" colspan="@(2 + otherCurrencies.Count())">Unit Price @item.PortName</th>
+                        }
+                        <th class="TendUnitWt exclude notReq">Unit Wt.</th>
+                        <th class="TendIndCost notReq">India Cost</th>
+                        <th class="TendTotCost notReq">Total India Cost</th>
+                        <th class="TendBO exclude notReq">BO</th>
+                        <th class="TendSalesCost notReq">Cost of Sales</th>
+                        <th class="TendSellPriceINR notReq">Selling Price (FOB)</th>
+                        <th class="TendSellPriceEURO notReq">Selling Price (FOB)</th>
+                        <th class="TendSellPriceUSD notReq">Selling Price (FOB)</th>
+                        @if (otherCurrencies != null && otherCurrencies.Any())
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <th class="@("TendSellPrice" + currency.Name.ToUpper()) SellPrice notReq">Selling Price (FOB)</th>
+                            }
+                        }
+                    </tr>
+
+                    <tr class="rowHeadings">
+                        <td class="TendQty"></td>
+                        @foreach (var item in Model.TndPortDetails)
+                        {
+                            if (otherCurrencies != null && otherCurrencies.Any())
+                            {
+                                foreach (var currency in otherCurrencies)
+                                {
+                                    <td class="TendUnitPrice exclude">@currency.Name.ToUpper()</td>
+                                }
+                            }
+                            <td class="TendUnitPrice exclude">USD</td>
+                            <td class="TendUnitPrice exclude">EURO</td>
+                        }
+                        <td class="TendUnitWt exclude notReq">KG</td>
+                        <td class="TendIndCost notReq">INR</td>
+                        <td class="TendTotCost exclude notReq">INR</td>
+                        <td class="TendBO exclude notReq">EURO</td>
+                        <td class="TendSalesCost exclude notReq">INR</td>
+                        <td class="TendSellPriceINR exclude notReq">INR</td>
+                        <td class="TendSellPriceEURO exclude notReq">EURO</td>
+                        <td class="TendSellPriceUSD exclude notReq">USD</td>
+                        @if (otherCurrencies != null && otherCurrencies.Any())
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendSellPrice" + currency.Name.ToUpper()) SellPrice exclude notReq">@currency.Name.ToUpper()</td>
+                            }
+                        }
+                    </tr>
+
+                    <tr class="rowHeadings">
+                        <td class="TenderRevisonName exclude" colspan="@(Model.TndPortDetails.Count * (2 + otherCurrencies.Count) + 1)">Revision @Model.TenderRevisionNo</td>
+                        @foreach (var item in Model.TndPortDetails)
+                        {
+                            if (otherCurrencies != null && otherCurrencies.Any())
+                            {
+                                foreach (var currency in otherCurrencies)
+                                {
+                                    <td class="TendUnitPrice exclude notReq">@currency.Name.ToUpper()</td>
+                                }
+                            }
+                            <td class="TendUnitPrice exclude notReq">USD</td>
+                            <td class="TendUnitPrice exclude notReq">EURO</td>
+                        }
+                        <td class="TendUnitWt exclude notReq">KG</td>
+                        <td class="TendIndCost notReq">INR</td>
+                        <td class="TendTotCost exclude notReq">INR</td>
+                        <td class="TendBO exclude notReq">EURO</td>
+                        <td class="TendSalesCost exclude notReq">INR</td>
+                        <td class="TendSellPriceINR exclude notReq">INR</td>
+                        <td class="TendSellPriceEURO exclude notReq">EURO</td>
+                        <td class="TendSellPriceUSD exclude notReq">USD</td>
+                        @if (otherCurrencies != null && otherCurrencies.Any())
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendSellPrice" + currency.Name.ToUpper()) SellPrice exclude notReq">@currency.Name.ToUpper()</td>
+                            }
+                        }
+                    </tr>
+
+                    @if (Model.MasterList != null && Model.MasterList.Count > 0)
+                    {
+                        foreach (var data in Model.MasterList)
+                        {
+                            if (data.IsRelated)
+                            {
+                                <tr class="rowHeadings">
+                                    <td class="TendQty"></td>
+
+                                    @if (Model.TndPortDetails.Count > 0)
+                                    {
+                                        foreach (var port in Model.TndPortDetails)
+                                        {
+                                            <td class="exclude" colspan="@(2 + otherCurrencies.Count)"></td>
+                                        }
+                                    }
+                                    <td class="TendUnitWt exclude notReq"></td>
+                                    <td class="TendIndCost notReq"></td>
+                                    <td class="TendTotCost exclude notReq"></td>
+                                    <td class="TendBO exclude notReq"></td>
+                                    <td class="TendSalesCost exclude notReq"></td>
+                                    <td class="TendSellPriceINR exclude notReq"></td>
+                                    <td class="TendSellPriceEURO exclude notReq"></td>
+                                    <td class="TendSellPriceUSD exclude notReq"></td>
+                                    @if (otherCurrencies != null && otherCurrencies.Any())
+                                    {
+                                        foreach (var currency in otherCurrencies)
+                                        {
+                                            <td class="@("TendSellPrice" + currency.Name.ToUpper()) SellPrice exclude notReq"></td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                            else if (data.IsDirectChild)
+                            {
+                                <tr>
+
+                                    @{
+                                        value = 0;
+                                        decimal boVal = 0;
+                                        if (Model.IntTndQtyList != null && Model.IntTndQtyList.Any())
+                                        {
+                                            dynamic = Model.IntTndQtyList.Where(x => x.PrimaryId == data.PrimaryId && x.TypeId == data.Type).FirstOrDefault();
+
+                                            if (dynamic != null)
+                                            {
+                                                value = dynamic.Quantity;
+                                                boVal = dynamic.BO;
+                                            }
+                                        }
+                                    }
+                                    <td class="TendQty">
+                                        <input id="TndQuantity" type="number" ProductGroupId="@data.ProductGroupId" AssemblyId="@data.AssemblyId" SubAssemblyId="@data.SubAssemblyId"
+                                               ComponentId="@data.ComponentId" TypeId="@data.Type" PrimaryId="@data.PrimaryId" value="@value" fieldtype="Qty" onfocus="pushDetails(this)" onblur="editQtyDetails(this)"
+                                               class="whiteBgInput p-1" />
+                                    </td>
+                                    @foreach (var item in Model.TndPortDetails)
+                                    {
+                                        if (otherCurrencies != null && otherCurrencies.Any())
+                                        {
+                                            foreach (var currency in otherCurrencies)
+                                            {
+                                                <td class="@("TendUnitPrice" + currency.Name.ToUpper())" portid="@item.Id" currencyname="@currency.Name"></td>
+                                            }
+                                        }
+                                        <td class="TendUnitPriceUSD" portid="@item.Id" currencyname="usd"></td>
+                                        <td class="TendUnitPriceEURO" portid="@item.Id" currencyname="euro"></td>
+                                    }
+                                    <td class="TendUnitWt notReq">@Math.Round(data.TotalUnitNetWt, 3)</td>
+                                    <td class="TendIndCost notReq">@Math.Round(data.UnitCost, 3)</td>
+                                    <td class="TendTotCost notReq"></td>
+                                    <td class="TendBO notReq">
+                                        <input id="TndBOQty" type="number" ProductGroupId="@data.ProductGroupId" AssemblyId="@data.AssemblyId" SubAssemblyId="@data.SubAssemblyId"
+                                               ComponentId="@data.ComponentId" TypeId="@data.Type" PrimaryId="@data.PrimaryId" fieldtype="BO" value="@boVal" onfocus="pushDetails(this)" onblur="editQtyDetails(this)"
+                                               class="whiteBgInput p-1" />
+                                    </td>
+                                    <td class="TendSalesCost notReq"></td>
+                                    <td class="TendSellPriceINR notReq"></td>
+                                    <td class="TendSellPriceEURO notReq"></td>
+                                    <td class="TendSellPriceUSD notReq"></td>
+                                    @if (otherCurrencies != null && otherCurrencies.Any())
+                                    {
+                                        foreach (var currency in otherCurrencies)
+                                        {
+                                            <td class="@("TendSellPrice" + currency.Name.ToUpper()) SellPrice notReq"></td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        }
+                    }
+                    <tr class="totalWtRow">
+                        <td class="TendQty"></td>
+                        @foreach (var item in Model.TndPortDetails)
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendTotUnitPrice" + currency.Name.ToUpper()) exclude" portid="@item.Id"></td>
+                            }
+                            <td class="TendTotUnitPriceUSD exclude" portid="@item.Id"></td>
+                            <td class="TendTotUnitPriceEURO exclude" portid="@item.Id"></td>
+                        }
+                        <td class="TendTotUnitWt exclude notReq"></td>
+                        <td class="TendTotIndCost notReq"></td>
+                        <td class="TendTotalTotCost exclude notReq"></td>
+                        <td class="TendTotBO exclude notReq"></td>
+                        <td class="TendTotSalesCost exclude notReq"></td>
+                        <td class="TendTotSellPriceINR exclude notReq"></td>
+                        <td class="TendTotSellPriceEURO exclude notReq"></td>
+                        <td class="TendTotSellPriceUSD exclude notReq"></td>
+                        @if (otherCurrencies != null && otherCurrencies.Any())
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendTotSellPrice" + currency.Name.ToUpper())  SellPrice exclude notReq"></td>
+                            }
+                        }
+
+                    </tr>
+                    <tr class="totalWtINRRow">
+                        <td class="TendSrNoDtl"></td>
+                        <td class="Tenddesc" colspan="5">Total (RS)</td>
+                        @foreach (var item in Model.TndPortDetails)
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendTotUnitPrice" + currency.Name.ToUpper() + "Rs") exclude" portid="@item.Id"></td>
+                            }
+                            <td class="TendTotUnitPriceUSDRs exclude" portid="@item.Id"></td>
+                            <td class="TendTotUnitPriceEURORs exclude" portid="@item.Id"></td>
+                        }
+                        <td class="TendTotUnitWt exclude"></td>
+                        <td class="TendTotIndCost"></td>
+                        <td class="TendTotalTotCost exclude"></td>
+                        <td class="TendTotBO exclude"></td>
+                        <td class="TendTotSalesCost exclude"></td>
+                        <td class="TendTotSellPriceINR exclude"></td>
+                        <td class="TendTotSellPriceRS exclude"></td>
+                        <td class="TendTotSellPriceUSDRS exclude"></td>
+                        @if (otherCurrencies != null && otherCurrencies.Any())
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendTotSellPrice" +currency.Name.ToUpper()+ "RS") exclude"></td>
+                            }
+                        }
+
+                    </tr>
+                    <tr class="totalWtCrRow">
+                        <td class="TendSrNoDtl"></td>
+                        <td class="Tenddesc" colspan="5">Total (Cr.)</td>
+                        @foreach (var item in Model.TndPortDetails)
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendTotUnitPrice" + currency.Name.ToUpper() + "Cr") exclude" portid="@item.Id"></td>
+                            }
+                            <td class="TendTotUnitPriceUSDCr exclude" portid="@item.Id"></td>
+                            <td class="TendTotUnitPriceEUROCr exclude" portid="@item.Id"></td>
+                        }
+                        <td class="TendTotUnitWt exclude"></td>
+                        <td class="TendTotIndCost"></td>
+                        <td class="TendTotalTotCost exclude"></td>
+                        <td class="TendTotBO exclude"></td>
+                        <td class="TendTotSalesCost exclude"></td>
+                        <td class="TendTotSellPriceINR exclude"></td>
+                        <td class="TendTotSellPriceCr exclude"></td>
+                        <td class="TendTotSellPriceUSDCr exclude"></td>
+                        @if (otherCurrencies != null && otherCurrencies.Any())
+                        {
+                            foreach (var currency in otherCurrencies)
+                            {
+                                <td class="@("TendTotSellPrice" +currency.Name.ToUpper()+ "Cr") exclude"></td>
+                            }
+                        }
+
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal for Currency -->
+    <div class="modal fade" id="CurrencyModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content" id="PricingModels">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal for Report -->
+    <div class="modal fade" id="ReportModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content" id="PricingModels">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Raw Material -->
+    <div class="modal fade" id="RMModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content" id="PricingModels">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Bank Guarantee -->
+    <div class="modal fade" id="BankGtyModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add marks Up -->
+    <div class="modal fade" id="markupModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:80%">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Freight charges -->
+    <div class="modal fade" id="FrghtChargModel1" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Freight distrubution -->
+    <div class="modal fade" id="FrghtChargModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+            <div class="modal-content">
+                <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" id="xbtn">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class=" modal-body overflowModel" style="overflow:hidden">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Audit Trial -->
+    <div class="modal fade" id="auditTrial" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add Test Charges -->
+    <div class="modal fade" id="TestChgModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row  m-0 BomRefHeader">
+                            <div class="col-sm-5 align-self-center">
+                                ADD TEST CHARGES
+                            </div>
+                            <div class="col-sm-7 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+                        <div class="tableBlock TenderDtlModelTable addTestChargModel">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="markSrNo">Sr.No</th>
+                                    <th class="descTest">Description</th>
+                                    <th class="uomTest">UOM</th>
+                                    <th class="testCharg">Test Charges</th>
+                                    <th class="overCharg">Override Charges</th>
+                                </tr>
+                                <tr class="otherTotalBlock">
+                                    <td colspan="5" class="descTest">HW FITINGS: 220kv zebra conductor</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">1</td>
+                                    <td class="descTest">Double Suspension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="SrNoDtl">2</td>
+                                    <td class="descTest">Single Tension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr class="subTotalTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="descTest"></td>
+                                    <td class="uomTest">Sub-Total</td>
+                                    <td class="testCharg">6572</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr class="otherTotalBlock">
+                                    <td colspan="5" class="descTest">HW FITINGS: 220kv zebra conductor</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">1</td>
+                                    <td class="descTest">Double Suspension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">2</td>
+                                    <td class="descTest">Single Tension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr class="subTotalTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="descTest"></td>
+                                    <td class="uomTest">Sub-Total</td>
+                                    <td class="testCharg">6572</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div class="tableBlock frghtChargBlk">
+                            <table class="table m-0">
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="descTest"></td>
+                                    <td class="uomTest" colspan="2">Total Test Charges</td>
+                                    <td class="testCharg">6572</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="test"></div>
+    <!-- Modal for Test Prices -->
+    <div class="modal fade TPriceModal" id="TPriceModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+            <div class="modal-content" id="PricingModels">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modelHeader">
+                    <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="modalBody" class="lableMsg">  </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn publishBtn" id="modalOkButton" onclick="closeModal()">OK</button>
+                    @*<button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="refreshList()">cancel</button>*@<button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="refreshList()"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="testmasterDtls" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+
+    </div>
+
+    <!--Model for assigning Port-->
+    <div class="modal fade" id="PortModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+            <div class="modal-content" id="PricingModels">
+                <div class="closeMenu">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body ">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add Final Price -->
+    <div class="modal fade" id="FinalPrcModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+            <div class="modal-content">
+                <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" id="xbtn">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 row BomRefItem m-0">
+                        <div class="col-sm-8 ">
+                            <div class="row addMarkInput">
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+                            <button type="button" onclick="SaveContainerValues()" class="submitEnq publishBtn">Submit</button>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 p-0">
+                        <div class="tableBlock overflowModel">
+                            <table class="table finalPriceIterationTbl">
+                                <tr>
+                                    <th class="TenderRevisonName" colspan="2">Revision @Model.TenderRevisionNo</th>
+                                </tr>
+                                <tr>
+                                    <th class="convertRs">40Ft</th>
+                                    <th class="convertRs">20Ft</th>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs" colspan="2"><label id="finalWtMt"></label></td>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs">
+                                        @{
+                                            value = 0;
+                                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.IntTndValues.Where(x => x.Description == "DividingFactor40Ft").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        <input onblur="SetContainerValues()" class="whiteBgInput" value="@value" type="number" id="df40Ft" />
+                                    </td>
+                                    <td class="convertRs">
+                                        @{
+                                            value = 0;
+                                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.IntTndValues.Where(x => x.Description == "DividingFactor20Ft").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        <input onblur="SetContainerValues()" class="whiteBgInput" value="@value" type="number" id="df20Ft" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs"><label id="totalContainers"></label></td>
+                                    <td class="convertRs"><label id="total20FtContainers"></label></td>
+                                </tr>
+                                <tr>
+                                    @{
+                                        value = 0;
+                                        if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                        {
+                                            dynamic = new ExpandoObject();
+                                            dynamic = Model.IntTndValues.Where(x => x.Description == "Considered40FtCntr").FirstOrDefault();
+                                            value = dynamic == null ? 0 : dynamic.Value;
+                                        }
+                                    }
+                                    <td class="convertRs"><input onblur="SetContainerValues()" class="whiteBgInput" value="@value" type="number" id="considered40Ft" /></td>
+                                    @{
+                                        value = 0;
+                                        if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                        {
+                                            dynamic = new ExpandoObject();
+                                            dynamic = Model.IntTndValues.Where(x => x.Description == "Considered20FtCntr").FirstOrDefault();
+                                            value = dynamic == null ? 0 : dynamic.Value;
+                                        }
+                                    }
+                                    <td class="convertRs"><input onblur="SetContainerValues()" class="" value="@value" type="number" id="considered20Ft" readonly /></td>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs">
+                                        @{
+                                            value = 0;
+                                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.IntTndValues.Where(x => x.Description == "RsPerContainer").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        <input onblur="SetContainerValues()" class="whiteBgInput" value="@value" type="number" id="dollarsPerCnt40Ft" />
+                                    </td>
+                                    <td class="convertRs">
+                                        @{
+                                            value = 0;
+                                            if (Model.IntTndValues != null && Model.IntTndValues.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.IntTndValues.Where(x => x.Description == "RsPer20FtContainer").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        <input onblur="SetContainerValues()" class="whiteBgInput" value="@value" type="number" id="dollarsPerCnt20Ft" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs"><label id="rsPerContainers"></label></td>
+                                    <td class="convertRs"><label id="rsPer20FtContainers"></label></td>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs"><label id="totalRsPerContainers"></label></td>
+                                    <td class="convertRs"><label id="totalRsPer20FtContainers"></label></td>
+                                </tr>
+                                <tr>
+                                    <td class="convertRs" colspan="2"><label id="distFrtFactor"></label></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="snackbar"></div>
+
+</div>
+
+<script type="text/javascript">
+    var isControlChanged = false, qtyDetails = [], lineGrWt = [], tndQtyDetails = [],tndPorts = [],currencyList= @Html.Raw(Json.Encode(Model.CurrencyList))
+        portFrtDetails= @Html.Raw(Json.Encode(Model.TndPortFrtDetails)),inttndValues=@Html.Raw(Json.Encode(Model.IntTndValues)),
+        tndMarkupDetails = @Html.Raw(Json.Encode(Model.TndMarkupDetails)), intWeightMT = 0, intNoOfContainers = 0, intRsPerContainer = 0, intTotalRsForContainers = 0, distFrtFactor = 0,
+        intTndPortName = @Html.Raw(Json.Encode(Model.TndPortDetails)), tenderRevlist =  @Html.Raw(Json.Encode(Model.RevList)), intTenderType = @Model.TenderType,
+        otherCurrencies =@Html.Raw(Json.Encode(otherCurrencies)),tenderRevId =@Model.TenderRevisionNo, revParentDiv = $("div[revId='" + tenderRevId +"']");
+
+    $(revParentDiv).find("#btnEditBom").click(function () {
+        window.location.href = "/bomrevision/editbom?enqId=" + $(revParentDiv).find("#hidEnqId").val() + "&bomId=" + $(revParentDiv).find("#bomId").val() + '&revNo=' + $(revParentDiv).find("#revisionId").val();
+    })
+
+    @foreach (var item in Model.TndPortDetails)
+    {
+        @:tndPorts.push({PortId:"@item.Id",PortName:"@item.PortName"});
+    }
+    $(revParentDiv).find('.modal').on('show.bs.modal', function (e) {
+        if (isControlChanged) {
+            ShowSnackBar("Please save changes before proceeding further");
+            return e.preventDefault();
+        }
+        else
+            return true;
+    });
+    $(revParentDiv).find("input").attr('readonly', true);
+    $(revParentDiv).find("input").removeClass("whiteBgInput");
+    $(revParentDiv).find("input").removeClass("p-1");
+    $(revParentDiv).find(".buttonContainer").hide();
+    SetTotalUnitWt();
+    SetTotalindCost();
+
+    function successTestLineSave() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Relation for Test and Lines update successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failedTestLineSave() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while saving changes. Please try again";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    };
+
+    function loadForm(element) {
+        //alert(2);
+        var url = "/IntTenderPricingKT/";
+        var type = $(revParentDiv).find(element).attr("data-target");
+        if (isControlChanged) {
+            ShowSnackBar("Please save changes before proceeding further");
+            return false;
+        }
+        //alert(3);
+        isControlChanged = false;
+        if (type == "#RMModel") {
+            url = url + "loadRMPricing?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#markupModel") {
+            url = "/IntTenderPricingKT/loadMarkupPricing?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#FrghtChargModel") {
+            url = "/IntTenderPricingKT/loadFreightCharges?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#BankGtyModel") {
+            url = url + "GetBGData?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#TPriceModal") {
+            url ="/IntTenderPricing/LoadTestPricing?tndId=" + $(revParentDiv).find("#tndId").val() + "&tndRevNo=" + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#auditTrial") {
+            url = url + "GetAuditTrial?tndId=" + $(revParentDiv).find("#tndId").val();
+        }
+        else if (type == "#ReportModel") {
+            url = "/report/ProductGrpTonnage?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#CurrencyModel") {
+            url = "/IntTenderPricing/LoadCurrency?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#PortModel") {
+            url = url + "LoadAssignPort?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        $.ajax({
+            type: "post",
+            url: url,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $(revParentDiv).find(type).find(".modal-body").html(data);
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function successModal() {
+        $(revParentDiv).find("#modalOkButton").html("OK");
+        $(revParentDiv).find('#modalTitle').html('Success');
+        $(revParentDiv).find('#modalBody').html('Record updated Successfully');
+        $(revParentDiv).find("#successModel").modal('show');
+    }
+
+    function failureModal() {
+        $(revParentDiv).find("#modalOkButton").html("OK");
+        $(revParentDiv).find('#modalTitle').html('Success');
+        $(revParentDiv).find('#modalBody').html('Record updation failed');
+        $(revParentDiv).find("#successModel").modal('show');
+    }
+
+    function editQtyDetails(element) {
+        var primaryId = $(revParentDiv).find(element).attr("primaryid");
+        var fieldType = $(revParentDiv).find(element).attr("fieldtype");
+        var typeId = $(revParentDiv).find(element).attr("typeid");
+        var index = tndQtyDetails.findIndex(x => x.PrimaryId == primaryId && x.FieldType == fieldType && x.TypeId == typeId);
+        if (index != -1) {
+            tndQtyDetails[index].Value = $(revParentDiv).find(element).val();
+        }
+        SetTotalUnitWt();
+        SetTotalindCost();
+        isControlChanged = true;
+    }
+
+    function pushDetails(element) {
+        var obj = {};
+        var primaryId = $(revParentDiv).find(element).attr("primaryid");
+        var fieldType = $(revParentDiv).find(element).attr("fieldtype");
+        var typeId = $(revParentDiv).find(element).attr("typeid");
+        var index = tndQtyDetails.findIndex(x => x.PrimaryId == primaryId && x.FieldType == fieldType && x.TypeId == typeId);
+        if (index != -1) {
+            tndQtyDetails[index].Value = $(revParentDiv).find(element).val();
+        }
+        else {
+            obj.PrimaryId = primaryId;
+            obj.Value = $(revParentDiv).find(element).val();
+            obj.FieldType = fieldType;
+            obj.TypeId = typeId;
+            tndQtyDetails.push(obj);
+            obj = {};
+        }
+
+    }
+
+    function randomId() {
+        var S4 = function () {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        };
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+    function closeModal() {
+        $(revParentDiv).find(".modal").modal('hide');
+        $(revParentDiv).find("#successModel").modal('hide');
+    }
+
+    function setCosts() {
+        var unitCost = 0, salesCost = 0, exWorks = 0, salesCostArr = [], exWorksArr = [], lineUnitCost = 0, lineUnitCostArr = [];
+        $(revParentDiv).find('.TenderDtlTable table').find('td.calcUnitCost').each(function (index, item) {
+            unitCost += Number($(revParentDiv).find(item).text());
+        });
+
+        $(revParentDiv).find(qtyDetails).each(function (index, item) {
+            $(revParentDiv).find('.TenderDtlTable table').find('td.salesCost[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                salesCost += Number($(revParentDiv).find(item).text());
+            });
+
+            $(revParentDiv).find('.TenderDtlTable table').find('td.sCostExWorks[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                exWorks += Number($(revParentDiv).find(item).text());
+            });
+
+            $(revParentDiv).find('.TenderDtlTable table').find('td.lineUnitCost[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                lineUnitCost += Number($(revParentDiv).find(item).text());
+            });
+
+            salesCostArr.push({ lineId: item.LineId, value: salesCost });
+            exWorksArr.push({ lineId: item.LineId, value: exWorks });
+            lineUnitCostArr.push({ lineId: item.LineId, value: lineUnitCost });
+
+            $(revParentDiv).find(".totalWtRow").find('td.salesCost[lineid="' + item.LineId + '"]').text(salesCost.toFixed(3));
+            $(revParentDiv).find(".totalWtRow").find('td.sCostExWorks[lineid="' + item.LineId + '"]').text(exWorks.toFixed(3));
+            $(revParentDiv).find(".totalWtRow").find('td.lineUnitCost[lineid="' + item.LineId + '"]').text(lineUnitCost.toFixed(3));
+            salesCost = 0;
+            exWorks = 0;
+            lineUnitCost = 0;
+        });
+        var tndNo = $(revParentDiv).find("#tndId").val();
+        var tndRevNo = $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: "POST",
+            url: '/TenderPricing/SaveCosts',
+            dataType: "JSON",
+            data: { unitCost: unitCost, tndNo: tndNo, tndRevNo: tndRevNo, salesCost: JSON.stringify(salesCostArr), exWorks: JSON.stringify(exWorksArr), lineUnitCost: JSON.stringify(lineUnitCostArr) },
+            success: function (data) {
+            },
+            error: function (data) { }
+        });
+    }
+
+    function OpenTestLine(e, bomId, revNo, tenId, tenRevId, primaryId, typeId) {
+
+        var model = { BomId: bomId, RevId: revNo, TenderId: tenId, TenderRevisionId: tenRevId, PrimaryId: primaryId, ProdType: typeId };
+
+        $.ajax({
+            type: 'POST',
+            url: "/TenderPricing/GetTestLineRelation",
+            data: JSON.stringify(model),
+            dataType: 'html',
+            contentType: "application/json",
+            success: function (data) {
+                //$(revParentDiv).find(".colorClass").each(function () {
+                //    $(revParentDiv).find(this).removeAttr('style');
+                //});
+                //$(revParentDiv).find(e).attr('style', 'background-color:#e8e8e8;');
+                $(revParentDiv).find("#testmasterDtls").html(data);
+                $(revParentDiv).find("#testmasterDtls").modal('show');
+            },
+            error: function (err) {
+            }
+        });
+    }
+
+    function SetTotalUnitWt() {
+
+        var wt, totalWt = 0, qty = 0, usdToInr = 0, pckPercentage;
+        $(revParentDiv).find('.TenderDtlTable table').find('td.TendUnitWt').not(".exclude").each(function (index, item) {
+
+            parentItem = $(revParentDiv).find(item).parent();
+            wt = Number($(revParentDiv).find(item).text());
+            qty = Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+            value = wt * qty;
+
+            if (isNaN(value) || value == "")
+                value = 0;
+
+            totalWt += value;
+        });
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotUnitWt').text(totalWt.toFixed(3));
+
+        var object = inttndValues.filter((x) => x.Description == "PackingPercentage");
+        if (object.length > 0) {
+            pckPercentage = Number(object[0].Value);
+        }
+        intWeightMT = Number(((totalWt * pckPercentage) / 1000).toFixed(3));
+
+        $(revParentDiv).find("#finalWtMt").html(intWeightMT);
+        $(revParentDiv).find("#finalWeighttMt").val(intWeightMT);
+
+        //intNoOfContainers = Number((intWeightMT / 23).toFixed());
+
+        //if ((intNoOfContainers >= 0 && intNoOfContainers < 1) || isNaN(intNoOfContainers))
+        //    intNoOfContainers = 1;
+
+        //$(revParentDiv).find("#totalContainers").html(intNoOfContainers);
+
+        //if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+        //    usdToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+        //}
+
+        //if (inttndValues.filter(x => (x.Description).toLowerCase() == "rspercontainer").length > 0) {
+        //    intRsPerContainer = Number(inttndValues.filter(x => (x.Description).toLowerCase() == "rspercontainer")[0].Value);
+        //}
+
+        //intRsPerContainer = intRsPerContainer * usdToInr;
+
+        //$(revParentDiv).find("#totalRsPerContainers").html(intRsPerContainer);
+
+        //intTotalRsForContainers = Number(intRsPerContainer * intNoOfContainers);
+        //$(revParentDiv).find("#toatalRsContainers").html(intTotalRsForContainers);
+
+        if (isNaN(intWeightMT))
+            intWeightMT = 0;
+
+        $(revParentDiv).find(".totalWtINRRow").find(".TendTotUnitWt").text(intWeightMT + " MT");
+        //SetContainerValues();
+    }
+
+    function SetTotalindCost() {
+        var elements, qty, cost, totalCost = 0, value, parentItem;
+        SetTotalBO();
+
+        $(revParentDiv).find('.TenderDtlTable table').find('td.TendTotCost').not(".exclude").each(function (index, item) {
+            parentItem = $(revParentDiv).find(item).parent();
+            cost = Number($(revParentDiv).find(parentItem).find(".TendIndCost").text());
+            qty = Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+            value = cost * qty;
+
+            if (isNaN(value) || value == "")
+                value = 0;
+            $(revParentDiv).find(item).text(value.toFixed(3));
+            totalCost += value;
+        });
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotalTotCost').text(totalCost.toFixed(3));
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotIndCost').text(totalCost.toFixed(3));
+
+        SetSalesCost();
+    }
+
+    function SetSalesCost() {
+        var elements, qty, qtyBO, cost, totalCost = 0, value, parentItem, finalTotalInd = 0, finalTotalItaly = 0, euroToInr = 0, finalTotalBO = 0;
+        if (tndMarkupDetails.filter(x => x.MarkupId == 27).length > 0) {
+            finalTotalInd =Number(tndMarkupDetails.filter(x => x.MarkupId == 27)[0].IndiaVal);
+            finalTotalItaly = Number(tndMarkupDetails.filter(x => x.MarkupId == 27)[0].ItalyVal);
+            finalTotalBO = Number(tndMarkupDetails.filter(x => x.MarkupId == 27)[0].BOVal);
+        }
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+            euroToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+        }
+
+        $(revParentDiv).find('.TenderDtlTable table').find('td.TendSalesCost').not(".exclude").each(function (index, item) {
+            parentItem = $(revParentDiv).find(item).parent();
+            cost = Number($(revParentDiv).find(parentItem).find(".TendIndCost").text());
+            qtyBO = Number($(revParentDiv).find(parentItem).find("#TndBOQty").val());
+            qty = Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+            value = (cost * finalTotalInd * finalTotalItaly) + (qtyBO * euroToInr * finalTotalBO);
+
+            if (isNaN(value) || value == "")
+                value = 0;
+            $(revParentDiv).find(item).text(value.toFixed(3));
+            totalCost += value * qty;
+        });
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotSalesCost').text(totalCost.toFixed(3));
+
+        //distFrtFactor = Math.ceil(Number(intTotalRsForContainers / totalCost) * 100).toFixed(1);
+
+        //$(revParentDiv).find("#distFrtFactor").html(distFrtFactor);
+        SetContainerValues();
+        //SetSellingPrice();
+    }
+
+    function SetSellingPrice() {
+        var elements, qty, cost, totalCost = 0, value, parentItem, totalMarginInd = 0, totalMarginItaly = 0, negotiationItaly = 0, euroPrice = 0, euroToInr = 0, totalCostEuro = 0,
+            usdPrice = 0, usdToInr = 0, totalCostUsd = 0, euroToUsd = 0, conversionRate;
+
+        if (inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate").length > 0) {
+            conversionRate = Number(inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate")[0].Value);
+            conversionRate = conversionRate / 100;
+        }
+
+        if (tndMarkupDetails.filter(x => x.MarkupId == 31).length > 0) {
+            totalMarginInd = Number(tndMarkupDetails.filter(x => x.MarkupId == 31)[0].IndiaVal);
+            totalMarginItaly = Number(tndMarkupDetails.filter(x => x.MarkupId == 31)[0].ItalyVal);
+        }
+
+        if (tndMarkupDetails.filter(x => x.MarkupId == 32).length > 0) {
+            negotiationItaly = Number(tndMarkupDetails.filter(x => x.MarkupId == 32)[0].ItalyVal);
+        }
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+            euroToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+            if (euroToInr == "" || isNaN(euroToInr))
+                euroToInr = 0;
+        }
+
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+            usdToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+            if (usdToInr == "" || isNaN(usdToInr) || usdToInr == "0")
+                usdToInr = 0;
+        }
+
+        euroToUsd = (euroToInr / usdToInr) + conversionRate;
+        $(revParentDiv).find('.TenderDtlTable table').find('td.TendSellPriceINR').not(".exclude").each(function (index, item) {
+            parentItem = $(revParentDiv).find(item).parent();
+            cost = Number($(revParentDiv).find(parentItem).find(".TendSalesCost").text());
+            qty = Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+            value = (cost * (1 + (distFrtFactor / 100)) * (1 + (totalMarginItaly/100)) * (1 + (totalMarginInd/100)) )/ (1 - (negotiationItaly/100));
+
+            if (isNaN(value) || value == "")
+                value = 0;
+
+            value = value.toFixed(3);
+
+            if (euroToInr == 0 || euroToInr == "0") {
+                euroPrice = 0;
+            }
+            else {
+                euroPrice = value / euroToInr;
+            }
+            euroPrice = euroPrice.toFixed(3);
+
+            if (isNaN(euroPrice))
+                euroPrice = 0;
+
+            usdPrice = euroPrice * euroToUsd;
+            usdPrice = usdPrice.toFixed(3);
+
+            if (isNaN(usdPrice))
+                usdPrice = 0;
+
+            $(revParentDiv).find(item).text(value);
+            $(revParentDiv).find(parentItem).find(".TendSellPriceEURO").text(euroPrice);
+            $(revParentDiv).find(parentItem).find(".TendSellPriceUSD").text(usdPrice);
+            totalCost += value * qty;
+            totalCostEuro += euroPrice * qty;
+            totalCostUsd += usdPrice * qty;
+        });
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotSellPriceINR').text(totalCost.toFixed(3));
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotSellPriceEURO').text(totalCostEuro.toFixed(3));
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotSellPriceUSD').text(totalCostUsd.toFixed(3));
+
+        value = totalCostEuro.toFixed(3) * euroToInr;
+
+        if (isNaN(value))
+            value = 0;
+
+        $(revParentDiv).find(".totalWtINRRow").find('td.TendTotSellPriceRS').text(value.toFixed(3));
+        $(revParentDiv).find(".totalWtCrRow").find('td.TendTotSellPriceCr').text((value / 10000000).toFixed(3));
+
+        value = totalCostUsd.toFixed(3) * usdToInr;
+
+        if (isNaN(value))
+            value = 0;
+
+        $(revParentDiv).find(".totalWtINRRow").find('td.TendTotSellPriceUSDRS').text(value.toFixed(3));
+        $(revParentDiv).find(".totalWtCrRow").find('td.TendTotSellPriceUSDCr').text((value / 10000000).toFixed(3));
+        SetOtherCurrencySellingPrice();
+        SetPortUnitPrice();
+    }
+
+    function SetTotalBO() {
+        var qty, totalBO = 0,boQty;
+        $(revParentDiv).find('.TenderDtlTable table').find('td.TendBO').not(".exclude").each(function (index, item) {
+            parentItem = $(revParentDiv).find(item).parent();
+            boQty = Number($(revParentDiv).find(item).find("#TndBOQty").val());
+            qty = Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+            value = boQty * qty;
+
+            if (isNaN(value) || value == "")
+                value = 0;
+
+            totalBO += value;
+        });
+        $(revParentDiv).find(".totalWtRow").find('td.TendTotBO').text(totalBO.toFixed(3));
+    }
+
+    function SetPortUnitPrice() {
+        var portFreight = 0, totSellingPriceINR, sellingPrice, seaFreight, usdValue, euroValue, totalPortUnitPriceEuro = 0, parentItem, value,
+            currencyValueEuro, currencyValueUsd, euroToUsd, totalPortUnitPriceUsd = 0, conversionRate;
+
+        if (inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate").length > 0) {
+            conversionRate = Number(inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate")[0].Value);
+            conversionRate = conversionRate / 100;
+        }
+        //conversionRate = 0.02
+
+        totSellingPriceINR = Number($(revParentDiv).find(".TendTotSellPriceINR").text());
+       // console.log('total inr', totSellingPriceINR);
+
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+            currencyValueEuro = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+            if (isNaN(currencyValueEuro) || currencyValueEuro == "")
+                currencyValueEuro = 0;
+        }
+
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+            currencyValueUsd = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+            if (isNaN(currencyValueUsd) || currencyValueUsd == "")
+                currencyValueUsd = 0;
+        }
+        $.each(tndPorts, function (index, item) {
+
+            if (portFrtDetails.filter((x) => x.Description == "OverallTotal" && x.PortId == Number(item.PortId)).length > 0) {
+                portFreight =Number(portFrtDetails.filter((x) => x.Description == "OverallTotal" && x.PortId == Number(item.PortId))[0].Cost);
+            }
+
+            seaFreight = Number(Math.ceil((portFreight / totSellingPriceINR) * 100).toFixed(3));
+            $(revParentDiv).find('.TenderDtlTable table').find('td.TendUnitPriceEURO[portid="' + item.PortId + '"]').not(".exclude").each(function (index, ele) {
+                parentItem = $(revParentDiv).find(ele).parent();
+
+                if (Number(currencyValueUsd) == 0 || isNaN(currencyValueUsd)) {
+                    euroToUsd = 0;
+                }
+                else {
+                    euroToUsd = (currencyValueEuro / currencyValueUsd) + conversionRate;
+                }
+
+                sellingPrice = Number($(revParentDiv).find(parentItem).find(".TendSellPriceEURO").text());
+
+                euroValue = Number((sellingPrice * (1 + (seaFreight / 100))).toFixed(1));
+
+                if (isNaN(euroValue) || euroValue == "")
+                    euroValue = 0;
+
+                usdValue = Number((euroValue * euroToUsd).toFixed(1));
+
+                totalPortUnitPriceUsd += usdValue * Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+                totalPortUnitPriceEuro += euroValue * Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+                $(revParentDiv).find(ele).text(euroValue);
+                $(revParentDiv).find(parentItem).find(".TendUnitPriceUSD[portid='" + item.PortId + "']").text(usdValue);
+            });
+
+            $(revParentDiv).find(".totalWtRow").find('td.TendTotUnitPriceEURO[portid="' + item.PortId + '"]').text(totalPortUnitPriceEuro.toFixed(3));
+            $(revParentDiv).find(".totalWtRow").find('td.TendTotUnitPriceUSD[portid="' + item.PortId + '"]').text(totalPortUnitPriceUsd.toFixed(3));
+
+            value = totalPortUnitPriceEuro.toFixed(3) * currencyValueEuro;
+            $(revParentDiv).find(".totalWtINRRow").find('td.TendTotUnitPriceEURORs[portid="' + item.PortId + '"]').text(value.toFixed(3));
+            $(revParentDiv).find(".totalWtCrRow").find('td.TendTotUnitPriceEUROCr[portid="' + item.PortId + '"]').text((value / 10000000).toFixed(3));
+
+            value = totalPortUnitPriceUsd.toFixed(3) * currencyValueUsd;
+            $(revParentDiv).find(".totalWtINRRow").find('td.TendTotUnitPriceUSDRs[portid="' + item.PortId + '"]').text(value.toFixed(3));
+            $(revParentDiv).find(".totalWtCrRow").find('td.TendTotUnitPriceUSDCr[portid="' + item.PortId + '"]').text((value / 10000000).toFixed(3));
+
+            totalPortUnitPriceEuro = 0;
+            totalPortUnitPriceUsd = 0;
+            value = 0;
+        });
+
+        SetOtherCurrencyPortPrice();
+    }
+
+    function SetOtherCurrencyPortPrice() {
+
+        var portFreight = 0, totSellingPriceINR, sellingPrice, seaFreight, otherCurrencyValue, euroValue, totalPortUnitPriceEuro = 0, parentItem, value,
+            currencyValueEuro, currencyValue, euroToOtherCurrency, totalPortUnitPriceUsd = 0, conversionRate = 0;
+
+        if (inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate").length > 0) {
+            conversionRate = Number(inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate")[0].Value);
+            conversionRate = conversionRate / 100;
+        }
+
+        //if (inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate").length > 0) {
+        //    conversionRate = Number(inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate")[0].Value);
+        //}
+
+        totSellingPriceINR = Number($(revParentDiv).find(".TendTotSellPriceINR").text());
+        //console.log('total inr', totSellingPriceINR);
+
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+            currencyValueEuro = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+            if (isNaN(currencyValueEuro) || currencyValueEuro == "")
+                currencyValueEuro = 0;
+        }
+
+        $.each(otherCurrencies, function (count, currency) {
+            if (currencyList.filter(x => (x.Name).toLowerCase() == currency.Name.toLowerCase()).length > 0) {
+                currencyValue = Number(currencyList.filter(x => (x.Name).toLowerCase() == currency.Name.toLowerCase())[0].Value);
+                if (isNaN(currencyValue) || currencyValue == "")
+                    currencyValue = 0;
+            }
+            $.each(tndPorts, function (index, item) {
+
+                if (portFrtDetails.filter((x) => x.Description == "OverallTotal" && x.PortId == Number(item.PortId)).length > 0) {
+                    portFreight = Number(portFrtDetails.filter((x) => x.Description == "OverallTotal" && x.PortId == Number(item.PortId))[0].Cost);
+                }
+
+                seaFreight = Number(Math.ceil((portFreight / totSellingPriceINR) * 100).toFixed(3));
+                $(revParentDiv).find('.TenderDtlTable table').find('td.TendUnitPriceEURO[portid="' + item.PortId + '"]').not(".exclude").each(function (index, ele) {
+                    parentItem = $(revParentDiv).find(ele).parent();
+
+                    if (Number(currencyValue) == 0 || isNaN(currencyValue)) {
+                        euroToOtherCurrency = 0;
+                    }
+                    else {
+                        euroToOtherCurrency = (currencyValueEuro / currencyValue) + conversionRate;
+                    }
+
+                    sellingPrice = Number($(revParentDiv).find(parentItem).find(".TendSellPriceEURO").text());
+
+                    euroValue = Number((sellingPrice * (1 + (seaFreight / 100))).toFixed(1));
+
+                    if (isNaN(euroValue) || euroValue == "")
+                        euroValue = 0;
+
+                    otherCurrencyValue = Number((euroValue * euroToOtherCurrency).toFixed(1));
+
+                    totalPortUnitPriceUsd += otherCurrencyValue * Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+                    totalPortUnitPriceEuro += euroValue * Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+                    $(revParentDiv).find(ele).text(euroValue);
+                    $(revParentDiv).find(parentItem).find(".TendUnitPrice" + currency.Name.toUpperCase()+"[portid='" + item.PortId + "']").text(otherCurrencyValue);
+                });
+
+                $(revParentDiv).find(".totalWtRow").find('td.TendTotUnitPrice' + currency.Name.toUpperCase()+'[portid="' + item.PortId + '"]').text(totalPortUnitPriceUsd.toFixed(3));
+
+                value = totalPortUnitPriceEuro.toFixed(3) * currencyValueEuro;
+
+                value = totalPortUnitPriceUsd.toFixed(3) * currencyValue;
+                $(revParentDiv).find(".totalWtINRRow").find('td.TendTotUnitPrice' + currency.Name.toUpperCase() +'Rs[portid="' + item.PortId + '"]').text(value.toFixed(3));
+                $(revParentDiv).find(".totalWtCrRow").find('td.TendTotUnitPrice' + currency.Name.toUpperCase() +'Cr[portid="' + item.PortId + '"]').text((value / 10000000).toFixed(3));
+
+                totalPortUnitPriceEuro = 0;
+                totalPortUnitPriceUsd = 0;
+                value = 0;
+            });
+        });
+    }
+
+    function SetOtherCurrencySellingPrice() {
+        var elements, qty, cost, totalCost = 0, value, parentItem, totalMarginInd = 0, totalMarginItaly = 0, negotiationItaly = 0, otherCurrencyPrice = 0, otherCurrencyToInr = 0, totalCostOtherCurrency = 0, euroToInr = 0,
+            euroToOtherCurrency = 0, conversionRate;
+
+        if (inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate").length > 0) {
+            conversionRate = Number(inttndValues.filter(x => (x.Description).toLowerCase() == "conversionrate")[0].Value);
+            conversionRate = conversionRate / 100;
+        }
+
+        if (tndMarkupDetails.filter(x => x.MarkupId == 31).length > 0) {
+            totalMarginInd = Number(tndMarkupDetails.filter(x => x.MarkupId == 31)[0].IndiaVal);
+            totalMarginItaly = Number(tndMarkupDetails.filter(x => x.MarkupId == 31)[0].ItalyVal);
+        }
+
+        if (tndMarkupDetails.filter(x => x.MarkupId == 32).length > 0) {
+            negotiationItaly = Number(tndMarkupDetails.filter(x => x.MarkupId == 32)[0].ItalyVal);
+        }
+
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+            euroToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+            if (euroToInr == "" || isNaN(euroToInr))
+                euroToInr = 0;
+        }
+        $.each(otherCurrencies, function (count, currency) {
+            if (currencyList.filter(x => (x.Name).toLowerCase() == currency.Name.toLowerCase()).length > 0) {
+                otherCurrencyToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == currency.Name.toLowerCase())[0].Value);
+                if (otherCurrencyToInr == "" || isNaN(otherCurrencyToInr))
+                    otherCurrencyToInr = 0;
+            }
+            $(revParentDiv).find('.TenderDtlTable table').find('td.TendSellPriceINR').not(".exclude").each(function (index, item) {
+
+                parentItem = $(revParentDiv).find(item).parent();
+                cost = Number($(revParentDiv).find(parentItem).find(".TendSalesCost").text());
+                qty = Number($(revParentDiv).find(parentItem).find("#TndQuantity").val());
+                //value = (cost * (1 + (distFrtFactor / 100)) * (1 + (totalMarginItaly / 100)) * (1 + (totalMarginInd / 100))) / (1 - (negotiationItaly / 100));
+                value = Number($(revParentDiv).find(parentItem).find(".TendSellPriceEURO").text());
+
+                if (isNaN(value) || value == "")
+                    value = 0;
+
+                if (otherCurrencyToInr == 0 || otherCurrencyToInr == "0") {
+                    otherCurrencyPrice = 0;
+                }
+                else {
+                    euroToOtherCurrency = (euroToInr / otherCurrencyToInr) + conversionRate;
+                    otherCurrencyPrice = value * euroToOtherCurrency;
+                }
+                otherCurrencyPrice = otherCurrencyPrice.toFixed(3);
+                //$(revParentDiv).find(item).text(value.toFixed(3));
+                $(revParentDiv).find(parentItem).find(".TendSellPrice" + currency.Name.toUpperCase()).text(otherCurrencyPrice);
+                totalCost += value * qty;
+                totalCostOtherCurrency += otherCurrencyPrice * qty;
+            });
+            //$(revParentDiv).find(".totalWtRow").find('td.TendTotSellPriceINR').text(totalCost.toFixed(3));
+            $(revParentDiv).find(".totalWtRow").find('td.TendTotSellPrice' + currency.Name.toUpperCase()).text(totalCostOtherCurrency.toFixed(3));
+
+            value = totalCostOtherCurrency.toFixed(3) * otherCurrencyToInr;
+
+            $(revParentDiv).find(".totalWtINRRow").find('td.TendTotSellPrice' + currency.Name.toUpperCase()+'RS').text(value.toFixed(3));
+            $(revParentDiv).find(".totalWtCrRow").find('td.TendTotSellPrice' + currency.Name.toUpperCase()+'Cr').text((value / 10000000).toFixed(3));
+        });
+        SetPortUnitPrice();
+    }
+
+    $(revParentDiv).find("#btnSubmit").click(function () {
+        var array = JSON.stringify(tndQtyDetails);
+        var tndId = $(revParentDiv).find("#tndId").val();
+        var tndRevId = $(revParentDiv).find("#tndRevId").val();
+        isControlChanged = false;
+        $.ajax({
+            type: "post",
+            data: { qtyDetails: array, tndId: tndId, tndRevId: tndRevId },
+            url: '/IntTenderPricingKT/SaveTenderQty',
+            success: function (data) {
+                if (data) {
+                    $(revParentDiv).find(".modal").modal('hide');
+                    successModal();
+                    window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    })
+
+    $(revParentDiv).find("#btnCancelRev").click(function () {
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/CancelTenderRev?tndId=' + $(revParentDiv).find("#tndId").val() + '&tndRevId=' + $(revParentDiv).find("#tndRevId").val(),
+            success: function (data) {
+                if (data) {
+                    window.location.href = "/TenderList/GetInternationTenders";
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    })
+
+    $(revParentDiv).find("#btnPublish").click(function () {
+        if (isControlChanged) {
+            ShowSnackBar("Please save changes before proceeding further");
+            return false;
+        }
+
+
+        var obj = CheckPublish();
+
+        //if (!obj.Flag) {
+        //    ShowSnackBar("Please fill " + obj.Message + " details");
+        //    return false;
+        //}
+
+        var tndId = $(revParentDiv).find("#tndId").val();
+        var tndRevId = $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: 'POST',
+            url: '/TenderPricing/PublishTender',
+            data: { tndId: tndId, tndRevId: tndRevId },
+            dataType: 'JSON',
+            success: function (data) {
+                ShowSnackBar("Tender Published Successfully.");
+                var redirectURL = "/IntTenderPricing/ViewTenderDetailsDom?enqId=" + $(revParentDiv).find("#hidEnqId").val() + "&bomId=" + $(revParentDiv).find("#bomId").val() + "&revNo=" + $(revParentDiv).find("#revisionId").val() + "&tndId=" + $(revParentDiv).find("#tndId").val() + "&tndRevNo=" + $(revParentDiv).find("#tndRevId").val();
+                var delay = 2000;
+                setTimeout(function () { window.location.href = redirectURL; }, delay);
+
+            },
+            error: function (courses) {
+                ShowSnackBar("Error while publishing tender.");
+                //  failureModal();
+            }
+        });
+    });
+
+    function CheckPublish()
+    {
+        var data = {};
+        var tndId = $(revParentDiv).find("#tndId").val();
+        var tndRevId = $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: 'POST',
+            url: '/intTenderPricing/CheckPublish',
+            data: { tndId: tndId, tndRevId: tndRevId },
+
+            dataType: 'JSON',
+            async: false,
+            success: function (obj) {
+                data = obj
+            },
+            error: function (courses) {
+                ShowSnackBar("Error while publishing tender.");
+                //  failureModal();
+            }
+        });
+        return data;
+    }
+
+    function SubmitMarkup() {
+
+        var redirectURL;
+        redirectURL = "/IntTenderPricingKT/loadMarkupPricing?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: "post",
+            url: redirectURL,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            async: false,
+            success: function (data) {
+                $(revParentDiv).find("#testDiv").remove();
+                $(revParentDiv).find("body").append("<div id='testDiv' style='display:none;'></div>");
+                $(revParentDiv).find("#testDiv").append(data);
+                $(revParentDiv).find("#testDiv").find("#btnSubmitMarkup").click();
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function SubmitFreight() {
+        var redirectURL;
+        redirectURL = "/IntTenderPricingKT/loadFreightCharges?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: "post",
+            url: redirectURL,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            async: false,
+            success: function (data) {
+                $(revParentDiv).find("#testDiv").remove();
+                $(revParentDiv).find("body").append("<div id='testDiv' style='display:none;'></div>");
+                $(revParentDiv).find("#testDiv").append(data);
+                $(revParentDiv).find("#testDiv").find("#btnSubmitFreight").click();
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function SubmitTestPrice() {
+        var redirectURL;
+        redirectURL = "/IntTenderPricing/LoadTestPricing?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: "post",
+            url: redirectURL,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            async: false,
+            success: function (data) {
+                $(revParentDiv).find("#testDiv").remove();
+                $(revParentDiv).find("body").append("<div id='testDiv' style='display:none;'></div>");
+                $(revParentDiv).find("#testDiv").append(data);
+                $(revParentDiv).find("#testDiv").find("#btnTndSaveForm").click();
+            },
+            error: function (courses) { }
+        });
+    }
+
+    function SetContainerValues() {
+        var intNoOfContainers, intRsPerContainer, intTotalRsForContainers, usdToInr, intNoOf20FtContainers, intRsPer20FtContainer, intTotalRsFor20FtContainers;
+        var dividingFactor20Ft, dividingFactor40Ft, totalRs = 0;
+        dividingFactor20Ft = Number($(revParentDiv).find("#df20Ft").val());
+        dividingFactor40Ft = Number($(revParentDiv).find("#df40Ft").val());
+
+        if (dividingFactor20Ft == ""  || isNaN(dividingFactor20Ft))
+            dividingFactor20Ft = 0;
+
+        if (dividingFactor40Ft == "" || isNaN(dividingFactor40Ft))
+            dividingFactor40Ft = 0;
+
+        if (dividingFactor20Ft == 0) {
+            intNoOf20FtContainers = 0;
+        }
+        else {
+            intNoOf20FtContainers = Number((intWeightMT / dividingFactor20Ft).toFixed());
+        }
+
+        if (dividingFactor40Ft == 0) {
+            intNoOfContainers = 0;
+        }
+        else {
+            intNoOfContainers = Number((intWeightMT / dividingFactor40Ft).toFixed());
+        }
+
+        if ((intNoOfContainers >= 0 && intNoOfContainers < 1) || isNaN(intNoOfContainers))
+            intNoOfContainers = 1;
+
+        if ((intNoOf20FtContainers > 0 && intNoOf20FtContainers < 1) || isNaN(intNoOf20FtContainers))
+            intNoOf20FtContainers = 1;
+
+        $(revParentDiv).find("#totalContainers").html(intNoOfContainers);
+        $(revParentDiv).find("#total20FtContainers").html(intNoOf20FtContainers);
+
+        if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+            usdToInr = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+        }
+
+        intRsPerContainer = $(revParentDiv).find("#dollarsPerCnt40Ft").val();
+        intRsPer20FtContainer = $(revParentDiv).find("#dollarsPerCnt20Ft").val();
+
+
+
+        intNoOfContainers = Number($(revParentDiv).find("#considered40Ft").val());
+
+        intNoOf20FtContainers = Math.max(0, Math.ceil((intWeightMT - (intNoOfContainers * dividingFactor40Ft)) / dividingFactor20Ft));
+
+        $(revParentDiv).find("#considered20Ft").val(intNoOf20FtContainers);
+
+        intRsPerContainer = Number(intRsPerContainer * usdToInr);
+        intRsPer20FtContainer = Number(intRsPer20FtContainer * usdToInr);
+        $(revParentDiv).find("#rsPerContainers").html(intRsPerContainer.toFixed(3));
+        $(revParentDiv).find("#rsPer20FtContainers").html(intRsPer20FtContainer.toFixed(3));
+
+        intTotalRsForContainers = Number(intRsPerContainer * intNoOfContainers);
+        intTotalRsFor20FtContainers = Number(intRsPer20FtContainer * intNoOf20FtContainers);
+
+        $(revParentDiv).find("#totalRsPerContainers").html(intTotalRsForContainers.toFixed(3));
+        $(revParentDiv).find("#totalRsPer20FtContainers").html(intTotalRsFor20FtContainers.toFixed(3));
+
+        totalRs = intTotalRsForContainers + intTotalRsFor20FtContainers;
+        $(revParentDiv).find("#toatalRsContainers").html(totalRs.toFixed(3));
+        var totalCost = Number($.trim($(revParentDiv).find(".totalWtRow").find('td.TendTotSalesCost').html()));
+        if (totalCost == 0) {
+            distFrtFactor = 0;
+        }
+        else {
+            distFrtFactor = Math.ceil(Number(totalRs / totalCost) * 100).toFixed(1);
+        }
+
+        $(revParentDiv).find("#distFrtFactor").html(distFrtFactor);
+        SetSellingPrice();
+    }
+
+    function SaveContainerValues() {
+        var arg = {};
+        arg.tndId = $(revParentDiv).find("#tndId").val();
+        arg.tndRevNo = $(revParentDiv).find("#tndRevId").val();
+        arg.dividingFactor20Ft= Number($(revParentDiv).find("#df20Ft").val());
+        arg.dividingFactor40Ft = Number($(revParentDiv).find("#df40Ft").val());
+        arg.considered20FtCntr = Number($(revParentDiv).find("#considered20Ft").val());
+        arg.considered40FtCntr = Number($(revParentDiv).find("#considered40Ft").val());
+        arg.dollarsPerCnt40Ft = Number($(revParentDiv).find("#dollarsPerCnt40Ft").val());
+        arg.dollarsPerCnt20Ft = Number($(revParentDiv).find("#dollarsPerCnt20Ft").val());
+
+        $.ajax({
+            type: 'POST',
+            url: '/IntTenderPricing/SaveContainerValues',
+            data: arg,
+            dataType: 'JSON',
+            success: function (data) {
+                window.location.reload();
+            },
+            error: function (courses) {
+                console.log(courses);
+                ShowSnackBar("Error while saving data");
+            }
+        });
+    }
+
+</script>
+

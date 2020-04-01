@@ -1,0 +1,268 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Index", "RawMaterialMaster", FormMethod.Post))
+{
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="row ProdNmBlock p-2">
+                    <div class="col-sm-8 align-items-center d-flex">
+                        <img src="~/Assets/images/RawMaterialMaster.png" height="20px">  MARKUP MASTER
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="createRawMater tableBlock" id="rawMaterialInput">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="addRawMateHead">ADD NEW MARKUP</div>
+                            <div class="addMaterForm">
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    @Html.TextBox("Description", string.Empty, new { @id = "txtDescription" })
+                                </div>
+                                <div class="form-group">
+                                    <label>Value</label>
+                                    @Html.TextBox("Value", string.Empty, new { @id = "txtValue" })
+                                </div>
+
+                            </div>
+                            <div class="saveRawMater">
+                                <button type="button" class="submitBomBtn saveBtn" id="btnSave">Add</button>
+                                <button type="button" class="submitBomBtn publishBtn" id="btnCancel">Cancel </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8" id="rmList">
+                <div class="RawMasterdetails tableBlock">
+                    <div class="row">
+                        <div class="addRawMateHead col-sm-12">
+                            markup list
+                            <div class="searchBlock pb-3">
+                                <div class="inputSerachDiv ">
+                                    <span class="bmd-form-group">
+                                        <input id="txtSearchName" name="MaterialName" type="text" value="" placeholder="Search Raw Material" autocomplete="off" class="selectpicker">
+                                        <button type="button" class="btn SearchBtn" id="btnSearch"><img src="~/Assets/images/search.png" /></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="markupList" class="col-sm-12 p-0"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header modelHeader">
+                    <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label id="modalBody" class="lableMsg">  </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+
+    function successModal(operation) {
+        $("#txtSearchName").val("");
+        $("#modalCancelButton").hide();
+        $("#modalOkButton").html("OK");
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Record ' + operation + ' Successfully');
+        $("#modalOkButton").attr('onclick', 'refreshList()');
+        $("#successModel").modal('show');
+    }
+
+    function failureModal(operation) {
+        $("#txtSearchName").val("");
+        $("#modalCancelButton").hide();
+        $("#modalOkButton").html("OK");
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Record ' + operation + 'Failed');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    function refreshList() {
+        $("#txtDescription").val("");
+        $('#txtValue').val("");
+        $("#successModel").modal('hide');
+        loadList();
+    }
+
+    $(document).ready(function () {
+
+        $("#markupList").load("/Markup/getMaster");
+    });
+
+    $("#btnCancel").click(function () {
+        $('#txtValue').val("");
+        $("#txtDescription").val("");
+    });
+
+    function loadList() {
+        AutoCompleteType();
+        $("#markupList").load("/Markup/getMaster");
+    }
+
+    function deleteMaster(id) {
+        ////
+        $("#modalCancelButton").show();
+        $('#modalTitle').html('Confirm Deletion');
+        $("#modalOkButton").html("Yes");
+        $('#modalBody').html('Are you sure want to delete the record?');
+        $("#modalOkButton").attr('onclick', 'deleteRecord(' + id + ')');
+        $("#successModel").modal('show');
+    }
+
+    function deleteRecord(id) {
+        $.ajax({
+            type: "post",
+            url: "/Markup/DeleteMaster",
+            dataType: "json",
+            data: { id: id },
+            success: function (data) {
+                if (data == true) {
+                    successModal('deleted');
+                }
+                else {
+                    failureModal('deletion');
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    }
+
+    $("#btnSearch").click(function () {
+        if ($("#txtSearchName").val().length != 0) {
+            event.preventDefault();
+            var value = $("#txtSearchName").val();
+            masterList(value);
+        }
+    })
+
+    $("#txtSearchName").keydown(function (event) {
+        if (event.keyCode == 13) {
+            if ($("#txtSearchName").val().length != 0) {
+                event.preventDefault();
+                var value = $("#txtSearchName").val();
+                masterList(value);
+            }
+        }
+    })
+
+    $("#btnSave").click(function () {
+        ////
+        var value = $('#txtValue').val();
+        var desc = $("#txtDescription").val();
+
+        if (value && desc) {
+            $.ajax({
+                type: "post",
+                url: "/Markup/CreateMaster",
+                dataType: "json",
+                data: { desc: desc, value: value },
+                success: function (data) {
+                    //
+                    if (data.Message == 'Updated') {
+                        $("#txtSearchName").val("");
+                        $("#modalCancelButton").hide();
+                        $("#modalOkButton").html("OK");
+                        $('#modalTitle').html('Success');
+                        $('#modalBody').html('The data is in deactive state. It has been activated.');
+                        $("#modalOkButton").attr('onclick', 'refreshList()');
+                        $("#successModel").modal('show');
+                    }
+                    else if (data.Id > 0) {
+                        successModal('created');
+                    }
+                    else {
+                        failureModal('creation');
+                    }
+                },
+                error: function (courses) {
+                    failureModal();
+                }
+            });
+        }
+        else {
+            ShowSnackBar("Please fill both fields");
+        }
+    })
+
+    function masterList(value) {
+        $.ajax({
+            type: 'POST',
+            url: "/Markup/GetMasterByPrefix",
+            data: { prefix: value },
+            dataType: 'html',
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $("#txtSearchName").val(value);
+                $("#markupList").html(data);
+            },
+            error: function (response) {
+            },
+            failure: function (response) {
+            }
+        });
+        return false;
+    }
+
+    function AutoCompleteType() {
+        $("#txtSearchName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/Markup/SearchMasterByPrefix",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        ////
+                        response($.map(data, function (item) {
+                            return { label: item.Description, value: item.Id }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                ////
+                $(this).val(i.item.label);
+                masterList(i.item.label);
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    $("#txtDescription").val("");
+                    $('#txtValue').val("");
+                }
+            },
+            minLength: 2
+        });
+    }
+</script>

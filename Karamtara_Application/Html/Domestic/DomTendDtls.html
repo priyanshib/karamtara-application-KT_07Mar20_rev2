@@ -1,0 +1,1156 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/materialize.css" rel="stylesheet" type="text/css" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" ">
+    <link href="../../Assets/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <!--<script src="js/materialize.min.js"></script>-->
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../../Assets/js/popper.js"></script>
+    <script src="../../Assets/js/bootstrap-material-design.js"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <div class="container-fluid ">
+        <!--header commonon every page-->
+        <div class="header">
+            <div class="row">
+                <div class="col-sm brand-logo"><img src="../../Assets/images/logo.png" /></div>
+                <div class="col-sm LoginUser  text-right">
+                    <div class="username col-12"> Mr. Sachin Sawant <img src="../../Assets/images/user.png" /></div>
+                    <div class="logOut col-12">Logout</div>
+                </div>
+            </div>
+            <div class="row blueHorizLine"></div>
+        </div>
+        <!--header commonon every page-->
+        <div class="sub-header">
+            <div class="row activiesList">
+                <div class="col-sm-9">
+                    <div class="row ">
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/enquiry.png" />
+                            <div class="activities">Enquirie</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/BOM.png" />
+                            <div class="activities">Domestic BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/BOM.png" />
+                            <div class="activities">Intl. BOM</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/assembleMaster.png" />
+                            <div class="activities">Assembly Master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/report.png" />
+                            <div class="activities">Report</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/prodMaster.png" />
+                            <div class="activities">Product Master </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/testMaster.png" />
+                            <div class="activities">Testing master</div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <img src="../../Assets/images/RawMaterialMaster.png" />
+                            <div class="activities">Raw Material Master</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 text-right fullscreen" data-toggle="modal" data-target="#fullScreenModal">
+                    <img src="../../Assets/images/fullscreen.png" />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="main-content mainContentPaddingBtm">
+            <div class="row">
+                <div class="col-sm-12 ">
+                    <div class="row prjNmBlock">
+                        <div class="col-sm-8 align-self-center">
+                            <span>Project :</span>400 KV SINGLE I SUSPENSION (PILOT) STRING FOR QUAD MOOSE ACSR CONDUCTOR
+                        </div>
+                        <div class="col-sm-4 text-right">
+                            <button type="button" class="createBomBtn saveBtn">SAVE</button>
+                            <button type="button" class="createBomBtn publishBtn">Publish</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12">
+                    <div class="row AddOptnDtl">
+                        <div class="AddOptn col-sm P-0" data-toggle="modal" data-target="#RMModel">
+                            <img src="../../Assets/images/plusIcon.png" />RAW MATERIAL PRICE
+                        </div>
+                        <div class="AddOptn col-sm p-0" data-toggle="modal" data-target="#BankGtyModel">
+                            <img src="../../Assets/images/plusIcon.png" />BANK GUARANTY
+                        </div>
+                        <div class="AddOptn col-sm p-0" data-toggle="modal" data-target="#markupModel">
+                            <img src="../../Assets/images/plusIcon.png" />ADD MARKUP
+                        </div>
+                        <div class="AddOptn col-sm p-0" data-toggle="modal" data-target="#FrghtChargModel">
+                            <img src="../../Assets/images/plusIcon.png" />FRIEGHT CHANRGES
+                        </div>
+                        <div class="AddOptn col-sm p-0" data-toggle="modal" data-target="#TestChgModel">
+                            <img src="../../Assets/images/plusIcon.png" />ADD TEST CHARGES
+                        </div>
+                        <div class="AddOptn col-sm p-0" data-toggle="modal" data-target="#auditTrial">
+                            <img src="../../Assets/images/plusIcon.png" />ADD FINAL PRICE
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-12">
+                    <div class="TenderDtlTable tableBlock">
+                        <div class="row">
+                            <table class="table">
+                                <tr>
+                                    <th class="SrNoDtl">Sr. No</th>
+                                    <th class="Tenddesc">Description</th>
+                                    <th class="unit">Unit </th>
+                                    <th class="qtyWt" colspan="4">Quantity</th>
+                                    <th class="uniFirm">Unit Ex-works Firm</th>
+                                    <th class="uniInsu">Unit Freight & Insurance</th>
+                                    <th class="uniWt">Ubnit Weight</th>
+                                    <th class="uniCost">Unit Cost</th>
+                                    <th class="lastBlankTD"></th>
+                                </tr>
+                                <tr>
+                                    <td scope="col" class="SrNoDtl"></td>
+                                    <td scope="col" class="Tenddesc"></td>
+                                    <td scope="col" class="unit"></td>
+                                    <td scope="col" class="qtyWt">TL-01</td>
+                                    <td scope="col" class="qtyWt">TL-02</td>
+                                    <td scope="col" class="qtyWt">TL-03</td>
+                                    <td scope="col" class="qtyWt">Total</td>
+                                    <td scope="col" class="uniFirm">INR</td>
+                                    <td scope="col" class="uniInsu">INR</td>
+                                    <td scope="col" class="uniWt">KG</td>
+                                    <td scope="col" class="uniCost">INR</td>
+                                    <td class="lastBlankTD"></td>
+                                </tr>
+                                <!--this is one complete block-->
+                                <tr>
+                                    <td scope="col" class="SrNoDtl">A</td>
+                                    <td scope="col" class="Tenddesc"> <input type="text" value="HW Fittings: 400kv ACSR Moose Conductor" />  </td>
+                                    <td scope="col" class="unit"> </td>
+                                    <td scope="col" class="qtyWt" colspan="4"></td>
+                                    <td scope="col" class="uniFirm"></td>
+                                    <td scope="col" class="uniInsu"></td>
+                                    <td scope="col" class="uniWt"></td>
+                                    <td scope="col" class="uniCost"></td>
+                                    <td class="lastBlankTD"></td>
+
+                                </tr>
+                                <tr>
+                                    <td scope="col" class="SrNoDtl"></td>
+                                    <td scope="col" class="Tenddesc">Double Suspension   </td>
+                                    <td scope="col" class="unit">Set</td>
+                                    <td scope="col" class="qtyWt">0</td>
+                                    <td scope="col" class="qtyWt">2358</td>
+                                    <td scope="col" class="qtyWt">996</td>
+                                    <td scope="col" class="qtyWt">3354</td>
+                                    <td scope="col" class="uniFirm">-</td>
+                                    <td scope="col" class="uniInsu">-</td>
+                                    <td scope="col" class="uniWt">41.928</td>
+                                    <td scope="col" class="uniCost">-</td>
+                                    <td class="lastBlankTD"></td>
+                                </tr>
+                                <tr>
+                                    <td scope="col" class="SrNoDtl"></td>
+                                    <td scope="col" class="Tenddesc">Single I Suspension Pilot(with 200kg Counter Weight)    </td>
+                                    <td scope="col" class="unit">Set</td>
+                                    <td scope="col" class="qtyWt">0</td>
+                                    <td scope="col" class="qtyWt">2358</td>
+                                    <td scope="col" class="qtyWt">996</td>
+                                    <td scope="col" class="qtyWt">3354</td>
+                                    <td scope="col" class="uniFirm">-</td>
+                                    <td scope="col" class="uniInsu">-</td>
+                                    <td scope="col" class="uniWt">41.928</td>
+                                    <td scope="col" class="uniCost">-</td>
+                                    <td class="lastBlankTD"></td>
+                                </tr>
+                                <!--this is one complete block-->
+                                <!--this is one complete block-->
+                                <tr>
+                                    <td scope="col" class="SrNoDtl">B</td>
+                                    <td scope="col" class="Tenddesc"> <input type="text" value="HW Fittings: 200kv Twin Moose Conductor" />  </td>
+                                    <td scope="col" class="unit"> </td>
+                                    <td scope="col" class="qtyWt" colspan="4"></td>
+                                    <td scope="col" class="uniFirm"></td>
+                                    <td scope="col" class="uniInsu"></td>
+                                    <td scope="col" class="uniWt"></td>
+                                    <td scope="col" class="uniCost"></td>
+                                    <td class="lastBlankTD"></td>
+                                </tr>
+                                <tr>
+                                    <td scope="col" class="SrNoDtl"></td>
+                                    <td scope="col" class="Tenddesc">Double Suspension   </td>
+                                    <td scope="col" class="unit">Set</td>
+                                    <td scope="col" class="qtyWt">0</td>
+                                    <td scope="col" class="qtyWt">2358</td>
+                                    <td scope="col" class="qtyWt">996</td>
+                                    <td scope="col" class="qtyWt">3354</td>
+                                    <td scope="col" class="uniFirm">-</td>
+                                    <td scope="col" class="uniInsu">-</td>
+                                    <td scope="col" class="uniWt">41.928</td>
+                                    <td scope="col" class="uniCost">-</td>
+                                    <td class="lastBlankTD"></td>
+                                </tr>
+
+                                <!--this is one complete block-->
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="footer">
+            <div class="row footerStatus p-0">
+                <table class="table">
+                    <tr>
+                        <td scope="col" colspan="6" class="pt-2">
+                            KEPL/TE-0001/Revision1 / <span class="statusHold">DRAFT</span>
+                            <button type="button"><img src="../../Assets/images/viewTrial.png" data-toggle="modal" data-target="#ViewAudModel" />view audit trial</button>
+                        </td>
+                        <td scope="col" class="qtyWt bgColor">Total</td>
+                        <td scope="col" class="uniFirm bgColor"></td>
+                        <td scope="col" class="uniInsu bgColor"></td>
+                        <td scope="col" class="uniWt bgColor">1152941</td>
+                        <td scope="col" class="uniCost bgColor"></td>
+                        <td scope="col" class="lastBlankTD bgColor"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal for Raw Material -->
+    <div class="modal fade" id="RMModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            RAW MATERIAL PRICING
+
+                        </div>
+
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-8 ">
+                                Raw Material List
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+
+
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0">
+                                <tr>
+                                    <th class="TendSrNo">S.NO.</th>
+                                    <th class="sapCode">SAP Code</th>
+                                    <th class="itemNm">Item Name</th>
+                                    <th class="itemCat">Item Category</th>
+                                    <th class="Uom">UOM</th>
+                                    <th class="TendPrc">Price</th>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode">ASTO6543421</td>
+                                    <td class="itemNm">MS Plate</td>
+                                    <td class="itemCat">P</td>
+                                    <td class="Uom">KG</td>
+                                    <td class="TendPrc">15.0</td>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode">ASTO097798</td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat"></td>
+                                    <td class="Uom"></td>
+                                    <td class="TendPrc"></td>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode"></td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat"></td>
+                                    <td class="Uom"></td>
+                                    <td class="TendPrc"></td>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode"></td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat"></td>
+                                    <td class="Uom"></td>
+                                    <td class="TendPrc"></td>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode"></td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat"></td>
+                                    <td class="Uom"></td>
+                                    <td class="TendPrc"></td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Raw Material -->
+    <!-- Modal for Bank Guarantee -->
+    <div class="modal fade" id="BankGtyModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            CALCULATE BANK GUARANTEE COMMISSION
+                        </div>
+
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-8 ">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        Months
+                                        <p class="d-flex align-items-center mt-1"><input type="text" />Days</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        Contract Value
+                                        <p class="d-flex mt-1"><input type="text" /></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+
+
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0">
+                                <tr>
+                                    <th class="TendSrNo">S.NO.</th>
+                                    <th class="sapCode">Description</th>
+                                    <th class="itemNm">Month</th>
+                                    <th class="itemCat">% of Commission</th>
+                                    <th class="Uom">% of BG</th>
+                                    <th class="TendPrc">BG Amt Rs in Lacs</th>
+                                    <th class="Tendcost">BG cost %</th>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode">Advance BG</td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat">1%</td>
+                                    <td class="Uom">10%</td>
+                                    <td class="TendPrc">1000</td>
+                                    <td class="Tendcost">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode">Advance BG</td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat">1%</td>
+                                    <td class="Uom">10%</td>
+                                    <td class="TendPrc">1000</td>
+                                    <td class="Tendcost">-</td>
+                                </tr>
+                                <tr>
+                                    <td class="TendSrNo">1</td>
+                                    <td class="sapCode">Advance BG</td>
+                                    <td class="itemNm"></td>
+                                    <td class="itemCat">1%</td>
+                                    <td class="Uom">10%</td>
+                                    <td class="TendPrc">1000</td>
+                                    <td class="Tendcost">-</td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+
+                        <div class="ModelFooter tableBlock">
+                            <table class="table m-0">
+                                <tr>
+                                    <td class="TendSrNo"></td>
+                                    <td colspan="5" class="text-left">BG Commission %</td>
+                                    <td class="Tendcost">0.40</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Raw Material -->
+    <!-- Modal for Add marks Up -->
+    <div class="modal fade" id="markupModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            ADD MARK UPS
+
+                        </div>
+
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-8 ">
+                                <div class="row addMarkInput">
+                                    <div class="col-sm-4">
+                                        Rate of Interest
+                                        <p class="d-flex align-items-center mt-1"><input type="text" />%</p>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        Credit Period
+                                        <p class="d-flex align-items-center mt-1"><input type="text" />Days</p>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        Advance Received
+                                        <p class="d-flex align-items-center mt-1"><input type="text" />Days</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+
+
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="markSrNo">S.NO.</th>
+                                    <th class="MatkUp">Mark Up</th>
+                                    <th class="itemPerc">TL01 %</th>
+                                    <th class="itemPerc">TL02 %</th>
+                                    <th class="itemPerc">TL03 %</th>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">1</td>
+                                    <td class="MatkUp">Packing</td>
+                                    <td class="itemPerc">5.00</td>
+                                    <td class="itemPerc">5.00</td>
+                                    <td class="itemPerc">5.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">2</td>
+                                    <td class="MatkUp">Packing</td>
+                                    <td class="itemPerc">5.00</td>
+                                    <td class="itemPerc">5.00</td>
+                                    <td class="itemPerc">5.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">3</td>
+                                    <td class="MatkUp">Packing</td>
+                                    <td class="itemPerc">5.00</td>
+                                    <td class="itemPerc">5.00</td>
+                                    <td class="itemPerc">5.00</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div class="subTotalBlock tableBlock ">
+                            <table class="table m-0">
+                                <tr class="subTotalTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">SUB TOTAL</td>
+                                    <td class="itemPerc">80.40</td>
+                                    <td class="itemPerc">80.40</td>
+                                    <td class="itemPerc">80.40</td>
+                                </tr>
+                                <tr class="font-weight-bold">
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">Testing</td>
+                                    <td class="itemPerc">11841</td>
+                                    <td class="itemPerc">594</td>
+                                    <td class="itemPerc">15972</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">Travel, Lodging & Boarding</td>
+                                    <td class="itemPerc"></td>
+                                    <td class="itemPerc"></td>
+                                    <td class="itemPerc"></td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">Developement</td>
+                                    <td class="itemPerc">10000</td>
+                                    <td class="itemPerc">10001</td>
+                                    <td class="itemPerc">10002</td>
+                                </tr>
+                                <tr class="otherTotalBlock">
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">Other Total</td>
+                                    <td class="itemPerc">21841</td>
+                                    <td class="itemPerc">10595</td>
+                                    <td class="itemPerc">25724</td>
+                                <tr>
+                                    <td class="TendSrNo"></td>
+                                    <td class="MatkUp">% to Unit Cost</td>
+                                    <td class="itemPerc">0.0718</td>
+                                    <td class="itemPerc">0.0606</td>
+                                    <td class="itemPerc">0.1471</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div class="ModelFooter tableBlock makUpFooter">
+                            <table class="table m-0">
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">SUB TOTAL</td>
+                                    <td class="itemPerc">80.40</td>
+                                    <td class="itemPerc">80.40</td>
+                                    <td class="itemPerc">80.40</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="MatkUp">MARGIN</td>
+                                    <td class="itemPerc"><input type="text" /></td>
+                                    <td class="itemPerc"><input type="text" /></td>
+                                    <td class="itemPerc"><input type="text" /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Add marks Up -->
+    <!-- Modal for Freight charges -->
+    <div class="modal fade" id="FrghtChargModel1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            FREIGHT CHARGES
+                        </div>
+
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-8 ">
+                                <div class="row addMarkInput">
+                                    <div class="col-sm-2">
+                                        TL-01
+                                    </div>
+                                    <div class="col-sm-2">
+                                        TL-02
+                                    </div>
+                                    <div class="col-sm-2">
+                                        TL-03
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+
+
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="markSrNo">S.NO.</th>
+                                    <th class="frghtDes">Description</th>
+                                    <th class="frghtData">Data</th>
+                                </tr>
+                                <tr class="font-weight-bold">
+                                    <td class="markSrNo">1</td>
+                                    <td class="frghtDes">Total Weight (MT)</td>
+                                    <td class="frghtData">437.34</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">2</td>
+                                    <td class="frghtDes">Total Weight of Material(KG)</td>
+                                    <td class="frghtData">38022</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">3</td>
+                                    <td class="frghtDes">Loading Factor - Packaging</td>
+                                    <td class="frghtData">1.15</td>
+                                </tr>
+                                <tr class="frghtLoctnTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">25MT Truck freight</td>
+                                    <td class="frghtData">INR</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">Ranchi(PGCIL)</td>
+                                    <td class="frghtData">2525</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">Chandil(New)</td>
+                                    <td class="frghtData">2525</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">Chandil_Old(JUSNL)</td>
+                                    <td class="frghtData">2575</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes addMoreLoctn"><span>Add more locations </span><img src="../../Assets/images/addMore.png"></td>
+                                    <td class="frghtData"></td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+
+                        <div class="tableBlock frghtChargBlk">
+                            <table class="table m-0">
+                                <tr class="avgFrghtTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">Average Frt @25MT Truck</td>
+                                    <td class="frghtData">2644.04</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">Max freight</td>
+                                    <td class="frghtData">2775.04</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">Freight Considered @25MT truck</td>
+                                    <td class="frghtData">2790.04</td>
+                                </tr>
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">SUB TOTAL FREIGHT</td>
+                                    <td class="frghtData">51485</td>
+                                </tr>
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">CONTIGENCY ON FREIGHT</td>
+                                    <td class="frghtData">50%</td>
+                                </tr>
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="frghtDes">TOTAL FREIGHT</td>
+                                    <td class="frghtData">77272</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Frieght charges -->
+    <!-- Modal for Freight distrubution -->
+    <div class="modal fade" id="FrghtChargModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            FREIGHT DISTIBUTION
+                        </div>
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="markSrNo">S.NO.</th>
+                                    <th class="lineNm">Line Name</th>
+                                    <th class="totalFrght">Total Freight</th>
+                                    <th class="frghtDisbtn">Freight Distrubution</th>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">1</td>
+                                    <td class="lineNm">TL-01</td>
+                                    <td class="totalFrght">77227</td>
+                                    <td class="frghtDisbtn">0.045</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">2</td>
+                                    <td class="lineNm">TL-02</td>
+                                    <td class="totalFrght">77227</td>
+                                    <td class="frghtDisbtn">0.045</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">3</td>
+                                    <td class="lineNm">TL-03</td>
+                                    <td class="totalFrght">77227</td>
+                                    <td class="frghtDisbtn">0.045</td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                        <div class="tableBlock frghtChargBlk">
+                            <table class="table m-0">
+                                <tr class="bgBlue">
+                                    <td class="markSrNo" colspan="3">Max Average Freight Distribution</td>
+                                    <td class="frghtDisbtn">0.0045</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Frieght distrubution -->
+    <!-- Modal for Add Final Price -->
+    <div class="modal fade" id="FinalPrcModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            ADD FINAL PRICES
+                        </div>
+                        <div class="col-sm-12 row BomRefItem m-0">
+
+                            <div class="col-sm-12 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="priceDesc">Description</th>
+                                    <th class="priceDesc">EXW-F&I</th>
+                                    <th class="priceItem">TL-01</th>
+                                    <th class="priceItem">TL-02</th>
+                                    <th class="priceItem">TL-03</th>
+                                    <th class="priceItem">Total</th>
+                                </tr>
+                                <tr>
+                                    <td class="priceDesc">Exw</td>
+                                    <td class="priceDesc">564258</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">T18026520</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">58026520</td>
+                                </tr>
+                                <tr>
+                                    <td class="priceDesc">Exw</td>
+                                    <td class="priceDesc">564258</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">T18026520</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">58026520</td>
+                                </tr>
+                                <tr class="subTotalTR">
+                                    <td class="priceDesc">Total</td>
+                                    <td class="priceDesc">564258</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">T18026520</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">58026520</td>
+                                </tr>
+                                <tr>
+                                    <td class="priceDesc">GST @18%</td>
+                                    <td class="priceDesc">564258</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">T18026520</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">58026520</td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                        <div class="tableBlock frghtChargBlk">
+                            <table class="table m-0">
+                                <tr class="bgBlue">
+                                    <td class="priceDesc">Landed</td>
+                                    <td class="priceDesc">564258</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">T18026520</td>
+                                    <td class="priceItem">18026520</td>
+                                    <td class="priceItem">58026520</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Add Final Price -->
+    <!-- Modal for Audit Trial -->
+    <div class="modal fade" id="auditTrial" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row  m-0">
+                            <div class="col-sm-5 BomRefHeader">
+                                AUDIT TRIAL
+                            </div>
+                            <div class="col-sm-4 abtAuditTrial ">
+                                <span class="font-weight-bold">Created By.</span> Sachin Sawant
+                            </div>
+                            <div class="col-sm-3 abtAuditTrialDt font-weight-bold">
+                                <img src="../../Assets/images/calender.png"> 20/04/2019
+                            </div>
+                        </div>
+
+                        <div class="tableBlock TenderDtlModelTable">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="lastEdit">Last Edited By</th>
+                                    <th class="onEdit"><img src="../../Assets/images/calender.png"> Edited On</th>
+                                    <th class="version">Version</th>
+                                </tr>
+                                <tr>
+                                    <td class="lastEdit">Sachin Sawant</td>
+                                    <td class="onEdit">22/04/2019</td>
+                                    <td class="version">KEPL/TE-0001/Revision3/Draft</td>
+                                </tr>
+                                <tr>
+                                    <td class="lastEdit">Alka Sawant</td>
+                                    <td class="onEdit">22/04/2019</td>
+                                    <td class="version">KEPL/TE-0001/Revision3/Draft</td>
+                                </tr>
+                                <tr>
+                                    <td class="lastEdit">Sachin Singh</td>
+                                    <td class="onEdit">22/04/2019</td>
+                                    <td class="version">KEPL/TE-0001/Revision3/Draft</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Audit Trial -->
+    <!-- Modal for Add Test Charges -->
+    <div class="modal fade" id="TestChgModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+                        <div class="closeMenu">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="col-sm-12 row  m-0 BomRefHeader">
+                            <div class="col-sm-5 align-self-center">
+                                ADD TEST CHARGES
+                            </div>
+                            <div class="col-sm-7 text-right">
+                                <button type="button" class="submitEnq revisionBtn">Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Submit</button>
+                            </div>
+                        </div>
+
+                        <div class="tableBlock TenderDtlModelTable addTestChargModel">
+                            <table class="table m-0 ">
+                                <tr>
+                                    <th class="markSrNo">Sr.No</th>
+                                    <th class="descTest">Description</th>
+                                    <th class="uomTest">UOM</th>
+                                    <th class="testCharg">Test Charges</th>
+                                    <th class="overCharg">Override Charges</th>
+                                </tr>
+                                <tr class="otherTotalBlock">
+                                    <td colspan="5" class="descTest">HW FITINGS: 220kv zebra conductor</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">1</td>
+                                    <td class="descTest">Double Suspension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="SrNoDtl">2</td>
+                                    <td class="descTest">Single Tension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr class="subTotalTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="descTest"></td>
+                                    <td class="uomTest">Sub-Total</td>
+                                    <td class="testCharg">6572</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr class="otherTotalBlock">
+                                    <td colspan="5" class="descTest">HW FITINGS: 220kv zebra conductor</td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">1</td>
+                                    <td class="descTest">Double Suspension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="markSrNo">2</td>
+                                    <td class="descTest">Single Tension</td>
+                                    <td class="uomTest">Set</td>
+                                    <td class="testCharg">3280</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+                                <tr class="subTotalTR">
+                                    <td class="markSrNo"></td>
+                                    <td class="descTest"></td>
+                                    <td class="uomTest">Sub-Total</td>
+                                    <td class="testCharg">6572</td>
+                                    <td class="overCharg"><input type="text" /></td>
+                                </tr>
+
+
+                            </table>
+                        </div>
+                        <div class="tableBlock frghtChargBlk">
+                            <table class="table m-0">
+                                <tr class="bgBlue">
+                                    <td class="markSrNo"></td>
+                                    <td class="descTest"></td>
+                                    <td class="uomTest" colspan="2">Total Test Charges</td>
+                                    <td class="testCharg">6572</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Test Charges -->
+    <!-- Modal for fullscreen-->
+    <div class="modal fade" id="fullScreenModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="BomRefDtls">
+
+                        <div class="col-sm-12 row BomRefHeader m-0">
+                            <div class="col-sm-11 ">
+                                400kv double suspension insulator string for quad moose ACSR conductor
+                            </div>
+                            <div class="col-sm-1 text-right" class="close" data-dismiss="modal" aria-label="Close">
+                                <img src="../../Assets/images/fullscreen.png">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-12 row BomRefItem m-0">
+                            <div class="col-sm-8">
+                                DRG. No. <span>KI/400kv-DSII(Q).240/02</span><img src="../../Assets/images/attachment.png">
+                            </div>
+                            
+                            <div class="col-sm-4 text-right">
+                                <button type="button" class="submitEnq revisionBtn" data-dismiss="modal" >Cancel</button>
+                                <button type="button" class="submitEnq publishBtn">Clone</button>
+                            </div>
+                        </div>
+
+
+
+                        <div class="tableBlock BomRefTable">
+                            <table class="table m-0">
+                                <tr>
+                                    <th class="BOMSrNo">S.NO.</th>
+                                    <th class="BomItemNm">Item Name</th>
+                                    <th class="BomCatNon">Catalouge No.</th>
+                                    <th class="BomSapNo">Sap No.</th>
+                                    <th class="BomMatType">Material Type</th>
+                                    <th class="BomQty">QTY./SET</th>
+                                    <th class="BomSize">Size</th>
+                                    <th class="BomUnit">Unit GR. Wt.<br />(KG)</th>
+                                    <th class="BomUnit">Unit Finish Wt. <br /> (KG)</th>
+                                    <th class="BomTotalWt">Total Wt.</th>
+                                    <th class="BomTotalWt">Total Cost</th>
+                                    <th class="BomRemark">Remarks</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td>3500</td>
+                                    <td><img src="../../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td>3500</td>
+                                    <td><img src="../../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td>3500</td>
+                                    <td><img src="../../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td>3500</td>
+                                    <td><img src="../../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Yoke plate</td>
+                                    <td>KYPT-63</td>
+                                    <td>KHC-436737286</td>
+                                    <td>P</td>
+                                    <td>1</td>
+                                    <td>20x118x457(193x521)</td>
+                                    <td>10.26</td>
+                                    <td>9.88</td>
+                                    <td>3500</td>
+                                    <td>3500</td>
+                                    <td><img src="../../Assets/images/assebleSummary.png"></td>
+                                </tr>
+                                <tr class="tableFooter">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Total</td>
+                                    <td>35000</td>
+                                    <td>35000</td>
+                                    <td></td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Modal for fullscreen-->
+
+</body>
+</html>
+<script>
+    $(document).ready(function () {      
+      
+	})
+</script>

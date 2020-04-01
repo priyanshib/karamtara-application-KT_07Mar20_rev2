@@ -1,0 +1,31 @@
+﻿@using Karamtara_Application.Models.Tender;
+@model List<MarkupModel>
+
+@{
+    Layout = null;
+}
+
+<div class="col-sm-8">
+    <table class="table mt-4 w-100" id="tblMarkupList">
+        <tr>
+            <th class="materNm">Name</th>
+            <th class="materValue text-center">Value</th>
+            <th class="materID text-center">Delete</th>
+            @*<th class="materCode">Material Type</th>*@
+        </tr>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Description</td>
+                    <td class="text-center">@item.Value</td>
+                    <td class="text-center c-pointer">
+                        <img src="~/Assets/images/delete.svg" onclick="deleteMaster(@item.Id)" height="25px" classs="c-pointer"/>
+                    </td>
+
+                </tr>
+            }
+        }
+    </table>
+</div>

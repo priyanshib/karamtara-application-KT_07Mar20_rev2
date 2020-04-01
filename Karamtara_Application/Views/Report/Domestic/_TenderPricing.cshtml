@@ -1,0 +1,984 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@using Karamtara_Application.Models.Tender
+@{
+    ViewBag.Title = "TenderDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    int colCount = 0;
+    if (Model.LineList != null && Model.LineList.Count > 0)
+    {
+        colCount = Model.LineList.Count;
+    }
+    TenderLineValues lineValues = new TenderLineValues();
+    decimal lineValue = 0;
+    decimal margin = 0;
+    decimal sCostExWorks = 0;
+    decimal lineFreight = 0;
+    bool isRevisionCreated = TempData["IsRevisionCreated"] == null ? false : (bool)TempData["IsRevisionCreated"];
+}
+<div class="main-content mainContentPaddingBtm" revId="@Model.TenderRevisionNo">
+    <input type="hidden" value="@Model.EnquiryId" id="hidEnqId" name="enquiryId" />
+    <input type="hidden" id="bomId" value="@Model.BomId" />
+    <input type="hidden" id="revisionId" value="@Model.RevisionNo" />
+    <input type="hidden" id="tndId" value="@Model.TenderId" />
+    <input type="hidden" id="tndRevId" value="@Model.TenderRevisionNo" />
+    <input type="hidden" id="tndUnitCost" value="@Model.UnitCost" />
+    @Html.HiddenFor(x => x.IsEdit, new { @id = "isPageEditable" })
+
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row prjNmBlock">
+                <div class="col-sm-8 align-self-center">
+                    <span>Project :</span>@Model.ProjectName
+                </div>
+                <div class="col-sm-4 text-right ">
+                    <button type="button" id="btnSubmit" class="createBomBtn buttonContainer saveBtn">SAVE</button>
+                    <button type="button" class="createBomBtn buttonContainer publishBtn" id="btnPublish">Publish</button>
+                    <button type="button" class="createBomBtn  publishBtn" id="btnCancelRev" style="display:@(isRevisionCreated == true ? "inline-block" : "none")">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="row AddOptnDtl">
+                <div>
+                    <button class="submitBomBtn downloadExcel" type="button" id="tableToExcel"> Download Excel <img src="~/Assets/images/downloadExcel.svg" width="19px" class="ml-1" /></button>                  
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#RMModel" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />RAW MATERIAL PRICE
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#BankGtyModel" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />BANK GUARANTEE
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#markupModel" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />ADD MARKUP
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#FrghtChargModel" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />FREIGHT CHARGES
+                </div>
+                @*<div class="AddOptn col-sm p-0" data-toggle="modal" data-target="#TestChgModel" onclick="loadForm(this)">
+                        <img src="../../Assets/images/plusIcon.png" />ADD TEST CHARGES
+                    </div>*@
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#FinalPrcModel" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />FINAL PRICE
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#TPriceModal" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />ADD TEST PRICE
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#auditTrial" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />AUDIT TRIAL
+                </div>
+                <div class="AddOptn col-sm-0 pr-3 p-0" data-toggle="modal" data-target="#ReportModel" onclick="loadForm(this)">
+                    <img src="../../Assets/images/plusIcon.png" />REPORT
+                </div>
+            </div>
+        </div>
+
+        <div class="TenderDtlTable tableBlock tablePrctender">
+
+            <table class="table tableLayout" id="tenderPricingTable">
+                <tr class="rowHeadings">
+                    <th class="TendqtyWt" colspan="@(colCount + 1)" width="@string.Format("{0}px", ((Model.LineList.Count + 1) * 85))">Quantity</th>
+                    @*<th class="uniWt">Unit Weight</th>*@
+                    <th class="TenduniGrWt excludeWt notReq">Unit Gr. Wt.</th>
+                    <th class="TenduniNtWt excludeWt notReq">Unit Nt. Wt.</th>
+                    <th class="TendtotGrWt excludeWt notReq">Total Gr. Wt.</th>
+                    <th class="TendtotNtWt excludeWt notReq">Total Nt. Wt.</th>
+                    <th class="TenduniCost">Unit Cost</th>
+                    @*<th class="salesCost" colspan="@(colCount)">Sales Cost</th>*@
+                    @*@foreach (var item in Model.LineList)
+                        {
+                            <th class="TendLineDtls" colspan="4">@item.LineName</th>
+                        }*@
+                    <th class="TenduniFirm ">Cost of Sales</th>
+                    <th class="TenduniInsu ">Ex-Works</th>
+                    @*<th class="TendlastBlankTD"></th>*@
+
+                </tr>
+
+                <tr class="rowHeadings">
+                    @foreach (var item in Model.LineList)
+                    {
+                        <td scope="col" class="TendLineqtyWt qtyWt">@item.LineName</td>
+                        <td style="display:none" class="noExl"><input type="hidden" name="LineName" value="@item.LineId" /></td>
+                    }
+                    @*<td scope="col" class="qtyWt">TL-01</td>
+                        <td scope="col" class="qtyWt">TL-02</td>
+                        <td scope="col" class="qtyWt">TL-03</td>*@
+                    <td scope="col" class="qtyWtTotal TendLineTotal excludeWt">Total</td>
+                    @*<td scope="col" class="uniWt">KG</td>*@
+                    <td scope="col" class="uniGrWt TenduniGrWt excludeWt notReq">KG</td>
+                    <td scope="col" class="uniNtWt TenduniNtWt excludeWt notReq">KG</td>
+                    <td scope="col" class="totGrWt TenduniGrWt excludeWt notReq">KG</td>
+                    <td scope="col" class="totNtWt TenduniNtWt excludeWt notReq">KG</td>
+                    <td scope="col" class="uniCost TenduniCost">INR</td>
+                    @foreach (var item in Model.LineList)
+                    {
+                        <td scope="col" class="TendLine notReq">Unit Cost</td>
+                        <td scope="col" class="TendLine notReq">Freight</td>
+                        <td scope="col" class="TendLine notReq">Sales Cost</td>
+                        <td scope="col" class="TendLine notReq">Ex-Works</td>
+                    }
+                    <td scope="col" class="TenduniFirm">INR</td>
+                    <td scope="col" class="TenduniInsu">INR</td>
+                </tr>
+
+
+                <tr class="rowHeadings">
+                    <td class="TenderRevisonName exclude" colspan="@(Model.LineList.Count  + 4)">Revision @Model.TenderRevisionNo</td>
+                </tr>
+
+
+
+                @if (Model.MasterList != null && Model.MasterList.Count > 0)
+                {
+                    foreach (var data in Model.MasterList)
+                    {
+                        if (data.IsRelated)
+                        {
+                            <tr class="rowColHeadings">
+                                <td scope="col" class="qtyWt TendqtyWt" colspan="@(colCount + 1)"></td>
+                                <td scope="col" class="TenduniGrWt notReq"></td>
+                                <td scope="col" class="TenduniNtWt notReq"></td>
+                                <td scope="col" class="TenduniGrWt notReq"></td>
+                                <td scope="col" class="TenduniNtWt notReq"></td>
+                                <td scope="col" class="TenduniCost "></td>
+                                @foreach (var item in Model.LineList)
+                                {
+                                    <td class="TendLineDtls notReq" colspan="3"></td>
+                                }
+                                <td scope="col" class="TenduniFirm"></td>
+                                <td scope="col" class="TenduniInsu"></td>
+                                @*<td class="lastBlankTD"></td>*@
+                            </tr>
+                        }
+                        else if (data.IsDirectChild)
+                        {
+                            <tr>
+                                @{ int lineNo = 1;}
+                                @foreach (var item in Model.LineList)
+                                {
+                                    int value = 0;
+                                    int qtyId = 0;
+                                    if (Model.LineQtyList != null && Model.LineQtyList.Any())
+                                    {
+                                        dynamic dynamic = Model.LineQtyList.Where(
+                                        x => x.ProductId == data.Id && Convert.ToInt32(x.Type) == Convert.ToInt32(data.Type) && x.ProductGroupId == data.ProductGroupId
+                                        && x.AssemblyId == data.AssemblyId && x.SubAssemblyId == data.SubAssemblyId && x.ComponentId == data.ComponentId
+                                        && x.LineId == item.LineId
+                                        ).FirstOrDefault();
+
+                                        if (dynamic != null)
+                                        {
+                                            value = dynamic.Quantity;
+                                            qtyId = dynamic.Id;
+                                        }
+                                    }
+                                    <td style="display:none" class="noExl"><input type="hidden" id="hidTenderLineQtyId" value="@qtyId" name="TenderLineQtyId" /></td>
+                                    <td scope="col" class="TendLineqtyWt qtyWt" name='LineId_@item.LineId'>
+                                        <input type="number" ProductGroupId="@data.ProductGroupId" AssemblyId="@data.AssemblyId" SubAssemblyId="@data.SubAssemblyId"
+                                               ComponentId="@data.ComponentId" TypeId="@data.Type" ProductId="@data.Id" value="@value" lineqtyid="@qtyId" lineId="@item.LineId"
+                                               name='@item.LineName' onfocus="pushDetails(this)" onchange="editLineDetails(this)" class="whiteBgInput p-1" />
+
+                                    </td>
+                                    lineNo++;
+                                }
+                                <td scope="col" class="TendLineTotal qtyWtTotal"></td>
+                                <td scope="col" class="TenduniGrWt uniGrWt notReq">@Math.Round(data.TotalUnitGrWt, 3)</td>
+                                <td scope="col" class="TenduniNtWt uniNtWt notReq">@Math.Round(data.TotalUnitNetWt, 3)</td>
+                                <td scope="col" class="TenduniGrWt totGrWt notReq"></td>
+                                <td scope="col" class="TenduniNtWt totNtWt notReq"></td>
+                                <td scope="col" class="TenduniCost calcUnitCost uniCost">@Math.Round(data.UnitCost, 3)</td>
+                                @foreach (var item in Model.LineList)
+                                {
+                                    if (Model.TndLineValuesList != null && Model.TndLineValuesList.Any())
+                                    {
+                                        lineValues = new TenderLineValues();
+                                        lineValues = Model.TndLineValuesList.Where(x => x.LineId == item.LineId && x.Description == "FinalTotal").FirstOrDefault();
+                                        if (lineValues != null)
+                                        {
+                                            lineValue = lineValues.Values;
+                                            //lineValue = lineValue * data.UnitCost;
+                                        }
+                                        else
+                                        {
+                                            lineValue = 0;
+                                        }
+
+                                        lineValues = new TenderLineValues();
+                                        lineValues = Model.TndLineValuesList.Where(x => x.LineId == item.LineId && x.Description == "Margin").FirstOrDefault();
+                                        if (lineValues != null)
+                                        {
+                                            margin = lineValues.Values / 100;
+                                            sCostExWorks = lineValue / (1 - margin);
+                                        }
+                                        else
+                                        {
+                                            sCostExWorks = 0;
+                                        }
+
+                                        lineValues = new TenderLineValues();
+                                        lineValues = Model.TndLineValuesList.Where(x => x.LineId == item.LineId && x.Description == "UnitFreight").FirstOrDefault();
+                                        if (lineValues != null)
+                                        {
+                                            lineFreight = lineValues.Values;
+                                        }
+                                        else
+                                        {
+                                            lineFreight = 0;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        lineValue = 0;
+                                        sCostExWorks = 0;
+                                        lineFreight = 0;
+                                    }
+
+
+
+                                    decimal value = 0;
+                                    if (Model.LineQtyList != null && Model.LineQtyList.Any())
+                                    {
+                                        dynamic dynamic = Model.LineQtyList.Where(
+                                        x => x.ProductId == data.Id && Convert.ToInt32(x.Type) == Convert.ToInt32(data.Type) && x.ProductGroupId == data.ProductGroupId
+                                        && x.AssemblyId == data.AssemblyId && x.SubAssemblyId == data.SubAssemblyId && x.ComponentId == data.ComponentId
+                                        && x.LineId == item.LineId
+                                        ).FirstOrDefault();
+
+                                        if (dynamic != null)
+                                        {
+                                            value = Math.Round(data.UnitCost * dynamic.Quantity, 3);
+                                        }
+                                    }
+
+                                    <td scope="col" class="TendLine lineUnitCost notReq" lineid="@item.LineId">@value</td>
+                                    <td scope="col" class="TendLine lineFreight notReq" freight="@lineFreight" lineid="@item.LineId"></td>
+                                    <td scope="col" class="TendLine salesCost notReq" lineid="@item.LineId">@Math.Round((lineValue * value), 3)</td>
+                                    <td scope="col" class="TendLine sCostExWorks notReq" lineid="@item.LineId">@Math.Round(sCostExWorks, 3)</td>
+                                }
+                                <td scope="col" class="TenduniFirm totSalesCost"></td>
+                                <td scope="col" class="TenduniInsu totExWorks"></td>
+                                @*<td class="lastBlankTD"></td>*@
+                            </tr>
+                        }
+                    }
+                }
+                <tr class="totalWtRow">
+                    @foreach (var item in Model.LineList)
+                    {
+                        <td scope="col" class="qtyWt TendLineqtyWt LineId_@item.LineId"></td>
+                    }
+                    <td scope="col" class="qtyWtTotal TendLineTotal  excludeWt"></td>
+                    <td scope="col" class="uniGrWt TenduniGrWt notReq"></td>
+                    <td scope="col" class="uniNtWt TenduniNtWt notReq"></td>
+                    <td scope="col" class="totGrWt TenduniGrWt notReq"></td>
+                    <td scope="col" class="totNtWt TenduniNtWt notReq"></td>
+                    <td scope="col" class="uniCost TenduniCost" id="totUnitCost"><input type="text" id="txtUnitCost" /></td>
+                    @*<td class="salesCost" colspan="@(colCount)"></td>*@
+                    @foreach (var item in Model.LineList)
+                    {
+                        <td scope="col" class="lineUnitCost TendLine excludeItem notReq" lineid="@item.LineId"></td>
+                        <td scope="col" class="lineFreight TendLine excludeItem notReq" lineid="@item.LineId"></td>
+                        <td scope="col" class="salesCost TendLine excludeItem notReq" lineid="@item.LineId"></td>
+                        <td scope="col" class="sCostExWorks TendLine excludeItem notReq" lineid="@item.LineId"></td>
+                    }
+                    <td scope="col" class="TenduniFirm totSalesCost excludeItem"></td>
+                    <td scope="col" class="TenduniInsu totExWorks excludeItem"></td>
+                    @*<td class="lastBlankTD"></td>*@
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal for Report -->
+<div class="modal fade" id="ReportModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Raw Material -->
+<div class="modal fade" id="RMModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Bank Guarantee -->
+<div class="modal fade" id="BankGtyModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add marks Up -->
+<div class="modal fade" id="markupModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Freight charges -->
+<div class="modal fade" id="FrghtChargModel1" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Freight distrubution -->
+<div class="modal fade" id="FrghtChargModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+        <div class="modal-content">
+            <div class="closeMenu" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" id="xbtn">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class=" modal-body overflowModel" style="overflow:hidden">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Final Price -->
+<div class="modal fade" id="FinalPrcModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document" style="max-width:60%">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Audit Trial -->
+<div class="modal fade" id="auditTrial" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Add Test Charges -->
+<div class="modal fade" id="TestChgModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for Test Prices -->
+<div class="modal fade TPriceModal" id="TPriceModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered fullscreenModal" role="document">
+        <div class="modal-content" id="PricingModels">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton" onclick="closeModal()">OK</button>
+                @*<button type="button" class="submitBomBtn publishBtn" style="display:none;" id="modalCancelButton" onclick="refreshList()">cancel</button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="testmasterDtls" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    @*@Html.Partial("~/Views/Shared/TestMaster/_TestLineRelation.cshtml", Model)*@
+</div>
+
+<div id="snackbar"></div>
+
+<script type="text/javascript">
+    var revParentDiv = $("div[revId='" + @Model.TenderRevisionNo + "']");
+    //$(revParentDiv).find("#tableToExcel").click(function () {
+    //    $.ajax({
+    //        url: "/tenderpricing/loadRMPricing",
+    //        data: { tndId: 5, tndRevNo:1 },
+    //        type: "post",
+    //        success: function (data) {
+    //            if (data) {
+    //                var temp = $.parseHTML(data);
+    //                var table = $(revParentDiv).find(temp).find('table').eq(0);
+    //                if (table && table.length) {
+    //                    var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+    //                    $(revParentDiv).find(table).table2excel({
+    //                        exclude: ".noExl",
+    //                        name: "rm",
+    //                        filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+    //                        fileext: ".xls",
+    //                        exclude_img: true,
+    //                        exclude_links: true,
+    //                        exclude_inputs: false,
+    //                        preserveColors: true
+    //                    });
+    //                }
+    //            }
+    //        },
+    //        error: function (courses) {
+    //            failureModal();
+    //        }
+    //    });
+
+    //    var table = $(revParentDiv).find("#tenderPricingTable");
+    //    if (table && table.length) {
+    //        var preserveColors = (table.hasClass('table2excel_with_colors') ? true : false);
+    //        $(revParentDiv).find(table).table2excel({
+    //            exclude: ".noExl",
+    //            name: "Excel Document Name",
+    //            filename: "myFileName" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+    //            fileext: ".xls",
+    //            exclude_img: true,
+    //            exclude_links: true,
+    //            exclude_inputs: false,
+    //            preserveColors: true
+    //        });
+    //    }
+    //});
+        //grid = new Slick.Grid("#tenderPricingTable", data, columns, options); // you will use this line to add your data to slick grid
+
+        // after this line call the export to excel plugin
+        //$(revParentDiv).find('body').exportToExcel("Report.xlsx", "Report", data, excelOptions, function (response) {
+        //    console.log(response);
+        //});
+
+   // $(revParentDiv).find("#tableToExcel").on('click', function () {
+   //     $(revParentDiv).find("#tenderPricingTable").tableExport({
+   //         bootstrap: false,
+   //         formats: ["xls"],
+   //         type:["excel"]
+   //     });
+   ////   headers: true,
+	  ////footers: true,
+	  ////formats: ["xls"],
+	  ////fileName: "id",
+	  ////bootstrap: false,
+	  ////exportButtons: true,
+	  ////position: "bottom",
+	  ////ignoreRows: null,
+	  ////ignoreCols: null,
+	  ////trimWhitespace: false,
+	  ////RTL: false,
+	  ////sheetname: "id"
+   ////     });
+   // });
+
+    var isControlChanged = false;
+
+    function successTestLineSave() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Relation for Test and Lines update successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failedTestLineSave() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while saving changes. Please try again";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    };
+
+
+    var lineArray = [],lineGrWt=[];
+
+    function loadForm(element) {
+        //alert(2);
+        var url = "/tenderpricing/";
+        var type = $(revParentDiv).find(element).attr("data-target");
+        if (isControlChanged) {
+            ShowSnackBar("Please save changes before proceeding further");
+            return false;
+        }
+        //alert(3);
+        isControlChanged = false;
+        if (type == "#RMModel") {
+            url = url + "loadRMPricing?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#markupModel") {
+            url = url + "loadMarkupPricing?bomId=" + $(revParentDiv).find("#bomId").val() + '&revId=' + $(revParentDiv).find("#revisionId").val() + '&tndId=' + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#FrghtChargModel") {
+            url = url + "loadFreightCharges?bomId=" + $(revParentDiv).find("#bomId").val() + '&revId=' + $(revParentDiv).find("#revisionId").val() + '&tndId=' + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#BankGtyModel") {
+            url = url + "GetBGData?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#TPriceModal") {
+            url = url + "LoadTestPricing";
+        }
+        else if (type == "#FinalPrcModel") {
+            url = url + "GetFinalPrices?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+        else if (type == "#auditTrial") {
+            url = url + "GetAuditTrial?tndId=" + $(revParentDiv).find("#tndId").val();
+        }
+        else if (type == "#ReportModel") {
+            url = "/report/ProductGrpTonnage?tndId=" + $(revParentDiv).find("#tndId").val() + '&tndRevNo=' + $(revParentDiv).find("#tndRevId").val();
+        }
+
+        $.ajax({
+            type: "post",
+            url: url,
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $(revParentDiv).find(type).find(".modal-body").html(data);
+            },
+            error: function (courses) { }
+        });
+    }
+
+    var tenderLineDetails = [];
+
+    function successModal() {
+        $(revParentDiv).find("#modalOkButton").html("OK");
+        $(revParentDiv).find('#modalTitle').html('Success');
+        $(revParentDiv).find('#modalBody').html('Record updated Successfully');
+        $(revParentDiv).find("#successModel").modal('show');
+    }
+
+    function failureModal() {
+        $(revParentDiv).find("#modalOkButton").html("OK");
+        $(revParentDiv).find('#modalTitle').html('Success');
+        $(revParentDiv).find('#modalBody').html('Record updation failed');
+        $(revParentDiv).find("#successModel").modal('show');
+    }
+
+    //$(revParentDiv).find(document).ready(function () {
+        @foreach (var item in Model.LineList)
+        {
+            @:lineArray.push({ LineId: @item.LineId, LineName: "LineId_" +  @item.LineId.ToString()});
+        };
+        setTotalLineQuantity();
+        SetTotalGrossWt();
+        SetTotalSalesCostExWorks();
+        setCosts();
+        SetLineFreight();
+
+        $(revParentDiv).find('.modal').on('show.bs.modal', function (e) {
+            ////
+            if (isControlChanged) {
+                ShowSnackBar("Please save changes before proceeding further");
+                return e.preventDefault();
+            }
+            else
+                return true;
+        });
+        if ($(revParentDiv).find("#isPageEditable").val() != "True" && $(revParentDiv).find("#isPageEditable").val() != "true") {
+            $(revParentDiv).find("input").attr('readonly', true);
+            $(revParentDiv).find("input").removeClass("whiteBgInput");
+            $(revParentDiv).find("input").removeClass("p-1");
+            $(revParentDiv).find('input').each(function () {
+            $(revParentDiv).find(this).replaceWith(function () {
+                return '<label class=' + this.className + ' value=' + this.value + ' > ' + this.value + '</label >'
+                });
+            });
+            $(revParentDiv).find(".buttonContainer").hide();
+        }
+
+    //});
+
+    function SetTotalSalesCostExWorks() {
+        var maxValue = 0,totalSalesCost = 0,totalExWorks = 0;
+        var lineElements = $(revParentDiv).find('.TenderDtlTable table').find('td.totSalesCost').not(".excludeItem");
+        ////
+        $(revParentDiv).find(lineElements).each(function (index, ele) {
+            maxValue = 0;
+            var lineItems = $(revParentDiv).find(ele).parent().find('td.salesCost');
+            $(revParentDiv).find(lineItems).each(function (count, element) {
+                var value = parseFloat($(revParentDiv).find(element).text())
+                if (value != "" && !isNaN(value)) {
+                    maxValue = maxValue < value ? value : maxValue;
+                }
+            });
+            $(revParentDiv).find(ele).text(maxValue.toFixed(3));
+            totalSalesCost = totalSalesCost + maxValue;
+
+            maxValue = 0;
+
+            lineItems = $(revParentDiv).find(ele).parent().find('td.sCostExWorks');
+            $(revParentDiv).find(lineItems).each(function (count, element) {
+                var value = parseFloat($(revParentDiv).find(element).text())
+                if (value != "" && !isNaN(value)) {
+                    maxValue = maxValue < value ? value : maxValue;
+                }
+            });
+            $(revParentDiv).find(ele).parent().find(".totExWorks").text(maxValue.toFixed(3));
+            totalExWorks = totalExWorks + maxValue;
+        });
+
+        $(revParentDiv).find(".totalWtRow").find(".totSalesCost").text(totalSalesCost.toFixed(3));
+        $(revParentDiv).find(".totalWtRow").find(".totExWorks").text(totalExWorks.toFixed(3));
+    }
+
+    $(revParentDiv).find("#btnSubmit").click(function () {
+        ////
+        var array = JSON.stringify(tenderLineDetails);
+        var tndId = $(revParentDiv).find("#tndId").val();
+        var tndRevId = $(revParentDiv).find("#tndRevId").val();
+        isControlChanged = false;
+        $.ajax({
+            type: "post",
+            data: { values: array, grWt: JSON.stringify(lineGrWt), tndId: tndId, tndRevId: tndRevId },
+            url: '/TenderPricing/SaveLineQty?values=',// + array + '&grWt=' + JSON.stringify(lineGrWt) + '&tndId=' + tndId + '&tndRevId=' + tndRevId,
+            success: function (data) {
+                if (data) {
+                    $(revParentDiv).find(".modal").modal('hide');
+                    successModal();
+                    window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    })
+
+    $(revParentDiv).find("#btnCancelRev").click(function () {
+        $.ajax({
+            type: "post",
+            url: '/TenderPricing/CancelTenderRev?tndId=' + $(revParentDiv).find("#tndId").val() + '&tndRevId=' + $(revParentDiv).find("#tndRevId").val(),
+            success: function (data) {
+                if (data) {
+                    window.location.href = "/enquiry/";
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    })
+
+    function SetLineFreight() {
+        var freight = 0,totalNtWt = 0,sum=0,value = 0;
+        var lineElements = $(revParentDiv).find('.TenderDtlTable table').find('td.lineFreight').not(".excludeItem");
+        //
+        $(revParentDiv).find(lineElements).each(function (index, ele) {
+            freight = $(revParentDiv).find(ele).attr("freight");
+            totalNtWt = $(revParentDiv).find(ele).closest("tr").find(".totNtWt").text();
+
+            if (freight == "" || isNaN(freight))
+                freight = 0;
+            if (totalNtWt == "" || isNaN(totalNtWt))
+                totalNtWt = 0;
+
+            value = Number(freight * (totalNtWt/ 1000)).toFixed(3);
+
+            sum = sum + Number(value);
+
+            $(revParentDiv).find(ele).text(value);
+        });
+
+        $(revParentDiv).find(".totalWtRow").find(".lineFreight").text(sum.toFixed(3));
+    }
+
+    function editLineDetails(element) {
+        var lineQtyId = $(revParentDiv).find(element).attr("lineqtyid");
+        var index = tenderLineDetails.findIndex(x => x.LineQtyId == lineQtyId);
+        if (index != -1) {
+            tenderLineDetails[index].Quantity = $(revParentDiv).find(element).val();
+        }
+        isControlChanged = true;
+        setTotalLineQuantity();
+        SetLineFreight();
+    }
+
+    function pushDetails(element) {
+        var obj = {};
+        var lineQtyId = $(revParentDiv).find(element).attr("lineqtyid");
+        var index = tenderLineDetails.findIndex(x => x.LineQtyId == lineQtyId);
+        if (index != -1) {
+            tenderLineDetails[index].Quantity = $(revParentDiv).find(element).val();
+        }
+        else {
+            var customId = $(revParentDiv).find(element).attr("lineqtyid");
+
+            if (customId == "0") {
+                customId = randomId();
+            }
+            $(revParentDiv).find(element).attr("lineqtyid", customId)
+            obj.LineQtyId = customId;
+            obj.LineId = $(revParentDiv).find(element).attr("lineId");;
+            obj.Quantity = $(revParentDiv).find(element).val();
+            obj.TenderId = $(revParentDiv).find("#tndId").val();
+            obj.TenderRevNo = $(revParentDiv).find("#tndRevId").val();
+            obj.BomId = $(revParentDiv).find("#bomId").val();
+            obj.RevisionNo = $(revParentDiv).find("#revisionId").val();
+            obj.ProductId = $(revParentDiv).find(element).attr('productid');
+            obj.Type = $(revParentDiv).find(element).attr('typeid');
+            obj.ProductGroupId = $(revParentDiv).find(element).attr('productgroupid');
+            obj.AssemblyId = $(revParentDiv).find(element).attr('assemblyid');
+            obj.SubAssemblyId = $(revParentDiv).find(element).attr('subassemblyid');
+            obj.ComponentId = $(revParentDiv).find(element).attr('componentid');
+            tenderLineDetails.push(obj);
+            obj = {};
+        }
+
+    }
+
+    function setTotalLineQuantity() {
+
+        var lineElements = $(revParentDiv).find('.TenderDtlTable table').find('td.qtyWtTotal').not(".excludeWt");
+
+        $(revParentDiv).find(lineElements).each(function (index, ele) {
+            var total = 0,lineId  = 0;
+            var lineItems = $(revParentDiv).find(ele).parent().find('td.qtyWt');
+            $(revParentDiv).find(lineItems).each(function (count, element) {
+                var value = parseFloat($(revParentDiv).find(element).find("input").val());
+                lineId = $(revParentDiv).find(element).find("input").attr("lineid");
+                var unitCost = $(revParentDiv).find(element).parent().find('.calcUnitCost').text();
+                if (value != "" && !isNaN(value)) {
+                    total = total + parseFloat(value);
+                    if (unitCost != "" && !isNaN(unitCost)) {
+                        $(revParentDiv).find(element).parent().find('td.lineUnitCost[lineid="' + lineId + '"]').text((value * unitCost).toFixed(3));
+                    }
+                }
+
+            });
+            $(revParentDiv).find(ele).text(total);
+
+            var totalGrWt = $(revParentDiv).find(ele).parent().find('td.totGrWt');
+            var UnitGrWt = $(revParentDiv).find(ele).parent().find('td.uniGrWt').text();
+            var totalNtWt = $(revParentDiv).find(ele).parent().find('td.totNtWt');
+            var UnitNtWt = $(revParentDiv).find(ele).parent().find('td.uniNtWt').text();
+
+            if (UnitGrWt != "" && !isNaN(UnitGrWt))
+                $(revParentDiv).find(totalGrWt).text((total * parseFloat(UnitGrWt)).toFixed(3));
+            if (UnitNtWt != "" && !isNaN(UnitNtWt))
+                $(revParentDiv).find(totalNtWt).text((total * parseFloat(UnitNtWt)).toFixed(3));
+        });
+
+        lineElements = $(revParentDiv).find('.TenderDtlTable table').find('td.calcUnitCost');
+        var unitCost = 0;
+        $(revParentDiv).find('.TenderDtlTable table').find('td.calcUnitCost').each(function (index, item) {
+            unitCost += Number($(revParentDiv).find(item).text());
+        })
+        $(revParentDiv).find("#txtUnitCost").val(unitCost.toFixed(3));
+        SetTotalGrossWt();
+        setLineUnitCost();
+    }
+
+    function randomId() {
+        var S4 = function () {
+            return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+        };
+        return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    }
+
+    function closeModal() {
+        $(revParentDiv).find(".modal").modal('hide');
+        $(revParentDiv).find("#successModel").modal('hide');
+    }
+
+    function SetTotalGrossWt() {
+        var totalWt = 0,totalNtWt = 0;
+        lineGrWt = [];
+
+        $(revParentDiv).find(lineArray).each(function (index, item) {
+            //
+            var lineItems = $(revParentDiv).find("td[name=" + item.LineName + "]");
+            $(revParentDiv).find(lineItems).each(function (index, element) {
+                var lineQty = $(revParentDiv).find(element).find("input").val();
+                var unitGrWt = $(revParentDiv).find(element).parent().find(".uniGrWt").text();
+                var unitNtWt = $(revParentDiv).find(element).parent().find(".uniNtWt").text();
+                if (lineQty == "" && isNaN(lineQty))
+                    lineQty = 0;
+
+                if (unitNtWt == "" && isNaN(unitNtWt))
+                    unitNtWt = 0;
+
+                if (unitGrWt == "" && isNaN(unitGrWt))
+                    unitGrWt = 0;
+
+                totalNtWt = totalNtWt + (lineQty * unitNtWt);
+
+                totalWt = totalWt + (lineQty * unitGrWt);
+            });
+
+            //$(revParentDiv).find(".totalWtRow").find("." + item.LineName).text(totalWt.toFixed(3));
+            lineGrWt.push({ LineId: item.LineId, TndId: $(revParentDiv).find("#tndId").val(), TndRevNo: $(revParentDiv).find("#tndRevId").val(), GrWt: totalWt.toFixed(3), NtWt: totalNtWt.toFixed(3)});
+            totalWt = 0;
+            totalNtWt = 0;
+
+        });
+    }
+
+    function setLineUnitCost() {
+        var lineUnitCost = 0;
+        $(revParentDiv).find(lineArray).each(function (index, item) {
+            $(revParentDiv).find('.TenderDtlTable table').find('td.lineUnitCost[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                lineUnitCost += Number($(revParentDiv).find(item).text());
+            });
+            $(revParentDiv).find(".totalWtRow").find('td.lineUnitCost[lineid="' + item.LineId + '"]').text(lineUnitCost.toFixed(3));
+            lineUnitCost = 0;
+        });
+
+    }
+
+    function setCosts() {
+        var unitCost = 0, salesCost = 0, exWorks = 0, salesCostArr = [], exWorksArr = [], lineUnitCost = 0, lineUnitCostArr = [];
+        $(revParentDiv).find('.TenderDtlTable table').find('td.calcUnitCost').each(function (index, item) {
+            unitCost += Number($(revParentDiv).find(item).text());
+        });
+
+        $(revParentDiv).find(lineArray).each(function (index, item) {
+            $(revParentDiv).find('.TenderDtlTable table').find('td.salesCost[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                salesCost += Number($(revParentDiv).find(item).text());
+            });
+
+            $(revParentDiv).find('.TenderDtlTable table').find('td.sCostExWorks[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                exWorks += Number($(revParentDiv).find(item).text());
+            });
+
+            $(revParentDiv).find('.TenderDtlTable table').find('td.lineUnitCost[lineid="' + item.LineId + '"]').not(".excludeItem").each(function (index, item) {
+                lineUnitCost += Number($(revParentDiv).find(item).text());
+            });
+
+            salesCostArr.push({ lineId: item.LineId, value: salesCost });
+            exWorksArr.push({ lineId: item.LineId, value: exWorks });
+            lineUnitCostArr.push({ lineId: item.LineId, value: lineUnitCost });
+
+            $(revParentDiv).find(".totalWtRow").find('td.salesCost[lineid="' + item.LineId + '"]').text(salesCost.toFixed(3));
+            $(revParentDiv).find(".totalWtRow").find('td.sCostExWorks[lineid="' + item.LineId + '"]').text(exWorks.toFixed(3));
+            $(revParentDiv).find(".totalWtRow").find('td.lineUnitCost[lineid="' + item.LineId + '"]').text(lineUnitCost.toFixed(3));
+            salesCost = 0;
+            exWorks = 0;
+            lineUnitCost = 0;
+        });
+        //var tndNo = $(revParentDiv).find("#tndId").val();
+        //var tndRevNo = $(revParentDiv).find("#tndRevId").val();
+        //$.ajax({
+        //    type: "POST",
+        //    url: '/TenderPricing/SaveCosts',
+        //    dataType: "JSON",
+        //    data: { unitCost: unitCost, tndNo: tndNo, tndRevNo: tndRevNo, salesCost: JSON.stringify(salesCostArr), exWorks: JSON.stringify(exWorksArr), lineUnitCost: JSON.stringify(lineUnitCostArr)},
+        //    success: function (data) {
+        //    },
+        //    error: function (data) { }
+        //});
+    }
+
+    function OpenTestLine(e, bomId, revNo, tenId, tenRevId, primaryId, typeId) {
+
+        var model = { BomId: bomId, RevId: revNo, TenderId: tenId, TenderRevisionId: tenRevId, PrimaryId: primaryId, ProdType: typeId};
+
+        $.ajax({
+            type: 'POST',
+            url: "/TenderPricing/GetTestLineRelation",
+            data: JSON.stringify(model),
+            dataType: 'html',
+            contentType: "application/json",
+            success: function (data) {
+                //$(revParentDiv).find(".colorClass").each(function () {
+                //    $(revParentDiv).find(this).removeAttr('style');
+                //});
+                //$(revParentDiv).find(e).attr('style', 'background-color:#e8e8e8;');
+                $(revParentDiv).find("#testmasterDtls").html(data);
+                $(revParentDiv).find("#testmasterDtls").modal('show');
+            },
+            error: function (err) {
+            }
+        });
+    }
+
+    $(revParentDiv).find("#btnPublish").click(function () {
+        if (isControlChanged) {
+            ShowSnackBar("Please save changes before proceeding further");
+            return false;
+        }
+
+        var obj = CheckPublish();
+
+        if (!obj.Flag) {
+            ShowSnackBar("Please fill " + obj.Message + " details");
+            return false;
+        }
+
+        var tndId = $(revParentDiv).find("#tndId").val();
+        var tndRevId = $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: 'POST',
+            url: '/TenderPricing/PublishTender',
+            data: { tndId: tndId, tndRevId: tndRevId },
+            dataType: 'JSON',
+            success: function (data) {
+                ShowSnackBar("Tender Published Successfully.");
+                 var redirectURL= "/TenderPricing/ViewTenderDetailsDom?enqId=" + $(revParentDiv).find("#hidEnqId").val() + "&bomId=" + $(revParentDiv).find("#bomId").val() + "&revNo=" + $(revParentDiv).find("#revisionId").val() + "&tndId=" + $(revParentDiv).find("#tndId").val() + "&tndRevNo=" + $(revParentDiv).find("#tndRevId").val();
+                    var delay = 2000;
+                setTimeout(function () { window.location.href = redirectURL; }, delay);
+
+            },
+            error: function (courses) {
+                ShowSnackBar("Error while publishing tender.");
+              //  failureModal();
+            }
+        });
+    });
+
+    function CheckPublish() {
+        var data = {};
+        var tndId = $(revParentDiv).find("#tndId").val();
+        var tndRevId = $(revParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: 'POST',
+            url: '/TenderPricing/CheckPublish',
+            data: { tndId: tndId, tndRevId: tndRevId },
+            dataType: 'JSON',
+            async: false,
+            success: function (obj) {
+                data = obj
+            },
+            error: function (courses) {
+                ShowSnackBar("Error while publishing tender.");
+            }
+        });
+        return data;
+    }
+
+</script>

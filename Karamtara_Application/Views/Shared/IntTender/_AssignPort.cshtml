@@ -1,0 +1,258 @@
+﻿@model Karamtara_Application.Models.Tender.AssignPortModel
+@using Karamtara_Application.Models.Tender;
+
+@{
+    var portCount = 1;
+    var divCount = 1;
+}
+<form id="frmAssignPort">
+    <div class="BomRefDtls">
+        <div class="closeMenu">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="col-sm-12 row BomRefHeader m-0">
+            <input type="hidden" id="hidTndId" name="tndId" value="@Model.TndId" />
+            <input type="hidden" id="hidTndRevNo" name="tndRevNo" value="@Model.TndRevNo" />
+            ASSIGN PORT
+        </div>
+        <div class="col-sm-12 domesticPort overflowModel">
+            @if (Model.DomPortList != null && Model.DomPortList.Count > 0)
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    <div class="row mb-5" id="div_@divCount">
+                        <span class="PortHeader col-sm-12">Domestic Port</span>
+                        @*<div class="col-sm-8">
+                            <input type="checkbox" name="checkbox" id="domCheckbox_@divCount" onclick="checkChange(this, @divCount);" checked />
+                            <input type="hidden" id="enable_@divCount" name="domEnable" value="1" />
+                        </div>*@
+                        <div class="col-sm-8">
+                            <label class="container checkbox">
+                                Port Name
+                                <input type="checkbox" name="checkbox" id="domCheckbox_@divCount" onclick="checkChange(this, @divCount);" checked />
+                                <input type="hidden" id="enable_@divCount" name="domEnable" value="1" />
+                                <span class="checkmark"></span>
+                            </label>
+
+                            <input type="text" placeholder="Enter Port Name" class="whiteBgInput w-100" name="DomPort" id="domPort" value="@Model.DomPortList[i].PortName" />
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="mb-2">Currency</label>
+                            @Html.DropDownListFor(x => Model.DomPortList[i].CurrencyId, new SelectList(Model.CurrencyList, "Id", "Name", Model.DomPortList[i].CurrencyId), new { @class = "whiteBgSelect w-100 p-2 mt-2", @id = "domCurrency", @value = Model.DomPortList.FirstOrDefault().CurrencyId })
+                            <input type="hidden" value="@Model.DomPortList[i].PortId" name="PortId">
+                        </div>
+                    </div>
+                    divCount++;
+                }
+            }
+            else
+            {
+                <div class="row mb-5" id="div_@divCount">
+                    <span class="PortHeader col-sm-12">Domestic Port</span>
+                    <div class="col-sm-8">
+                        <label class="container checkbox">
+                            Port Name
+                            <input type="checkbox" name="checkbox" id="domCheckbox_@divCount" onclick="checkChange(this, @divCount);" checked />
+                            <input type="hidden" id="enable_@divCount" name="domEnable" value="1" />
+                            <span class="checkmark"></span>
+                        </label>
+
+                        <input type="text" placeholder="Enter Port Name" class="whiteBgInput w-100" name="DomPort" id="domPort" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="mb-2">Currency</label>
+                        @Html.DropDownListFor(x => x.CurrencyId, new SelectList(Model.CurrencyList, "Id", "Name"), new { @class = "whiteBgSelect w-100 p-2 mt-2", @id = "domCurrency" })
+                        @Html.HiddenFor(x => x.PortId)
+                    </div>
+                </div>
+                divCount++;
+            }
+            @if (Model.IntlPortList != null && Model.IntlPortList.Count > 0)
+            {
+                for (int i = 0; i < Model.IntlPortList.Count; i++)
+                {
+                    <div class="row interPortRow" id="div_@divCount">
+                        <span class="PortHeader col-sm-12">International Port</span>
+                        <div class="col-sm-8">
+                            <label class="container checkbox">
+                                Port Name
+                                <input type="checkbox" name="checkbox" id="intCheckbox_@divCount" onclick="checkChange(this, @divCount);" checked />
+                                <input type="hidden" id="enable_@divCount" name="intEnable" value="1" />
+                                <span class="checkmark"></span>
+                            </label>
+                            <input type="text" placeholder="Enter Port Name" class="whiteBgInput w-100 txtPortName" name="IntPort" id="IntPort_@i" value="@Model.IntlPortList[i].PortName" />
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="mb-2">Currency</label>
+                            @Html.DropDownListFor(x => Model.IntlPortList[i].CurrencyId, new SelectList(Model.CurrencyList, "Id", "Name", Model.IntlPortList[i].CurrencyId), new { @class = "whiteBgSelect w-100 p-2 mt-2 portCurr", id = "ddlCurrency_1" })
+                            <input type="hidden" value="@Model.IntlPortList[i].PortId" name="PortId">
+                        </div>
+                    </div>
+                    divCount++;
+                }
+            }
+            else
+            {
+                <div class="row interPortRow" id="div_@divCount">
+                    <span class="PortHeader col-sm-12">International Port</span>
+                    <div class="col-sm-8">
+                        <label class="container checkbox">
+                            Port Name
+                            <input type="checkbox" name="checkbox" id="intCheckbox_@divCount" onclick="checkChange(this, @divCount);" checked />
+                            <input type="hidden" id="enable_@divCount" name="intEnable" value="1" />
+                            <span class="checkmark"></span>
+                        </label>
+
+                        <input type="text" placeholder="Enter Port Name" class="whiteBgInput w-100 txtPortName" name="IntPort" id="IntPort" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label>Currency</label>
+                        @Html.DropDownListFor(x => x.CurrencyId, new SelectList(Model.CurrencyList, "Id", "Name"), new { @class = "whiteBgSelect w-100 p-2 mt-2 portCurr", id = "ddlCurrency_1" })
+                        @Html.HiddenFor(x => x.PortId)
+                    </div>
+                </div>
+                divCount++;
+            }
+            <div class="col-sm-12 mt-4">
+                <div class="row addMoreLoctn d-flex justify-content-end ">
+                    <span>Add More International Port </span><img src="../../Assets/images/addMore.png" onclick="AddPort()" class="c-pointer">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12 text-right mt-4 mb-3">
+                    <button type="button" id="btnCancel" class="createBomBtn revisionBtn" onclick="closeModal()">Cancel</button>
+                    <button type="button" id="btnAssignPort" class="createBomBtn publishBtn">Submit</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+<script>
+    var divCount = @divCount;
+
+    function successPortSave() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Port Assign Data has been saved successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failedPortSave() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while saving Port Assign Data. Please re-fill all the fields properly and try again";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    };
+
+    $(document).ready(function () {
+        $("#domCurrency").attr("name", "ddlDomCurr");
+
+        $(".portCurr").each(function () {
+            $(this).attr('name','CurrencyId')
+        })
+
+        if ($("#isPageEditable").val() != "True" && $("#isPageEditable").val() != "true") {
+            $("input").attr('readonly', true);
+            $(".bgBlue").find(".whiteBgInput").css("color", "#fff");
+            //$(".bgBlue").find(".whiteBgInput").css("font-weight","bold");
+            $("input").removeClass("whiteBgInput");
+            $("input").removeClass("p-1");
+            $("button").not("#btnCancel,.close,.closeModal").hide();
+            $("input[type='button']").hide();
+            $(".addMoreLoctn").remove();
+            $("select").attr("disabled", true);
+        }
+    });
+
+    function checkChange(e, num) {
+        $("#div_" + num + " select").each(function () {
+        });
+        
+        if (!$(e).is(':checked')) {
+            $("#enable_" + num).val(0);
+            $("#div_" + num + " select").attr('disabled', 'disabled');
+            $("#div_" + num + " select").addClass('disabledDDL');
+            $("#div_" + num + " :input[type=text]").each(function () {
+                $(this).attr('readonly', 'readonly');
+            });
+        }
+        else {
+            $("#enable_" + num).val(1); 
+            $("#div_" + num + " select").removeAttr('disabled');
+            $("#div_" + num + " select").removeClass('disabledDDL');
+            $("#div_" + num + " :input[type=text]").each(function () {
+                $(this).removeAttr('readonly');
+            });
+        }
+    };
+
+    function AddPort() {
+        var count =@portCount;
+        count = count + 1;
+        divCount = divCount + 1;
+        $.each(new Array(1), function (i) {
+            $('.interPortRow:last')
+                .after('<div class="row interPortRow mt-4" id="div_' + divCount +'">' +
+                    '<div class="col-sm-8">' + 
+                ' <label class="container checkbox">Port Name <input type="checkbox" name="checkbox" id="intCheckbox_' + divCount + '" onclick="checkChange(this,' + divCount + ');" checked />' +
+                '<input type="hidden" id="enable_' + divCount + '" name="intEnable" value="1"/><span class="checkmark"></span></label>' +                     
+                    '<input type="text" placeholder="Enter Port Name" class="whiteBgInput w-100 txtPortName" name="IntPort" />' +
+                    '</div>' +
+                    '<div class="col-sm-4">' +
+                    '<label class="mb-2">Currency</label>' +
+                    '<select placeholder="INR" class="whiteBgSelect w-100 p-2 mt-2 portCurrency" name="CurrencyId" >' +
+                '</select>' +
+                    '<input type="hidden" name="PortId" value="0"/>' + 
+                    ' </div>' +
+                ' </div>');
+        });
+        var ddlCurr = $(".portCurrency");
+        var currencyVal = JSON.parse('@Html.Raw(Json.Encode(Model.CurrencyList))');
+        for (var i = 0; i < currencyVal.length; i++) {
+            ddlCurr.append($("<option>").val(currencyVal[i].Id).text(currencyVal[i].Name));
+        }
+        $(".portCurrency").attr('class', 'whiteBgSelect w-100 p-2 mt-2 portCurrency_' + count);
+    };
+
+    $("#btnAssignPort").click(function () {
+
+        $(".disabledDDL").each(function () {
+            $(this).removeAttr('disabled');
+        });
+
+        var assignPortForm = $("#frmAssignPort").serialize();
+
+        $(".disabledDDL").each(function () {
+            $(this).attr('disabled', 'disabled');
+        });
+
+        //validate();
+        $.ajax({
+            type: "post",
+            data: assignPortForm,
+            url: '/IntTenderPricingKT/SavePortDetails',
+            success: function (data) {
+                if (data > 0) {
+                    $("#PortModel").modal('hide');
+                    successPortSave();
+                }
+                else {
+                    failedPortSave();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        })
+    });
+
+    //function trim(inputId) {
+    //    return $("#" + inputId).val().replace(/^\s+|\s+$/gm, '');
+    //}
+
+</script>

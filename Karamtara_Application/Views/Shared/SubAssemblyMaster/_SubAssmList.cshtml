@@ -1,0 +1,84 @@
+﻿@model Karamtara_Application.Models.SubAssemblyMasterModel
+
+<div class="createProdDtls tableBlock">
+    <div class="searchBlock pb-3">
+        <div class="inputSerachBlok ">
+            <input type="text" id="txtSearch" class="input-group serachInput f-13" />
+            <button type="button" id="btnClear" class="btn-clear searchClear"><img src="~/Assets/images/collapseClose.svg" width="12px" /></button>
+        </div>
+        <button type="button" id="btnSearch" class="serachBtn"><img src="~/Assets/images/search.svg" width="20px" /></button>
+        @*<input type="button" id="btnSearch" value="Search" class="createProdBtn saveBtn" />*@
+
+    </div>
+
+    <div class="row">
+        <table class="table ParentTable">
+            <tr>
+                <th class="CatNo">Cat. No /  Drawing No</th>
+                <th class="" colspan="2">Sub Assembly Name</th>
+            </tr>
+            @foreach (var item in Model.SubAssemblyList)
+            {
+                <tr onclick="GetComponents(@item.SubAssemblyId, this);" class="selectionRow" id="selectionRow_@item.SubAssemblyId">
+                    <td>@item.CatalogueNo @(string.IsNullOrEmpty(item.DrawingNo) ? "" : ("/ " + item.DrawingNo))</td>
+                    <td>@item.SubAssemblyName</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $('#txtSearch').keypress(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $('#btnSearch').click();
+            return false;
+        }
+    });
+
+    $("#btnSearch").click(function () {
+        var value = $("#txtSearch").val();
+        if (value) {
+            $.ajax({
+                type: "get",
+                url: "/SubAssemblyMaster/SubAssmSearchList/",
+                dataType: "html",
+                data: { searchText: value },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    $('#SubProdListDiv').empty();
+                    $('#SubAssmListDiv').html(data);
+                    $("#txtSearch").val(value);
+                },
+                error: function (data) { }
+            });
+        };
+    });
+
+    $("#btnClear").click(function () {
+        var data = $("#txtSearch").val();
+        if (data) {
+            ClearSearch();
+        }
+        //$("#btnSearch").click();
+    });
+    function ClearSearch(id) {
+        $("#txtSearch").val('');
+        $.ajax({
+            type: "get",
+            url: "/SubAssemblyMaster/SubAssmSearchList/",
+            dataType: "html",
+            data: { searchText: "", clearResult: true },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                $('#SubProdListDiv').empty();
+                $('#SubAssmListDiv').html(data);
+                $("#txtSearch").val(value);
+            },
+            error: function (data) { }
+        });
+    }
+
+</script>

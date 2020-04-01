@@ -1,0 +1,129 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+
+
+@{
+    ViewBag.Title = "BOMTestDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content mainContentPaddingBtm">
+    <div class="col-sm-12 ">
+        <div class="row prjNmBlock">
+            <div class="col-sm-8 align-self-center">
+                <span>Project Name : </span>@Model.ProjectName
+                <span style="margin-left:30px">End Customer Name : </span>@Model.EndCustomerName
+                <span style="margin-left:30px">EPC Customer : </span>@Model.EPCCustomerName
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 p-0">
+        <div class="row">
+            <div class="col-sm-5 ">
+                <div class="TestMasterDesc tableBlock">
+                    <div class="row">
+                        <table class="table">
+                            <tr>
+                                <th class="srNo">Sr. No</th>
+                                <th class="desc" colspan="2">Description</th>
+                            </tr>
+                            @foreach (var master in Model.ProductList)
+                            {
+                                if (master.Type == 1)
+                                {
+                                    <tr>
+                                        <td class="HeadTD">@master.SrNo</td>
+                                        <td class="HeadTD textCenterTD">@master.Name</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@master.SrNo</td>
+                                        <td class="textCenterTD colorClass c-pointer" onclick="GetTestDataForProduct(this, @Model.BomId, @Model.RevNo, @master.Id, @master.Type, @master.ComponentId, @master.SubAssemblyId, @master.AssemblyId, @master.ProductGroupId);">@master.Name</td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7" id="testDetailsView">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="testmasterDtls" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    @*@Html.Partial("~/Views/Shared/TestMaster/_TestLineRelation.cshtml", Model)*@
+</div>
+
+<div id="snackbar"></div>
+
+<script>
+
+    //$("#bulbElement").on('click', function () {
+        
+    //});
+
+    function OpenTestLine(e, bomId, revNo, prodId, typeId, compId, subId, asmId, pgId) {
+
+        var model = { BomId: bomId, Id: prodId, RevId: revNo, ProdType: typeId, ComponentId: compId, SubAssemblyId: subId, AssemblyId: asmId, ProductGroupId: pgId };
+
+        $.ajax({
+            type: 'POST',
+            url: "/TestingMaster/GetTestDataForProduct",
+            data: JSON.stringify(model),
+            dataType: 'html',
+            contentType: "application/json",
+            success: function (data) {
+                $(".colorClass").each(function () {
+                    $(this).removeAttr('style');
+                });
+                $(e).attr('style', 'background-color:#e8e8e8;');
+                $("#testDetailsView").html(data);
+
+            },
+            error: function (err) {
+            }
+        });
+        $("#testmasterDtls").modal('show');
+    }
+
+    function GetTestDataForProduct(e, bomId, revNo, prodId, typeId, compId, subId, asmId, pgId) {
+
+        var model = { BomId: bomId, Id: prodId, RevId: revNo, ProdType: typeId, ComponentId: compId, SubAssemblyId: subId, AssemblyId: asmId, ProductGroupId: pgId };
+
+        $.ajax({
+            type: 'POST',
+            url: "/TestingMaster/GetTestDataForProduct",
+            data: JSON.stringify(model),
+            dataType: 'html',
+            contentType: "application/json",
+            success: function (data) {
+                $(".colorClass").each(function () {
+                    $(this).removeAttr('style');
+                });
+                $(e).attr('style', 'background-color:#e8e8e8;');
+                $("#testDetailsView").html(data);
+
+            },
+            error: function (err) {
+            }
+        });
+    };
+
+    function successQuery() {
+        var x = document.getElementById("snackbar");
+        x.innerHTML = "Changes updated successfully";
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 3000);
+    };
+
+    function failQuery() {
+        var x = document.getElementById("snackbar")
+        x.innerHTML = "Failed while updating changes. Please try again"
+        x.className = "snackBarshow";
+        setTimeout(function () { x.className = x.className.replace("snackBarshow", ""); }, 5000);
+    };
+
+</script>

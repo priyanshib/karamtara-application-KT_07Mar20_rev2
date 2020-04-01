@@ -1,0 +1,165 @@
+﻿@model Karamtara_Application.Models.Tender.TenderDetailsModel
+@using System.Dynamic;
+@{ var count = 1;}
+@{
+    dynamic dynamic = new ExpandoObject();
+    decimal value = 0;
+}
+<div finalPriceRev="@Model.TenderRevisionNo">
+    <div class="BomRefDtls">
+        <div class="closeMenu">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="col-sm-12 row BomRefHeader m-0">
+            FINAL PRICES
+        </div>
+        <div class="tableBlock TenderDtlModelTable">
+            <div class="col-sm-12 row BomRefItem m-0">
+                <div class="col-sm-8 ">
+                    <div class="row">
+                        <div class="col-sm">
+
+                            @{
+                                if (Model.TndLineValuesList != null && Model.TndLineValuesList.Any())
+                                {
+                                    dynamic = new ExpandoObject();
+                                    dynamic = Model.TenderValues.Where(x => x.Description == "GSTPercentage").FirstOrDefault();
+                                    if (dynamic != null)
+                                    {
+                                        value = dynamic.Values;
+                                    }
+                                    else
+                                    {
+                                        value = 18;
+                                    }
+                                }
+                            }
+                            GST
+                            <p class="d-flex align-items-center mt-1"><input type="number" value="@value" id="GSTPercentage" name="GSTPercentage" onblur="CalculateTotal()" />%</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="submitEnq publishBtn" onclick="SaveFinalPrices()">Submit</button>
+                </div>
+            </div>
+            <table class="table m-0 tableLayout iterationTable">
+                <tr>
+                    <td  colspan="@(Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList().Count + 1)">
+                        Revision @Model.TenderRevisionNo
+                    </td>
+                </tr>
+                <tr>
+                    <td> GST Percentage</td>
+                    <td colspan="@(Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList().Count)"> @value %</td>
+                </tr>
+                <tr>
+                    @{count = 1;}
+                    @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                    {
+                        <th class="priceItem  Ln_@count">@item</th>
+                        count++;
+                    }
+                    <th class="priceItem">Total</th>
+                </tr>
+                <tr>
+                    @{count = 1;}
+                    @foreach (var item in Model.TndLineValuesList.Where(x => x.Description.ToLower() == "exworks"))
+                    {
+                        <td class="priceItem Ex_@count">@item.Values</td>
+                        count++;
+                    }
+                    <td class="priceItem totalExworks"></td>
+                </tr>
+                <tr>
+                    @{count = 1;}
+                    @foreach (var item in Model.TndLineValuesList.Where(x => x.Description.ToLower() == "freight"))
+                    {
+                        <td class="priceItem  Fr_@count">@item.Values</td>
+                        count++;
+                    }
+                    <td class="priceItem totalFreight"></td>
+                </tr>
+                <tr class="bgBlue">
+                    @{count = 1;}
+                    @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                    {
+                        <td class="priceItem Gst_@count">@item</td>
+                        count++;
+                    }
+                    <td class="priceItem totalGst">58026520</td>
+                </tr>
+                <tr class="bgBlue">
+                    @{count = 1;}
+                    @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                    {
+                        <td class="priceItem Total_@count">@item</td>
+                        count++;
+                    }
+                    <td class="priceItem finalPrice">58026520</td>
+                </tr>
+                <tr class="bgBlue">
+                    @{count = 1;}
+                    @foreach (var item in Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList())
+                    {
+                        <td class="priceItem CrValue_@count">@item</td>
+                        count++;
+                    }
+                    <td class="priceItem totalCrValue"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+
+    var lineNos = @Model.TndLineValuesList.Select(x => x.LineName).Distinct().ToList().Count(), finalPriceParentDiv = $("div[finalPriceRev='"+@Model.TenderRevisionNo+"']");
+
+    CalculateTotal();
+
+    function CalculateTotal() {
+        var calcTotal = 0;
+        var crValue = 0;
+        var gstPerc = Number($(finalPriceParentDiv).find("#GSTPercentage").val());
+        var gstValue = 0,totalGst = 0;
+
+        for (var i = 1; i <= lineNos; i++) {
+            calcTotal = Number($(finalPriceParentDiv).find(".Ex_" + i).text()) + Number($(finalPriceParentDiv).find(".Fr_" + i).text());
+
+            gstValue = calcTotal * gstPerc / 100;
+            totalGst += gstValue;
+
+            calcTotal += gstValue;
+
+            crValue = Number(calcTotal / 10000000);
+            $(finalPriceParentDiv).find(".Gst_" + i).text(gstValue.toFixed(3));
+            $(finalPriceParentDiv).find(".Total_" + i).text(calcTotal.toFixed(3));
+            $(finalPriceParentDiv).find(".CrValue_" + i).text(crValue.toFixed(3));
+        }
+
+        $(finalPriceParentDiv).find(".totalGst").text(totalGst.toFixed(4));
+
+        var totalExworks = 0;
+        for (var i = 1; i <= lineNos; i++) {
+            totalExworks += Number($(finalPriceParentDiv).find(".Ex_" + i).text());
+            $(finalPriceParentDiv).find(".totalExworks").text(totalExworks.toFixed(4));
+        }
+
+        var totalFreight = 0;
+        for (var i = 1; i <= lineNos; i++) {
+            totalFreight += Number($(finalPriceParentDiv).find(".Fr_" + i).text());
+            $(finalPriceParentDiv).find(".totalFreight").text(totalFreight.toFixed(4));
+        }
+
+        var finalPrice = Number($(finalPriceParentDiv).find(".totalExworks").text()) + Number($(finalPriceParentDiv).find(".totalFreight").text()) + Number($(finalPriceParentDiv).find(".totalGst").text());
+        $(finalPriceParentDiv).find(".finalPrice").text(finalPrice.toFixed(4))
+
+        var priceInCr = Number(finalPrice / 10000000);
+        $(finalPriceParentDiv).find(".totalCrValue").text(priceInCr.toFixed(4))
+    }
+
+
+</script>

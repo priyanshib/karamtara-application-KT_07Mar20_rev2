@@ -1,0 +1,47 @@
+﻿@model Karamtara_Application.Models.MasterListModel
+
+<table class="table mt-4 MasterTable">
+    <tr>
+        <th class="materNm">Name</th>
+        <th class="materID">Delete</th>
+    </tr>
+    @foreach (var item in Model.MasterDataList)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>
+                <button type="button" class="commonBtn" id="Editbtn" onclick="DeleteBtnClick(@item.Id,'@item.TableName');" >Delete</button>
+            </td>
+        </tr>
+    }
+</table>
+
+
+<script>
+
+   
+    function DeleteBtnClick(Id, TableName)/*UnitGrWt, UnitNetWt, DrawingNo, Size, MaterialGrade, RawMaterialId, GalvanizedRequired*/ {
+        if (confirm("Are you sure you want to delete this component? This action cannot be undone")) {
+            $.ajax({
+                type: "post",
+                url: '/Master/DeleteMaster',
+                dataType: "JSON",
+                data: { MasterId: Id, TableName: TableName },
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                success: function (data) {
+                    if (data > 0) {
+                        successModal();
+                        LoadList();
+                    }
+                    else
+                        failureModal();
+                },
+                error: function (data) {
+                }
+            });
+        }
+    }
+
+    
+</script>
+

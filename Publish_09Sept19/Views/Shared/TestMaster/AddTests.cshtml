@@ -1,0 +1,36 @@
+﻿@model Karamtara_Application.Models.TestMasterModel
+
+<table class="table">
+    <thead>
+        <tr class="selectedActivies">
+            <td colspan="10" class="tdheader text-left p-1 creteEnquiryTd">
+                <div class="activities c-pointer createEnqBtn"><img src="~/Assets/images/enquiry.png" height="28px"><span class="titleHead"> Create Enquiry</span></div>
+                @*Enquiries*@
+            </td>
+            <td colspan="10" class="tdheader text-left p-1 enquiryTd cc">
+                <span class="titleHead">Enquiries1</span>
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="col" class="DeptNo">Test Id</th>
+            <th scope="col" class="Type">Name</th>
+            <th scope="col" class="text-left ProjName" colspan="2">Description</th>
+            <th scope="col" class="EndCustName"> Type</th>
+            <th scope="col" class="DueDt">KVLine</th>
+            <th scope="col" class="Status">UTS</th>
+            <th scope="col" class="Status">Bundle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="tenderNo">@Html.TextBox("", null)</td>
+            <td class="typeDOM">@Html.TextBox("CatNum", null)</td>
+            <td class="text-left ProjNameTD">@Html.TextBox("CatNum", null)</td>
+            <td class="attachmentTD text-right">@Html.TextBox("CatNum", null)</td>
+            <td>@Html.TextBox("CatNum", null)</td>
+            <td>@Html.TextBox("CatNum", null)</td>
+            <td class="Status statusOpen">@Html.TextBox("CatNum", null) </td>
+        </tr>
+    </tbody>
+</table>

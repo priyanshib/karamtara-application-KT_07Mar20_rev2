@@ -1,0 +1,700 @@
+﻿@model Karamtara_Application.Models.ProductGroupModel
+@{
+    ViewBag.Title = "ProductGroup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Convert.ToInt32(TempData["EditSuccess"]) == 1)
+{
+    <script>ShowSnackBar("Product group edited successfully");</script>
+}
+
+<div class="main-content">
+    <div class="row">
+        <div class="col-sm-12 ">
+            <div class="row assmMasterBlock p-1 ProdNmBlock">
+                <div class="col-sm-8 align-items-center d-flex">
+                    <span class="collapseHideSide c-pointer "><img src="~/Assets/images/leftDir.svg" width="15px" /></span>
+                    <span class="collapseShowSide c-pointer"><img src="~/Assets/images/rightDir.svg" width="15px" /></span>
+                    @*<img src="~/Assets/images/prodMaster.png" height="24px">*@<span class="titleHead">  Product Group</span>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="createProdBtn saveBtn" id="btnCreateProduct" onclick="openModal();">Create Product Group</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5 collapseSide">
+                    <div class="createTable tableBlock">
+                        <div class="row">
+                            <table class="table m-0">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" class="tdheader actListHeader text-left">
+                                            <div class="col-sm-12">
+                                                <div class="row">
+                                                    <div class="col-sm-9 d-flex align-self-center p-0">
+                                                        PRODUCT GROUP LIST
+                                                    </div>
+                                                    <div class="col-sm-3 text-right p-0">
+                                                        <button type="button" onclick="ClearFilter();" class="clearFilters blueBtn">Clear Filters</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1">
+                                            <div class="assembleFilter d-flex align-items-center">
+                                                <img src="~/Assets/images/assembleFilter.png" />
+                                            </div>
+                                        </td>
+                                        <td class="grpType p-0">
+                                            <div class="SelectTD inputSpanGrp">
+                                                @Html.DropDownListFor(m => m.ProductGroupTypeId, new SelectList(Model.ProductGroupTypeList, "Id", "ProductGroupType"), "Group Type", new { @class = "browser-default custom-select", id = "groupTypeFilter", onchange = "FilterList();" })
+                                            </div>
+                                        </td>
+                                        <td class="lineVolt p-0">
+                                            <div class="SelectTD inputSpanGrp">
+                                                @Html.DropDownListFor(m => m.LineVoltageId, new SelectList(Model.LineVoltageList, "Id", "LineVoltage"), "Line Voltage", new { @class = "browser-default custom-select", id = "lineVoltageFilter", onchange = "FilterList();" })
+                                            </div>
+                                        </td>
+
+                                        <td class="UTS p-0">
+                                            <div class="SelectTD inputSpanGrp">
+                                                @Html.DropDownListFor(m => m.ConductorTypeId, new SelectList(Model.ConductorTypeList, "Id", "ConductorType"), "Conductor Type", new { @class = "browser-default custom-select", id = "conductorTypeFilter", onchange = "FilterList();" })
+                                            </div>
+                                        </td>
+                                        @*<td class="bundleType p-0">
+                                                <div class="SelectTD inputSpanGrp">
+                                                    @Html.DropDownListFor(m => m.BundleTypeId, new SelectList(Model.BundleTypeList, "Id", "BundleType"), "Bundle Type", new { @class = "browser-default custom-select", id = "bundleTypeFilter", onchange = "FilterList();" })
+                                                </div>
+                                            </td>*@
+                                        <td class="UTS p-0">
+                                            <div class="SelectTD inputSpanGrp">
+                                                @Html.DropDownListFor(m => m.BundleSpacingId, new SelectList(Model.BundleSpacingList, "Id", "Spacing"), "Bundle Spacing", new { @class = "browser-default custom-select", id = "bundleSpacing", onchange = "FilterList();" })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            @Html.Partial("~/Views/Shared/ProductGroup/_ProductGroupList.cshtml", Model)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-7 FullCollapse" id="AssemblyListDetails">
+                    @if (Model.MasterList != null && Model.MasterList.Count > 0)
+                    {
+                        @Html.Partial("~/Views/Shared/ProductGroup/_ProductGroupListDetails.cshtml", Model)
+
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="createComponentModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered pgScreeModal NoBorderTableModel" role="document">
+        <div class="modal-content">
+            <div class="closeMenu" id="crossClose" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body overflowModel">
+                <div class="BomRefDtls">
+
+                    <div class="col-sm-12 row BomRefHeader m-0">
+                        Create New Product Group
+                    </div>
+                    <div class="tableBlock BomRefTable">
+                        @using (Html.BeginForm("CreateProductGroup", "ProductGroup", FormMethod.Post, new { @id = "CreateProductGroupForm" }))
+                        {
+                            <table class="table">
+
+                                <tr>
+                                    <td class="tableTH">Product Group Name</td>
+                                    <td colspan="2" class="TDtitle">@Html.TextBox("ProdGroupName", string.Empty, new { @class = "w-100 text-left whiteBgInput", required = "required", id = "prodGroupName", @autocomplete = "off", @placeholder = "Enter Product Group Name" })</td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Product Group Code</td>
+                                    <td colspan="2" class="TDtitle">@Html.TextBox("ProdGroupCode", string.Empty, new { @class = "w-100 text-left whiteBgInput", required = "required", id = "prodGroupCode", @autocomplete = "off", @placeholder = "Enter Product Group Code" })</td>
+                                </tr>
+
+                                @*<tr>
+                                            <td class="tableTH">Drawing No</td>
+                                            <td colspan="2" class="TDtitle">@Html.TextBox("DrawingNo", string.Empty, new { @class = "w-100 text-left whiteBgInput", required = "required" })</td>
+                                    </tr>*@
+                                <tr>
+                                    <td class="tableTH">Product Group Type</td>
+                                    <td colspan="2">
+                                        <div class="SelectTD mt-2">
+                                            @Html.DropDownListFor(m => m.ProductGroupTypeId, new SelectList(Model.ProductGroupTypeList, "Id", "ProductGroupType"), "Select Group Type", new { @class = "browser-default custom-select", required = "required", id = "ddlProdGroupType" })
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Line Voltage</td>
+                                    <td colspan="2" class="">
+                                        @*@Html.DropDownListFor(m => m.LineVoltageId, new SelectList(Model.LineVoltageList, "Id", "LineVoltage"), "Select Line Voltage", new { @class = "browser-default custom-select", id = "ddlLineVoltage" })*@
+                                        @Html.TextBox("txtLineVoltage", null, new { @id = "ddlLineVoltage", @class = "w-100 text-left whiteBgInput", @placeholder = "Enter Line Voltage" })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Bundle Spacing </td>
+                                    <td colspan="2" class="">
+                                        <div class="SelectTD">
+                                            @*@Html.DropDownListFor(m => m.BundleSpacingId, new SelectList(Model.BundleSpacingList, "Id", "Spacing"), "Select Bundle Spacing", new { @class = "browser-default custom-select", required = "required", id = "bundleSpacingddl" })*@
+                                            @Html.TextBox("txtBundleSpacing", null, new { @id = "bundleSpacingddl", required = "required", @class = "w-100 text-left whiteBgInput", @placeholder = "Enter Bundle Spacing" })
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Conductor Type </td>
+                                    <td colspan="2" class="">
+                                        @*@Html.DropDownListFor(m => m.ConductorTypeId, new SelectList(Model.ConductorTypeList, "Id", "ConductorType"), "Select Conductor Type", new { @class = "browser-default custom-select", required = "required", id = "ddlConductorType" })*@
+                                        @Html.TextBox("txtConductor", null, new { @id = "ddlConductorType", required = "required", @class = "w-100 text-left whiteBgInput", @placeholder = "Enter Conductor Type" })
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Bundle Type </td>
+                                    <td colspan="2" class="">
+                                        <div class="SelectTD">
+                                            @Html.DropDownListFor(m => m.BundleTypeId, new SelectList(Model.BundleTypeList, "Id", "BundleType"), "Select Bundle type", new { @class = "browser-default custom-select", required = "required", @id = "ddlBundleType" })
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tableTH">Conductor Name</td>
+                                    <td colspan="2" class="TDtitle">
+                                        @Html.TextBox("ConductorName", string.Empty, new { @class = "w-100 text-left whiteBgInput", required = "required", id = "conductorName", @autocomplete = "off", @placeholder = "Enter Conductor Name" })
+                                        @Html.HiddenFor(x => x.ConductorNameId, new { @id = "conductorNameId" })
+                                    </td>
+                                </tr>
+                                <!--this block going to repeted according to selection of number of customers-->
+                                <tr class="AssembleTR">
+                                    <td colspan="3" class="p-0">
+                                        <div class="AssembleTDAppend ">
+                                            <table class="table m-0 AssembleTable background-transparent">
+                                                <tr class="borderTopBlue">
+                                                    <td class="tableTH"></td>
+                                                    <td colspan="2" class="TDtitle">Add Products</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tableTH">Name </td>
+                                                    <td colspan="2" class="TDtitle" autocompName">@Html.TextBox("AssemblyName", null, new { @class = "autocompName whiteBgInput", @data_value = 1, @id = "ObjectName_1", onclick = "AutoComp();", @autocomplete = "off", @placeholder = "Enter Name" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tableTH">Code / Catalogue Number </td>
+                                                    <td colspan="2" class="TDtitle">
+                                                        @Html.TextBox("AssemblyCode", null, new { @class = "autocompCode whiteBgInput", @data_value = 1, @id = "ObjectCode_1", @autocomplete = "off", @placeholder = "Enter Code / Catalogue Number" })
+                                                        <input type="hidden" name="AssemId" id="ObjectId_1" />
+                                                        <input type="hidden" name="ObjectType" id="ObjectType_1" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tableTH">Technical Name </td>
+                                                    <td colspan="2" class="TDtitle" autocompTech">@Html.TextBox("TechnicalName ", null, new { @class = "autocompTech whiteBgInput", @data_value = 1, @id = "ObjectTech_1", @readonly = "readonly", @placeholder = "Enter Technical Name" })</td>
+                                                </tr>
+                                                @*<tr>
+                                                        <td class="tableTH">Quantity <span class="position-relative">(Nos)</td>
+                                                        <td colspan="2" class="TDtitle" autocompTech">@Html.TextBox("Quantity", string.Empty, new { @class = "autocompQty whiteBgInput", @data_value = 1, @id = "ObjectQty_1", @type = "number", @autocomplete = "off" })</td>
+                                                    </tr>*@
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!--this block going to repeted-->
+                                <tr class="borderTopBlue">
+                                    <td></td>
+                                    <td colspan="2">
+                                        <div class="addSubAsmbl" id="addSubAssemble">
+                                            <img src="~/Assets/images/addMore.png" onclick="AddAssembly();" /> Add Products
+                                        </div>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td rowspan="2" class="tableTH ">Add Summary</td>
+                                    <td colspan="2" class="summaryTD">
+                                        @Html.TextArea("Summary", string.Empty, new { @rows = 8 })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="p-0">
+
+                                        <button type="button" class="submitEnq cancelEnq" id="cancelModal">Cancel</button>
+                                        @*<button type="button" class="submitEnq sucessEnq" onclick="submitPg();" id="btnCreateProdGroup">Submit</button>*@
+                                        <button type="button" class="submitEnq sucessEnq" id="btnCreateProdGroup">Submit</button>
+                                        <span class="errorModal" id="validationErr" style="display:none"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="successModel" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header modelHeader">
+                <span class="modal-title modalMsgTitle" id="modalTitle"></span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label id="modalBody" class="lableMsg">  </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="submitBomBtn publishBtn" id="modalOkButton">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function createSuccess() {
+        $('#modalTitle').html('Success');
+        $('#modalBody').html('Product Group created successfully');
+        $("#modalOkButton").attr('onclick', 'window.location.reload();');
+        $("#successModel").modal('show');
+    }
+
+    function createFailure() {
+        $('#modalTitle').html('Failure');
+        $('#modalBody').html('Product Group could not be created due to some error. Please try again');
+        $("#modalOkButton").attr('data-dismiss', 'modal');
+        $("#successModel").modal('show');
+    }
+
+    function clear() {
+        $("#createComponentModal")
+    }
+
+    function submitPg() {
+        var form = $("#CreateProductGroupForm").serialize();
+        $.ajax({
+            type: 'POST',
+            url: "/ProductGroup/CreateProductGroup",
+            data: form,
+            dataType: 'json',
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data > 0) {
+                    $("#createComponentModal").modal('hide');
+                    $("#createComponentModal").find('input').val('');
+                    $('select').each(function () {
+                        $(this).val($(this).prop('defaultSelected'));
+                    });
+                    createSuccess();
+                }
+                else {
+                    //$("#createComponentModal").modal('hide');
+                    createFailure();
+                }
+            },
+            error: function (response) {
+            },
+        });
+    };
+
+    $(document).ready(function () {
+        $(".collapseHideSide").click(function () {
+            $(".collapseSide").css("display", "none");
+            $(".FullCollapse").removeClass("col-sm-7").addClass("col-sm-12");
+            $(".collapseShowSide").css("display", "block");
+            $(".collapseHideSide").css("display", "none");
+        })
+        $(".collapseShowSide").click(function () {
+            $(".collapseSide").css("display", "block");
+            $(".FullCollapse").removeClass("col-sm-12").addClass("col-sm-7");
+            $(".collapseShowSide").css("display", "none");
+            $(".collapseHideSide").css("display", "block");
+
+        })
+        AutoCompleteType("ddlLineVoltage", "2");
+        AutoCompleteType("bundleSpacingddl", "5");
+        AutoCompleteType("ddlConductorType", "3");
+    });
+
+    $("#crossClose").click(function () {
+        $("#createComponentModal").find('input').val('');
+        $('select').each(function () {
+            $(this).val($(this).prop('defaultSelected'));
+        });
+    });
+
+    $("#cancelModal").click(function () {
+        $("#createComponentModal").find('input').val('');
+        $('select').each(function () {
+            $(this).val($(this).prop('defaultSelected'));
+        });
+    });
+
+    function ClearFilter() {
+        $("#groupTypeFilter").val('');
+        $("#lineVoltageFilter").val('');
+        $("#utsFilter").val('');
+        $("#bundleTypeFilter").val('');
+        $("#conductorTypeFilter").val('');
+        FilterList();
+    };
+
+    var autoData = null;
+
+    function openModal() {
+        $("#createComponentModal").modal('show');
+    };
+
+    $("#conductorName").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                type: 'POST',
+                url: "/ProductGroup/GetConductorNames",
+                data: { prefix: request.term },
+                dataType: 'json',
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return { label: item.Value, value: item.Id }
+                    }))
+                },
+                error: function (response) {
+                },
+                failure: function (response) {
+                }
+            });
+        },
+        select: function (e, i) {
+            $(this).val(i.item.label);
+            //$("#conductorNameId").val(i.item.value);
+            return false;
+        },
+        change: function (e, i) {
+            if (i.item == null) {
+                //$(this).val("");
+                //$("#conductorNameId").val(0);
+                $(this).focus();
+            }
+        },
+        minLength: 2
+    });
+
+
+    function AutoComp() {
+        $(".autocompName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/ProductGroup/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                //$("#ObjectId_" + countId).val(objectId);
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+                //var type = i.item.Type;
+
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num = $(this).attr('data-value');
+                    $("#ObjectId_" + num).val("");
+                    $("#type_" + num).val("");
+                    ClearRow(num);
+                }
+            },
+            create: function () {
+                $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/" + item.Type + ".png' width='20px'></span></div>")
+                        .appendTo(ul);
+                };
+            },
+            minLength: 2
+        });
+
+        $(".autocompCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/ProductGroup/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                //$("#ObjectId_" + countId).val(objectId);
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+                //var type = i.item.Type;
+
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num = $(this).attr('data-value');
+                    $("#ObjectId_" + num).val("");
+                    $("#type_" + num).val("");
+                    ClearRow(num);
+                }
+            },
+            create: function () {
+                $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/" + item.Type + ".png' width='20px'></span></div>")
+                        .appendTo(ul);
+                };
+            },
+            minLength: 2
+        });
+
+        function AutoFillSelectedRow(num, objectId, type) {
+            let obj = autoData.find(x => x.Id == objectId && x.MasterType == type);
+            if (type == 2) {
+                $("#ObjectCode_" + num).val(obj.Code);
+            }
+            else {
+                $("#ObjectCode_" + num).val(obj.CatalogueNo);
+            }
+            $("#ObjectId_" + num).val(objectId);
+            $("#ObjectName_" + num).val(obj.Name);
+            $("#ObjectTech_" + num).val(obj.TechnicalName);
+            $("#ObjectType_" + num).val(type);
+        };
+
+        function ClearRow(num) {
+            $("#ObjectCode_" + num).val("");
+            $("#ObjectId_" + num).val("");
+            $("#ObjectName_" + num).val("");
+            $("#ObjectTech_" + num).val("");
+            $("#ObjectType_" + num).val("");
+        }
+    };
+
+    function FilterList() {
+        var groupTypeId = $("#groupTypeFilter").val() || 0;
+        var lineVoltageId = $("#lineVoltageFilter").val() || 0;
+        //var utsId = $("#utsFilter").val() || 0;
+        var conductorType = $("#conductorTypeFilter").val() || 0;
+        var bundleTypeId = $("#bundleTypeFilter").val() || 0;
+        $.ajax({
+            type: 'GET',
+            url: "/ProductGroup/GetFilteredProductGroups",
+            data: { groupTypeId: groupTypeId, lineVoltageId: lineVoltageId, conductorType: conductorType, bundleTypeId: bundleTypeId },
+            dataType: 'html',
+            success: function (data) {
+                $('#AssemblyList').html(data);
+                HighlightFirstRow();
+            },
+            error: function (err) {
+
+            }
+        });
+    };
+
+    function HighlightFirstRow() {
+        var rowSelected = $("#hidGroupId").attr('value');
+        $("#selectedAssemblyRow_" + rowSelected).attr('style', 'font-weight:bold');
+    }
+
+    function AddAssembly() {
+        var count = $(".AssembleTR").length + 1;
+        $('.AssembleTR:last').after('<tr class="AssembleTR"> <td colspan="3" class="p-0"> <div class="AssembleTDAppend "> <table class="table m-0 AssembleTable background-transparent"> <tr class="borderTopBlue"> <td class="tableTH"></td>' +
+            '<td colspan = "2" class="TDtitle"> Add Products </td> </tr> <tr> <td class="tableTH"> Name </td>' +
+            '<td colspan="2" class="TDtitle"> <input type="text" name="AssemblyName" placeholder="Enter Name" class="autocompName whiteBgInput" data-value=' + count + ' id= AssmName_' + count + ' onclick= "AutoComp();" autocomplete="off"> </td></tr> ' +
+            '<tr> <td class="tableTH">Code / Catalogue Number </td> <td colspan="2" class="TDtitle">' +
+            '<input type="text" placeholder="Enter Code / Catalouge Number" name="AssemblyCode" class="autocompCode whiteBgInput" data-value=' + count + ' id = ObjectCode_' + count + ' onclick= "AutoComp();" autocomplete="off">' +
+            '<input type="hidden" name="AssemId" id=ObjectId_' + count + '> <input type="hidden" name="ObjectType" id=ObjectType_' + count + ' /> </td> </tr>' +
+            '<tr> <td class="tableTH">Technical Name </td> <td colspan="2" class="TDtitle"> <input placeholder="Enter Technical Name" type="text" name="TechnicalName" class="autocompTech whiteBgInput" data-value=' + count + ' id = ObjectTech_' + count + ' readonly="readonly"> </td></tr>' +
+            '</table> </div> </td> </tr>');
+    };
+
+    $("#btnCreateProdGroup").click(function () {
+        debugger;
+        if ($('#prodGroupName').val() == '') {
+            $("#validationErr").html('Please enter Product Group Name');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+        //else if ($('#prodGroupCode').val() == '') {
+        //    $("#validationErr").html('Please enter Product Group Code');
+        //    $("#validationErr").removeAttr('style');
+        //    return;
+        //}
+        else if ($('#ddlProdGroupType').val() == '') {
+            $("#validationErr").html('Please select Product Group Type');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+        else if ($('#ddlLineVoltage').val() == '') {
+            $("#validationErr").html('Please select a Line Voltage');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+        else if ($('#ddlConductorType').val() == '') {
+            $("#validationErr").html('Please select a Conductor Type');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+        else if ($('#ddlBundleType').val() == '') {
+            $("#validationErr").html('Please select a Bundle Type');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+        else if ($("#conductorName").val() == '' || $("#conductorName").val() == undefined) {
+            $("#validationErr").html('Please select a Conductor Name');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+        else if ($("#bundleSpacingddl").val() == '' || $("#bundleSpacingddl").val() == '0') {
+            $("#validationErr").html('Please select Bundle Spacing');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+
+        var dataResult = checkIfEmpty();
+        if (!dataResult) {
+            $("#validationErr").html('Add atleast one product');
+            $("#validationErr").removeAttr('style');
+            return;
+        }
+
+        var ddlProdGrp = $('#ddlProdGroupType');
+        var ddlLineVolt = $('#ddlLineVoltage');
+        var ddlCondType = $('#ddlConductorType');
+        var ddlBundleType = $('#ddlBundleType');
+        var ddlBundleSpacing = $("#bundleSpacingddl");
+        if (ddlProdGrp.val() && ddlLineVolt.val() && ddlCondType.val() && ddlBundleType.val() && $('#prodGroupName').val() && ddlBundleSpacing.val()) {
+            submitPg();
+        };
+
+    });
+
+    $("#ddlProdGroupType").change(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    $("#bundleSpacingddl").change(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    $("#ddlLineVoltage").change(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    $("#ddlConductorType").change(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    $("#ddlBundleType").change(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    $("#prodGroupName").keyup(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    $("#prodGroupCode").keyup(function () {
+        $("#validationErr").html('');
+        $("#validationErr").attr('style', 'display:none');
+    });
+
+    function checkIfEmpty() {
+        var count = $(".AssembleTR").length + 1;
+        var result = false;
+
+        for (let i = 1; i <= count; i++) {
+            var data = $('#ObjectId_' + i).val();
+            if (data) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    function AutoCompleteType(id,type) {
+        $("#" + id).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/Master/SearchMasterByPrefix",
+                    data: { type: type, prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        ////
+                        response($.map(data, function (item) {
+                            return { label: item.Name, value: item.Name }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).focus();
+                }
+            },
+            minLength: 2
+        });
+    }
+
+</script>
+

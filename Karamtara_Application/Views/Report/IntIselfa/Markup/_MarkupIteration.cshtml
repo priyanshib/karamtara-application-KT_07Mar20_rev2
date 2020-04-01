@@ -1,0 +1,875 @@
+﻿@using Karamtara_Application.Models.Tender
+@model IntMarkupModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    MarkupDetails markupModel = null;
+    decimal value = 0;
+}
+
+<div class="BomRefDtls markupRevContainer" tndMarkupRevNo="@Model.TndRevNo">
+    <div class="closeMenu">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="col-sm-12 row BomRefHeader m-0">
+        ADD MARK UPS
+    </div>
+    @Html.HiddenFor(x => x.AdvBGpercent, new { @id = "AdvBGpercentMrkp" })
+
+    <div class="col-sm-12 row BomRefItem m-0">
+        <div class="col-sm-8 ">
+            <div class="row addMarkInput">
+                <div class="col-sm-4">
+                    Rate of Interest
+                    @{
+                        value = 0;
+                        if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.TenderDetails.Where(x => x.Description == "IntRate").FirstOrDefault();
+                            value = dynamic == null ? 0 : dynamic.Value;
+                        }
+                    }
+                    <p class="d-flex align-items-center mt-1"><input name="IntRate" onblur="SetValues()" value="@value" type="number" id="IntRate" />%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 text-right">
+            <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+            <button type="button" id="btnSubmitMarkup" class="submitEnq publishBtn">Submit</button>
+        </div>
+    </div>
+
+    <div class="tableBlock TenderDtlModelTable MarkupPricingCharges ">
+
+        <input type="hidden" name="tndId" id="markupTndId" />
+        <input type="hidden" name="tndRevId" id="markupTndRevId" />
+        <table class="table m-0 markupListItems iterationTable tableLayout">
+            <tr>
+                <th class="TenderRevisonName" colspan="4" style="width:1000px">Revision @Model.TndRevNo</th>
+            </tr>
+            <tr>
+                <th class="MarkUpTxt" >Rate of Interest</th>
+                <th class="MarkUpName" colspan="3" >@value</th>
+            </tr>
+            <tr>
+                @{
+                    value = 0;
+                    if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                    {
+                        dynamic = new ExpandoObject();
+                        dynamic = Model.TenderDetails.Where(x => x.Description == "PackingPercentage").FirstOrDefault();
+                        value = dynamic == null ? 0 : dynamic.Value;
+                        if (value > 0) { value = (value - 1) * 100; }
+
+                    }
+                }
+                <th class="MarkUpTxt">Packing Material Weight as Percentage</th>
+                <th class="MarkUpName" colspan="3">@value</th>
+            </tr>
+            <tr>
+                <th class="MarkUpTxt">Markup</th>
+                <th class="MarkUpPrc">Italy</th>
+                <th class="MarkUpPrc">India</th>
+                <th class="MarkUpPrc">BO</th>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 10).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt" >
+                    <div class="col-sm-12 p-0">
+                        <div class="row">
+                            <div class="col-sm-7 d-flex align-items-center">
+                                Financing
+                            </div>
+                            <div class="col-sm-5 d-flex p-2 text-right justify-content-between">
+                                @*<div class="row">*@
+                                    <div class="">
+                                        @{
+                                            value = 0;
+                                            if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.TenderDetails.Where(x => x.Description == "FinancingDays").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        @Html.TextBox("FinancingDays", value, new { @id = "FinancingDays", @type = "number", @onblur = "SetValues()" })
+                                    </div>
+                                    <div class="">
+                                        D
+                                    </div>
+                                @*</div>*@
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Financing", 10)
+                    @Html.TextBox("Financing", markupModel.ItalyVal, new { @id = "FinItaly", @readonly = "true", @onblur = "SetValues()", @type = "number", @markupId = 10, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Financing", markupModel.IndiaVal, new { @id = "FinInd", @readonly = "true", @onblur = "SetValues()", @type = "number", @markupId = 10, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Financing", markupModel.BOVal, new { @id = "FinBO", @readonly = "true", @onblur = "SetValues()", @type = "number", @markupId = 10, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 11).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Packing</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Packing", 11)
+                    @Html.TextBox("Packing", markupModel.ItalyVal, new { @id = "PackingItaly", @onblur = "SetValues()", @type = "number", @markupId = 11, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Packing", markupModel.IndiaVal, new { @id = "PackingInd", @onblur = "SetValues()", @type = "number", @markupId = 11, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Packing", markupModel.BOVal, new { @id = "PackingBO", @onblur = "SetValues()", @type = "number", @markupId = 11, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 12).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Local transportation</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Localtrans", 12)
+                    @Html.TextBox("Localtrans", markupModel.ItalyVal, new { @id = "LocaltransItaly", @onblur = "SetValues()", @type = "number", @markupId = 12, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Localtrans", markupModel.IndiaVal, new { @id = "LocaltransInd", @onblur = "SetValues()", @type = "number", @markupId = 12, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Localtrans", markupModel.BOVal, new { @id = "LocaltransBO", @onblur = "SetValues()", @type = "number", @markupId = 12, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 13).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Overheads</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Overheads", 13)
+                    @Html.TextBox("Overheads", markupModel.ItalyVal, new { @id = "OverheadsItaly", @onblur = "SetValues()", @type = "number", @markupId = 13, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Overheads", markupModel.IndiaVal, new { @id = "OverheadsInd", @onblur = "SetValues()", @type = "number", @markupId = 13, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Overheads", markupModel.BOVal, new { @id = "OverheadsBO", @onblur = "SetValues()", @type = "number", @markupId = 13, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 14).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Insurance</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Insurance", 14)
+                    @Html.TextBox("Insurance", markupModel.ItalyVal, new { @id = "InsuranceItaly", @onblur = "SetValues()", @type = "number", @markupId = 14, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Insurance", markupModel.IndiaVal, new { @id = "InsuranceInd", @onblur = "SetValues()", @type = "number", @markupId = 14, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Insurance", markupModel.BOVal, new { @id = "InsuranceBO", @onblur = "SetValues()", @type = "number", @markupId = 14, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 15).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Price Variation</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("PriceVariation", 15)
+                    @Html.TextBox("PriceVariation", markupModel.ItalyVal, new { @id = "PriceVariationItaly", @onblur = "SetValues()", @type = "number", @markupId = 15, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("PriceVariation", markupModel.IndiaVal, new { @id = "PriceVariationInd", @onblur = "SetValues()", @type = "number", @markupId = 15, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("PriceVariation", markupModel.BOVal, new { @id = "PriceVariationBO", @onblur = "SetValues()", @type = "number", @markupId = 15, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 16).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">PBG</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("PBG", 16)
+                    @Html.TextBox("PBG", Model.PBGValue, new { @id = "PBGItaly", @readonly = "true", @type = "number", @markupId = 16, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("PBG", Model.PBGValue, new { @id = "PBGInd", @readonly = "true", @type = "number", @markupId = 16, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("PBG", null, new { @id = "PBGBO", @readonly = "true", @type = "number", @markupId = 16, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 17).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">
+                    <div class="col-sm-12 p-0">
+                        <div class="row">
+                            <div class="col-sm-7 d-flex align-items-center">
+                                Finance: Sales Cr.
+                            </div>
+                            <div class="col-sm-5 d-flex p-2 text-right justify-content-between">
+                                @*<div class="row">*@
+                                    <div class="">
+                                        @{
+                                            value = 0;
+                                            if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.TenderDetails.Where(x => x.Description == "FinSalesCrDays").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        @Html.TextBox("FinSalesCrDays", value, new { @id = "FinSalesCrDays", @type = "number", @onblur = "SetValues()" })
+                                    </div>
+                                    <div class="">
+                                        D
+                                    </div>
+                                @*</div>*@
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("FinSalesCr", 17)
+                    @Html.TextBox("FinSalesCr", markupModel.ItalyVal, new { @id = "FinSalesCrItaly", @readonly = "true", @onblur = "SetValues()", @type = "number", @markupId = 17, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("FinSalesCr", markupModel.IndiaVal, new { @id = "FinSalesCrInd", @readonly = "true", @onblur = "SetValues()", @type = "number", @markupId = 17, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("FinSalesCr", markupModel.BOVal, new { @id = "FinSalesCrBO", @readonly = "true", @onblur = "SetValues()", @type = "number", @markupId = 17, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 18).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt" >
+                    <div class="col-sm-12 p-0">
+                        <div class="row">
+                            <div class="col-sm-7 d-flex align-items-center">
+                                Interest saving on Advance
+                            </div>
+                            <div class="col-sm-5  p-2 text-right ">
+                                <div class="d-flex justify-content-between">
+                                    <div class="">
+                                        @{
+                                            value = 0;
+                                            if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.TenderDetails.Where(x => x.Description == "InterestSaveDays").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        @Html.TextBox("InterestSaveDays", value, new { @id = "InterestSaveDays", @onblur = "SetValues()", @type = "number" })
+                                    </div>
+                                    <div class="">
+                                        D
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <div class="">
+                                        @{
+                                            value = 0;
+                                            if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                                            {
+                                                dynamic = new ExpandoObject();
+                                                dynamic = Model.TenderDetails.Where(x => x.Description == "InterestSaveMnths").FirstOrDefault();
+                                                value = dynamic == null ? 0 : dynamic.Value;
+                                            }
+                                        }
+                                        @Html.TextBox("InterestSaveMnths", value, new { @id = "InterestSaveMnths", @onblur = "SetValues()", @type = "number" })
+                                    </div>
+                                    <div class="">
+                                        M
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("InterestSave", 18)
+                    @Html.TextBox("InterestSave", markupModel.ItalyVal, new { @id = "InterestSaveItaly", @readonly = "true", @onblur = "SetValues()", @type = "text", @markupId = 18, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("InterestSave", markupModel.IndiaVal, new { @id = "InterestSaveInd", @readonly = "true", @onblur = "SetValues()", @type = "text", @markupId = 18, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("InterestSave", markupModel.BOVal, new { @id = "InterestSaveBO", @readonly = "true", @onblur = "SetValues()", @type = "text", @markupId = 18, @colname = "bo" }) </td>
+            </tr>
+            <tr id="SubtotalRow">
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 19).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Subtotal</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Subtotal", 19)
+                    @Html.TextBox("Subtotal", markupModel.ItalyVal, new { @id = "SubtotalItaly", @readonly = "true", @type = "number", @markupId = 19, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Subtotal", markupModel.IndiaVal, new { @id = "SubtotalInd", @readonly = "true", @type = "number", @markupId = 19, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Subtotal", markupModel.BOVal, new { @id = "SubtotalBO", @readonly = "true", @type = "number", @markupId = 19, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 20).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Testing</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Testing", 20)
+                    @Html.TextBox("Testing", markupModel.ItalyVal, new { @id = "TestingItaly", @readonly = "true", @type = "number", @markupId = 20, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Testing", markupModel.IndiaVal, new { @id = "TestingInd", @readonly = "true", @type = "number", @markupId = 20, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Testing", markupModel.BOVal, new { @id = "TestingBO", @readonly = "true", @type = "number", @markupId = 20, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 21).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Override Testing</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("OverrideTest", 21)
+                    @Html.TextBox("OverrideTest", markupModel.ItalyVal, new { @id = "OverrideTestItaly", @onblur = "SetValues()", @type = "number", @markupId = 21, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("OverrideTest", markupModel.IndiaVal, new { @id = "OverrideTestInd", @onblur = "SetValues()", @type = "number", @markupId = 21, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("OverrideTest", markupModel.BOVal, new { @id = "OverrideTestBO", @onblur = "SetValues()", @type = "number", @markupId = 21, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 22).FirstOrDefault() ?? new MarkupDetails() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Remarks</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Remarks", 22)
+                    @Html.TextBox("Remarks", markupModel.ItalyVal, new { @id = "RemarksItaly", @type = "text", @markupId = 22, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Remarks", markupModel.IndiaVal, new { @id = "RemarksInd", @type = "text", @markupId = 22, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Remarks", markupModel.BOVal, new { @id = "RemarksBO", @type = "text", @markupId = 22, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 23).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">
+                    Travel, Lodging & Boarding
+                    @*<img src="~/Assets/images/plusPubIcon.png" onclick="OpenTravelLBModal(this);" />*@
+                    @{
+                        value = 0;
+                        if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.TenderDetails.Where(x => x.Description == "NoOfPersons").FirstOrDefault();
+                            value = dynamic == null ? 0 : dynamic.Value;
+                        }
+                    }
+                    <input type="hidden" id="NoOfPersons" name="NoOfPersons" value="@value" />
+                    @{
+                        value = 0;
+                        if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.TenderDetails.Where(x => x.Description == "NoOfDays").FirstOrDefault();
+                            value = dynamic == null ? 0 : dynamic.Value;
+                        }
+                    }
+                    <input type="hidden" id="NoOfDays" name="NoOfDays" value="@value" />
+                    @{
+                        value = 0;
+                        if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.TenderDetails.Where(x => x.Description == "Fare").FirstOrDefault();
+                            value = dynamic == null ? 0 : dynamic.Value;
+                        }
+                    }
+                    <input type="hidden" id="Fare" name="Fare" value="@value" />
+                    @{
+                        value = 0;
+                        if (Model.TenderDetails != null && Model.TenderDetails.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.TenderDetails.Where(x => x.Description == "Lodging").FirstOrDefault();
+                            value = dynamic == null ? 0 : dynamic.Value;
+                        }
+                    }
+                    <input type="hidden" id="Lodging" name="Lodging" value="@value" />
+                </td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("TravelLB", 23)
+                    @Html.TextBox("TravelLB", markupModel.ItalyVal, new { @id = "TravelLBItaly", @readonly = "true", @type = "number", @markupId = 23, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("TravelLB", markupModel.IndiaVal, new { @id = "TravelLBInd", @readonly = "true", @type = "number", @markupId = 23, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("TravelLB", markupModel.BOVal, new { @id = "TravelLBBO", @readonly = "true", @type = "number", @markupId = 23, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 24).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Development</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Development", 24)
+                    @Html.TextBox("Development", markupModel.ItalyVal, new { @id = "DevItaly", @onblur = "SetValues()", @type = "number", @markupId = 24, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Development", markupModel.IndiaVal, new { @id = "DevInd", @onblur = "SetValues()", @type = "number", @markupId = 24, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Development", markupModel.BOVal, new { @id = "DevBO", @onblur = "SetValues()", @type = "number", @markupId = 24, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 25).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Total</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Total", 25)
+                    @Html.TextBox("Total", markupModel.ItalyVal, new { @id = "TotalItaly", @type = "number", @readonly = "true", @markupId = 25, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Total", markupModel.IndiaVal, new { @id = "TotalInd", @type = "number", @readonly = "true", @markupId = 25, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Total", markupModel.BOVal, new { @id = "TotalBO", @type = "number", @readonly = "true", @markupId = 25, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 26).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">% to Unit cost</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("PercUnitCost", 26)
+                    @Html.TextBox("PercUnitCost", markupModel.ItalyVal, new { @id = "PercUnitCostItaly", @readonly = "true", @type = "number", @markupId = 26, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("PercUnitCost", markupModel.IndiaVal, new { @id = "PercUnitCostInd", @readonly = "true", @type = "number", @markupId = 26, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("PercUnitCost", markupModel.BOVal, new { @id = "PercUnitCostBO", @readonly = "true", @type = "number", @markupId = 26, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 27).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Total</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("FinalTot", 27)
+                    @Html.TextBox("FinalTot", markupModel.ItalyVal, new { @id = "FinalTotItaly", @readonly = "true", @type = "number", @markupId = 27, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("FinalTot", markupModel.IndiaVal, new { @id = "FinalTotInd", @readonly = "true", @type = "number", @markupId = 27, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("FinalTot", markupModel.BOVal, new { @id = "FinalTotBO", @readonly = "true", @type = "number", @markupId = 27, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 28).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Contingency</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Contingency", 28)
+                    @Html.TextBox("Contingency", markupModel.ItalyVal, new { @id = "ContingencyItaly", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 28, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Contingency", markupModel.IndiaVal, new { @id = "ContingencyInd", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 28, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Contingency", markupModel.BOVal, new { @id = "ContingencyBO", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 28, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 29).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Margin</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Margin", 29)
+                    @Html.TextBox("Margin", markupModel.ItalyVal, new { @id = "MarginItaly", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 29, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Margin", markupModel.IndiaVal, new { @id = "MarginInd", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 29, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Margin", markupModel.BOVal, new { @id = "MarginBO", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 29, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 30).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Agency Commission</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("AgencyComm", 30)
+                    @Html.TextBox("AgencyComm", markupModel.ItalyVal, new { @id = "AgencyCommItaly", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 30, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("AgencyComm", markupModel.IndiaVal, new { @id = "AgencyCommInd", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 30, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("AgencyComm", markupModel.BOVal, new { @id = "AgencyCommBO", @onblur = "SetTotalMarkup()", @type = "number", @markupId = 30, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 31).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Total Margin </td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("TotMargin", 31)
+                    @Html.TextBox("TotMargin", markupModel.ItalyVal, new { @id = "TotMarginItaly", @readonly = "true", @type = "number", @markupId = 31, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("TotMargin", markupModel.IndiaVal, new { @id = "TotMarginInd", @readonly = "true", @type = "number", @markupId = 31, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("TotMargin", markupModel.BOVal, new { @id = "TotMarginBO", @readonly = "true", @type = "number", @markupId = 31, @colname = "bo" }) </td>
+            </tr>
+            <tr>
+                @{
+                    markupModel = new MarkupDetails();
+                    if (Model.MarkupDetails != null && Model.MarkupDetails.Any())
+                    {
+                        markupModel = Model.MarkupDetails.Where(x => x.MarkupId == 32).FirstOrDefault() ?? new MarkupDetails();
+                    }
+                }
+                <td class="MarkUpTxt">Negotiation</td>
+                <td class="MarkUpPrc">
+                    @Html.Hidden("Negotation", 32)
+                    @Html.TextBox("Negotation", markupModel.ItalyVal, new { @id = "NegotationItaly", @type = "number", @markupId = 32, @colname = "italy" })
+                </td>
+                <td class="MarkUpPrc">@Html.TextBox("Negotation", markupModel.IndiaVal, new { @id = "NegotationInd", @type = "number", @markupId = 32, @colname = "india" }) </td>
+                <td class="MarkUpPrc">@Html.TextBox("Negotation", markupModel.BOVal, new { @id = "NegotationBO", @type = "number", @markupId = 32, @colname = "bo" }) </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+    var tndType = @Model.TndType,tndMarkupRevDiv=$("div[tndMarkupRevNo='"+@Model.TndRevNo+"']");
+
+    $(tndMarkupRevDiv).find("#btnSubmitMarkup").click(function () {
+
+        $(tndMarkupRevDiv).find(".MarkupPricingCharges").find("input[type='number']").filter(function () {
+            return this.value == "";
+        }).val(0);
+
+        $(tndMarkupRevDiv).find("input[name='InterestSave']").filter(function () {
+            return this.value == "";
+        }).val(0);
+
+        $(tndMarkupRevDiv).find(".MarkupPricingCharges").find("input[type='text']").not("input[name='InterestSave']").filter(function () {
+            return $(tndMarkupRevDiv).find(this).val() == "";
+        }).val("-");
+
+        var form = $(tndMarkupRevDiv).find("#MarkupPricingForm").serialize();
+
+        $.ajax({
+            type: "post",
+            url: '/IntTenderPricingKT/SaveMarkupPricing',
+            dataType: "json",
+            data: form,
+            success: function (data) {
+                if (data) {
+                    $(tndMarkupRevDiv).find(".modal").modal('hide');
+                    //successModal();
+                    window.location.reload();
+                }
+                else {
+                    failureModal();
+                }
+            },
+            error: function (courses) {
+                failureModal();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        SetValues();
+
+        $(tndMarkupRevDiv).find("#markupTndId").val($(tndMarkupRevDiv).find("#tndId").val());
+        $(tndMarkupRevDiv).find("#markupTndRevId").val($(tndMarkupRevDiv).find("#tndRevId").val());
+
+        $(tndMarkupRevDiv).find("td").filter(function () {
+            return $(tndMarkupRevDiv).find(this).text().toLowerCase() == 'pbg';
+        }).nextAll().find("input").attr('readonly', 'readonly');
+
+        if ($(tndMarkupRevDiv).find("#isPageEditable").val() != "True" && $(tndMarkupRevDiv).find("#isPageEditable").val() != "true") {
+            $(tndMarkupRevDiv).find("input").attr('readonly', true);
+            $(tndMarkupRevDiv).find(".ModelFooter").find(".whiteBgInput").css("font-weight", "bold");
+            $(tndMarkupRevDiv).find(".ModelFooter").find(".whiteBgInput").css("color", "#fff");
+            $(tndMarkupRevDiv).find("input").removeClass("whiteBgInput");
+            $(tndMarkupRevDiv).find("input").removeClass("p-1");
+        }
+    });
+
+    function SetValues() {
+        var interestRate, financingDays, finSalesCrDays, interestSaveDays, interestSaveMnths, financing, finSalesCr, interestSave, value;
+
+        interestRate = Number($(tndMarkupRevDiv).find("#IntRate").val());
+        financingDays = Number($(tndMarkupRevDiv).find("#FinancingDays").val());
+        finSalesCrDays = Number($(tndMarkupRevDiv).find("#FinSalesCrDays").val());
+        interestSaveDays = Number($(tndMarkupRevDiv).find("#InterestSaveDays").val());
+        interestSaveMnths = Number($(tndMarkupRevDiv).find("#InterestSaveMnths").val());
+
+        financing = (interestRate / 360) * financingDays;
+        $(tndMarkupRevDiv).find("#FinInd").val(financing.toFixed(3));
+        $(tndMarkupRevDiv).find("#FinItaly,#FinBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+
+        finSalesCr = (interestRate / 360) * finSalesCrDays;
+        $(tndMarkupRevDiv).find("#FinSalesCrInd").val(finSalesCr.toFixed(3));
+        $(tndMarkupRevDiv).find("#FinSalesCrItaly,#FinSalesCrBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+
+        interestSave = Number($(tndMarkupRevDiv).find("#AdvBGpercentMrkp").val()) * (interestRate / 1200) * interestSaveMnths;
+
+        if (interestSave > 0)
+            value = "-" + interestSave.toFixed(3).toString();
+        else
+            value = 0;
+        if (tndType == 1) {
+            $(tndMarkupRevDiv).find("#InterestSaveInd").val(value);
+            $(tndMarkupRevDiv).find("#InterestSaveItaly,#InterestSaveBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+            $(tndMarkupRevDiv).find("#PBGItaly").val('');
+        } else {
+            $(tndMarkupRevDiv).find("#InterestSaveItaly").val(value);
+            $(tndMarkupRevDiv).find("#InterestSaveInd,#InterestSaveBO").val(0).removeClass("whiteBgInput").attr("readonly", true);
+            $(tndMarkupRevDiv).find("#PBGInd").val('');
+        }
+
+        SetSubTotal();
+        SetTotal();
+        SetPercentUnitCost();
+        SetFinalTotal();
+        SetTotalMarkup();
+
+        if (tndType == 1) {
+            $(tndMarkupRevDiv).find("#TravelLBItaly").val("");
+            $(tndMarkupRevDiv).find("#TravelLBBO").val("");
+        } else {
+            $(tndMarkupRevDiv).find("#TravelLBInd").val("");
+            $(tndMarkupRevDiv).find("#TravelLBBO").val("");
+        }
+    }
+
+    function SetSubTotal() {
+        var sum = 0, elements;
+        elements = $(tndMarkupRevDiv).find("#SubtotalRow").prevAll().find("input[colname='india']");
+        $.each(elements, function (index, ele) {
+            sum += Number($(tndMarkupRevDiv).find(ele).val());
+        });
+        $(tndMarkupRevDiv).find("#SubtotalInd").val(sum.toFixed(3));
+
+        sum = 0;
+        elements = $(tndMarkupRevDiv).find("#SubtotalRow").prevAll().find("input[colname='italy']");
+        $.each(elements, function (index, ele) {
+            sum += Number($(tndMarkupRevDiv).find(ele).val());
+        });
+        $(tndMarkupRevDiv).find("#SubtotalItaly").val(sum.toFixed(3));
+
+        sum = 0;
+        elements = $(tndMarkupRevDiv).find("#SubtotalRow").prevAll().find("input[colname='bo']");
+        $.each(elements, function (index, ele) {
+            sum += Number($(tndMarkupRevDiv).find(ele).val());
+        });
+        $(tndMarkupRevDiv).find("#SubtotalBO").val(sum.toFixed(3));
+    }
+
+    function SetTotal() {
+        var value, testOverrideCharge;
+        testOverrideCharge = Number($(tndMarkupRevDiv).find("#OverrideTestItaly").val());
+        if (testOverrideCharge > 0) {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBItaly").val()) + Number($(tndMarkupRevDiv).find("#DevItaly").val()) + testOverrideCharge;
+        } else {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBItaly").val()) + Number($(tndMarkupRevDiv).find("#DevItaly").val()) + Number($(tndMarkupRevDiv).find("#TestingItaly").val());
+        }
+        $(tndMarkupRevDiv).find("#TotalItaly").val(value.toFixed(3));
+
+        testOverrideCharge = Number($(tndMarkupRevDiv).find("#OverrideTestInd").val());
+        if (testOverrideCharge > 0) {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBInd").val()) + Number($(tndMarkupRevDiv).find("#DevInd").val()) + testOverrideCharge;
+        } else {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBInd").val()) + Number($(tndMarkupRevDiv).find("#DevInd").val()) + Number($(tndMarkupRevDiv).find("#TestingInd").val());
+        }
+        $(tndMarkupRevDiv).find("#TotalInd").val(value.toFixed(3));
+
+        testOverrideCharge = Number($(tndMarkupRevDiv).find("#OverrideTestBO").val());
+        if (testOverrideCharge > 0) {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBBO").val()) + Number($(tndMarkupRevDiv).find("#DevBO").val()) + testOverrideCharge;
+        } else {
+            value = Number($(tndMarkupRevDiv).find("#TravelLBBO").val()) + Number($(tndMarkupRevDiv).find("#DevBO").val()) + Number($(tndMarkupRevDiv).find("#TestingBO").val());
+        }
+        $(tndMarkupRevDiv).find("#TotalBO").val(value.toFixed(3));
+    }
+
+    function SetPercentUnitCost() {
+        var totalCost, finalTotalInd, value, total, subTotalInd;
+        //
+        totalCost = Number($(tndMarkupRevDiv).find("#totalCostINR").val());
+        total = Number($(tndMarkupRevDiv).find("#TotalInd").val());
+
+        value = (total / totalCost) * 100;
+        $(tndMarkupRevDiv).find("#PercUnitCostInd").val(value.toFixed(2));
+
+        subTotalInd = Number($(tndMarkupRevDiv).find("#SubtotalInd").val());
+        finalTotalInd = 1 + ((subTotalInd + value) / 100);
+
+        $(tndMarkupRevDiv).find("#FinalTotInd").val(finalTotalInd.toFixed(4));
+
+        total = Number($(tndMarkupRevDiv).find("#TotalItaly").val());
+        value = (total / (totalCost * finalTotalInd)) * 100;
+        $(tndMarkupRevDiv).find("#PercUnitCostItaly").val(value.toFixed(2));
+
+    }
+
+    function SetFinalTotal() {
+        var value, percentUnitCost, subTotal;
+
+        subTotal = Number($(tndMarkupRevDiv).find("#SubtotalInd").val());
+        percentUnitCost = Number($(tndMarkupRevDiv).find("#PercUnitCostInd").val());
+        value = 1 + ((subTotal + percentUnitCost) / 100);
+        $(tndMarkupRevDiv).find("#FinalTotInd").val(value.toFixed(4));
+
+        subTotal = Number($(tndMarkupRevDiv).find("#SubtotalItaly").val());
+        percentUnitCost = Number($(tndMarkupRevDiv).find("#PercUnitCostItaly").val());
+        value = 1 + ((subTotal + percentUnitCost) / 100);
+        $(tndMarkupRevDiv).find("#FinalTotItaly").val(value.toFixed(4));
+
+        subTotal = Number($(tndMarkupRevDiv).find("#SubtotalBO").val());
+        percentUnitCost = Number($(tndMarkupRevDiv).find("#PercUnitCostBO").val());
+        value = 1 + ((subTotal + percentUnitCost) / 100);
+        $(tndMarkupRevDiv).find("#FinalTotBO").val(value.toFixed(4));
+    }
+
+    function SetTotalMarkup() {
+        var value;
+
+        value = Number($(tndMarkupRevDiv).find("#ContingencyItaly").val()) + Number($(tndMarkupRevDiv).find("#MarginItaly").val()) + Number($(tndMarkupRevDiv).find("#AgencyCommItaly").val());
+        $(tndMarkupRevDiv).find("#TotMarginItaly").val(value.toFixed(2));
+
+        value = Number($(tndMarkupRevDiv).find("#ContingencyInd").val()) + Number($(tndMarkupRevDiv).find("#MarginInd").val()) + Number($(tndMarkupRevDiv).find("#AgencyCommInd").val());
+        $(tndMarkupRevDiv).find("#TotMarginInd").val(value.toFixed(2));
+
+        value = Number($(tndMarkupRevDiv).find("#ContingencyBO").val()) + Number($(tndMarkupRevDiv).find("#MarginBO").val()) + Number($(tndMarkupRevDiv).find("#AgencyCommBO").val());
+        $(tndMarkupRevDiv).find("#TotMarginBO").val(value.toFixed(2));
+    }
+
+    //function OpenTravelLBModal() {
+    //    var noOfPersons, noOfDays, fare, lodging;
+
+    //    $(tndMarkupRevDiv).find("#testmasterDtls").css('display', "block");
+    //    noOfPersons = $(tndMarkupRevDiv).find("#NoOfPersons").val();
+    //    noOfDays = $(tndMarkupRevDiv).find("#NoOfDays").val();
+    //    fare = $(tndMarkupRevDiv).find("#Fare").val();
+    //    lodging = $(tndMarkupRevDiv).find("#Lodging").val();
+
+    //    var html = '<div class="BomRefDtls">' +
+    //        '<div class="col-sm-12 row BomRefHeader m-0">' +
+    //        '<div class="col-sm-8">' +
+    //        'Add Travel, Loadging & Boarding' +
+    //        '</div>' +
+    //        '<div class="col-sm-4 text-right">' +
+    //        '<button type="button" class="submitEnq revisionBtn" onclick="CloseTravelLBModal()">Cancel</button>' +
+    //        '<button type="button" class="submitEnq publishBtn" onclick="SetTravelLB()">Submit</button>' +
+    //        '</div>' +
+    //        '</div>' +
+    //        '<div class="col-sm-12 row m-0 testMasterheader">' +
+    //        'No. of Persons:    <input type="number" class="whiteBgInput" id="txtNoOfPersons" value="' + noOfPersons + '"><br/>' +
+    //        '</div>' +
+    //        '<div class="col-sm-12 row m-0 testMasterheader">' +
+    //        'No. of Days:    <input type="number" class="whiteBgInput" id="txtNoOfDays" value="' + noOfDays + '"><br/>' +
+    //        '</div>' +
+    //        '<div class="col-sm-12 row m-0 testMasterheader">' +
+    //        'Fare:    <input type="number" class="whiteBgInput" id="txtFare" value="' + fare + '"><br/>' +
+    //        '</div>' +
+    //        '<div class="col-sm-12 row m-0 testMasterheader">' +
+    //        'Lodging:    <input type="number" class="whiteBgInput" id="txtLodging" value="' + lodging + '"><br/>' +
+    //        '</div>' +
+    //        '</div>';
+
+    //    $(tndMarkupRevDiv).find("#testmasterDtls").html(html);
+    //    $(tndMarkupRevDiv).find("#testmasterDtls").modal('show');
+    //}
+
+    function SetTravelLB() {
+        var noOfPersons, noOfDays, fare, lodging,travelLB,conversionRate;
+        noOfPersons = Number($(tndMarkupRevDiv).find("#txtNoOfPersons").val());
+        noOfDays = Number($(tndMarkupRevDiv).find("#txtNoOfDays").val());
+        fare = Number($(tndMarkupRevDiv).find("#txtFare").val());
+        lodging = Number($(tndMarkupRevDiv).find("#txtLodging").val());
+        if (tndType == 1) {
+            if (currencyList.filter(x => (x.Name).toLowerCase() == "usd").length > 0) {
+                conversionRate = Number(currencyList.filter(x => (x.Name).toLowerCase() == "usd")[0].Value);
+            }
+
+            travelLB = ((noOfPersons * noOfDays * lodging) + (noOfPersons * fare)) * conversionRate;
+            $(tndMarkupRevDiv).find("#TravelLBInd").val(travelLB.toFixed(0));
+        }
+        else {
+            if (currencyList.filter(x => (x.Name).toLowerCase() == "euro").length > 0) {
+                conversionRate = Number(currencyList.filter(x => (x.Name).toLowerCase() == "euro")[0].Value);
+            }
+
+            travelLB = ((noOfPersons * noOfDays * lodging) + (noOfPersons * fare)) * conversionRate;
+            $(tndMarkupRevDiv).find("#TravelLBItaly").val(travelLB.toFixed(0));
+        }
+
+        $(tndMarkupRevDiv).find("#NoOfPersons").val(noOfPersons);
+        $(tndMarkupRevDiv).find("#NoOfDays").val(noOfDays);
+        $(tndMarkupRevDiv).find("#Fare").val(fare);
+        $(tndMarkupRevDiv).find("#Lodging").val(lodging);
+        SetTotal();
+        $(tndMarkupRevDiv).find("#testmasterDtls").css('display', "none");
+    }
+
+    function CloseTravelLBModal() {
+        $(tndMarkupRevDiv).find("#testmasterDtls").css('display', "none");
+    }
+
+</script>

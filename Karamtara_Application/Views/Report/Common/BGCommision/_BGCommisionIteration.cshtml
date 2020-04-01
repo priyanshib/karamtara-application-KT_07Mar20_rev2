@@ -1,0 +1,343 @@
+﻿@model Karamtara_Application.Models.Tender.TenderBGModel
+@using System.Dynamic;
+@{
+    dynamic dynamic = new ExpandoObject();
+    dynamic.TenderNo = 0;
+    dynamic.TenderRevisionNo = 0;
+    dynamic.BGMonth = 0;
+    dynamic.CommisionPercentage = 0;
+    dynamic.BGPercentage = 0;
+    dynamic.BGAmount = 0;
+    dynamic.DeliveryMonth = 0;
+    dynamic.ContractValue = 0;
+    dynamic.PerformancePeriod = 18;
+    dynamic.GracePeriod = 3;
+    int tendorNo = Model.TenderNo;
+    int tendorRevNo = Model.TenderRevisionNo;
+    decimal bGMonth = 0;
+    decimal commisionPercentage = 0;
+    decimal bGPercentage = 0;
+    decimal bGAmount = 0;
+}
+
+
+@using (Html.BeginForm("SaveBGData", "TenderPricing", new { IsPublished = false }, FormMethod.Post, new { @id = "BGCommisionForm", enctype = "multipart/form-data" }))
+{
+    <div class="BomRefDtls" revisionNo="@Model.TenderRevisionNo">
+        @{
+            if (Model.List != null && Model.List.Any())
+            {
+                dynamic = Model.List.FirstOrDefault();
+            }
+        }
+        @*<input type="hidden" id="hidTndId" value="@tendorNo" />
+            <input type="hidden" id="hidTndRevNo" value="@tendorRevNo" />*@
+        <div class="closeMenu">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="col-sm-12 row BomRefHeader m-0">
+            CALCULATE BANK GUARANTEE COMMISSION
+
+        </div>
+
+        <div class="col-sm-12 row BomRefItem m-0">
+            <div class="col-sm-8 ">
+                <div class="row">
+                    <div class="col-sm">
+                        Months
+                        <p class="d-flex align-items-center mt-1"><input type="number" value="@dynamic.DeliveryMonth" id="deliveryMonths" name="deliveryMonths" />Days</p>
+                    </div>
+                    <div class="col-sm">
+                        Contract Value
+                        <p class="d-flex mt-1"><input type="number" id="contractVal" value="@dynamic.ContractValue" name="contractValue" /></p>
+                    </div>
+                    <div class="col-sm">
+                        Performance Period
+                        <p class="d-flex align-items-center mt-1"><input type="number" id="performancePeriod" value="@dynamic.PerformancePeriod" name="performancePeriod" />Months</p>
+                    </div>
+                    <div class="col-sm">
+                        Grace Period
+                        <p class="d-flex mt-1"><input type="number" id="gracePeriod" value="@dynamic.GracePeriod" name="gracePeriod" /></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <button type="button" class="submitEnq revisionBtn" onclick="closeModal()">Cancel</button>
+                <button type="button" class="submitEnq publishBtn" onclick="SaveBGData()">Submit</button>
+            </div>
+        </div>
+
+
+        <div class="tableBlock TenderDtlModelTable">
+            <table class="table m-0 iterationTable">
+                <tr>
+                    <th colspan="5" class="TenderRevisonName ">Revision @Model.TenderRevisionNo</th>
+                <tr>
+                <tr>
+                    <th class="itemNm">Months</th>
+                    <th class="itemCat">Contract Value</th>
+                    <th class="Uom">Performance Period</th>
+                    <th class="TendPrc">Grace Period</th>
+                    <th></th>
+                <tr>
+                <tr>
+                    <td class="itemNm">@dynamic.DeliveryMonth</td>
+                    <td class="itemCat">@dynamic.ContractValue</td>
+                    <td class="Uom">@dynamic.PerformancePeriod</td>
+                    <td class="TendPrc">@dynamic.GracePeriod</td>
+                    <td></td>
+                <tr>
+                <tr>
+                    <th class="itemNm">Month</th>
+                    <th class="itemCat">% of Commission</th>
+                    <th class="Uom">% of BG</th>
+                    <th class="TendPrc">BG Amt Rs in Lacs</th>
+                    <th class="Tendcost">BG cost %</th>
+                </tr>
+                <tr>
+                    @{
+                        if (Model.List != null && Model.List.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.List.Where(x => x.BGType == 1).FirstOrDefault();
+                            if (dynamic != null)
+                            {
+                                bGMonth = dynamic.BGMonth;
+                                commisionPercentage = dynamic.CommisionPercentage;
+                                bGPercentage = dynamic.BGPercentage;
+                                bGAmount = dynamic.BGAmount;
+                            }
+                            else
+                            {
+                                bGMonth = 0;
+                                commisionPercentage = 0;
+                                bGPercentage = 0;
+                                bGAmount = 0;
+                            }
+                        }
+                        else
+                        {
+                            bGMonth = 0;
+                            commisionPercentage = 0;
+                            bGPercentage = 0;
+                            bGAmount = 0;
+                        }
+                    }
+
+                    <td class="itemNm"><input type="number" name="AdvMonth" min="0" id="advMonth" value="@bGMonth" class="" /></td>
+                    <td class="itemCat"><input type="number" name="AdvPercentageComm" placeholder="%" id="advcomm" value="@commisionPercentage" class="" /></td>
+                    <td class="Uom"><input type="number" name="AdvPercentageBG" id="advBG" value="@bGPercentage" class="" /></td>@*onchange="SetAdvValues()"*@
+                    <td class="TendPrc"><input type="number" name="AdvBGAmt" id="AdvBGAmt" value="@bGAmount" readonly /></td>
+                    <td class="Tendcost"><input type="number" name="ADVTotalBGPercentage" id="ADVTotalBGPercentage" readonly /></td>
+                </tr>
+                <tr>
+                    @{
+                        if (Model.List != null && Model.List.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.List.Where(x => x.BGType == 2).FirstOrDefault();
+                            if (dynamic != null)
+                            {
+                                bGMonth = dynamic.BGMonth;
+                                commisionPercentage = dynamic.CommisionPercentage;
+                                bGPercentage = dynamic.BGPercentage;
+                                bGAmount = dynamic.BGAmount;
+                            }
+                            else
+                            {
+                                bGMonth = dynamic.PerformancePeriod + dynamic.GracePeriod + dynamic.DeliveryMonth;
+                                commisionPercentage = 0;
+                                bGPercentage = 0;
+                                bGAmount = 0;
+
+                            }
+                        }
+                        else
+                        {
+                            bGMonth = dynamic.PerformancePeriod + dynamic.GracePeriod + dynamic.DeliveryMonth;
+                            commisionPercentage = 0;
+                            bGPercentage = 0;
+                            bGAmount = 0;
+                        }
+                    }
+                    <td class="itemNm"><input type="number" name="PfmMonth" value="@bGMonth" min="0" id="pfmMonth" class="" readonly /></td>
+                    <td class="itemCat"><input type="number" name="PfmPercentageComm" placeholder="%" id="pfmcomm" value="@commisionPercentage" class="" /></td>
+                    <td class="Uom"><input type="number" name="PfmPercentageBG" id="pfmBG" value="@bGPercentage" class="" /></td>@*onchange="SetPfmValues();"*@
+                    <td class="TendPrc"><input type="number" name="PfmBGAmt" id="PfmBGAmt" value="@bGAmount" readonly /></td>
+                    <td class="Tendcost"><input type="number" name="PfmTotalBGPercentage" id="PfmTotalBGPercentage" readonly /></td>
+                </tr>
+                <tr>
+                    @{
+                        if (Model.List != null && Model.List.Any())
+                        {
+                            dynamic = new ExpandoObject();
+                            dynamic = Model.List.Where(x => x.BGType == 3).FirstOrDefault();
+                            if (dynamic != null)
+                            {
+                                bGMonth = dynamic.BGMonth;
+                                commisionPercentage = dynamic.CommisionPercentage;
+                                bGPercentage = dynamic.BGPercentage;
+                                bGAmount = dynamic.BGAmount;
+                            }
+                            else
+                            {
+                                bGMonth = 0;
+                                commisionPercentage = 0;
+                                bGPercentage = 0;
+                                bGAmount = 0;
+                            }
+                        }
+                        else
+                        {
+                            bGMonth = 0;
+                            commisionPercentage = 0;
+                            bGPercentage = 0;
+                            bGAmount = 0;
+                        }
+                    }
+                    <td class="itemNm"><input type="number" name="RetMonth" value="@bGMonth" min="0" id="retMonth" class="" /></td>
+                    <td class="itemCat"><input type="number" name="RetPercentageComm" value="@commisionPercentage" id="retComm" class="" /></td>
+                    <td class="Uom"><input type="number" name="RetPercentageBG" id="retBG" value="@bGPercentage" class="" /></td>@*onchange="RetValues();"*@
+                    <td class="TendPrc"><input type="number" id="RetBGAmt" name="RetBGAmt" value="@bGAmount" readonly /></td>
+                    <td class="Tendcost"><input type="number" id="RetTotalBGPercentage" name="RetTotalBGPercentage" readonly /></td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-left"></td>
+                    <td class="Tendcost"><input type="number" id="TotalCalcBG" readonly /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+<script>
+    var bgParentDiv = $("div[revisionNo='"+@Model.TenderRevisionNo+"']")
+    setValues();
+    $(bgParentDiv).find('#advBG,#advMonth,#advcomm').focusout(function () {
+        SetAdvValues();
+    });
+
+    $(bgParentDiv).find('#pfmBG,#pfmMonth,#pfmcomm').focusout(function () {
+        SetPfmValues();
+    });
+
+    $(bgParentDiv).find('#retBG,#retMonth,#retComm').focusout(function () {
+        RetValues();
+    });
+
+    $(bgParentDiv).find('#deliveryMonths,#contractVal,#performancePeriod,#gracePeriod').focusout(function () {
+        setValues();
+    });
+    $(bgParentDiv).find("input").attr('readonly', true);
+    $(bgParentDiv).find("input").removeClass("");
+    $(bgParentDiv).find("input").removeClass("p-1");
+
+    function SetAdvValues() {
+        var month = Number($(bgParentDiv).find('#advMonth').val());
+        var comm = Number($(bgParentDiv).find('#advcomm').val());
+        var bg = Number($(bgParentDiv).find('#advBG').val());
+        ////
+        if (bg > 0) {
+            var amt = (Number(($(bgParentDiv).find('#contractVal').val() * bg) / 100));
+            var BGCost = (Number((amt * comm * month) / (100 * 12)));
+            $(bgParentDiv).find('#AdvBGAmt').val(Number(amt).toFixed(3))
+            $(bgParentDiv).find('#ADVTotalBGPercentage').val(Number(BGCost).toFixed(3));
+        }
+        else {
+            $(bgParentDiv).find('#AdvBGAmt').val(0);
+            $(bgParentDiv).find('#ADVTotalBGPercentage').val(0);
+        }
+        var totalBGPercentage = (Number($(bgParentDiv).find('#ADVTotalBGPercentage').val()) + Number($(bgParentDiv).find('#PfmTotalBGPercentage').val()) + Number($(bgParentDiv).find("#RetTotalBGPercentage").val()));
+        //ShowSnackBar(totalBGPercentage);
+        if (!isNaN(totalBGPercentage)) {
+            totalBGPercentage = totalBGPercentage.toFixed(3);
+        }
+        $(bgParentDiv).find('#TotalCalcBG').val(Number(totalBGPercentage).toFixed(3));
+    }
+
+    function SetPfmValues() {
+        var month = $(bgParentDiv).find('#pfmMonth').val();
+        var comm = $(bgParentDiv).find('#pfmcomm').val();
+        var bg = $(bgParentDiv).find('#pfmBG').val();
+        //
+        if (bg > 0) {
+            var amt = (Number(($(bgParentDiv).find('#contractVal').val() * bg) / 100));
+            var BGCost = (Number((amt * comm * month) / (100 * 12))).toFixed(2);
+
+            $(bgParentDiv).find('#PfmBGAmt').val(Number(amt).toFixed(3))
+            $(bgParentDiv).find('#PfmTotalBGPercentage').val(Number(BGCost).toFixed(3));
+        }
+        else {
+            $(bgParentDiv).find('#PfmBGAmt').val(0);
+            $(bgParentDiv).find('#PfmTotalBGPercentage').val(0);
+        }
+        //var totalBGPercentage = ($(bgParentDiv).find('#ADVTotalBGPercentage').val() + $(bgParentDiv).find('#PfmTotalBGPercentage').val() + $(bgParentDiv).find("#RetTotalBGPercentage").val());
+        var totalBGPercentage = (Number($(bgParentDiv).find('#ADVTotalBGPercentage').val()) + Number($(bgParentDiv).find('#PfmTotalBGPercentage').val()) + Number($(bgParentDiv).find("#RetTotalBGPercentage").val()));
+        //ShowSnackBar(totalBGPercentage);
+        if (!isNaN(totalBGPercentage)) {
+            totalBGPercentage = totalBGPercentage.toFixed(3);
+        }
+        $(bgParentDiv).find('#TotalCalcBG').val(Number(totalBGPercentage).toFixed(3));
+        return false;
+    }
+
+    function RetValues() {
+        var month = $(bgParentDiv).find('#retMonth').val();
+        var comm = $(bgParentDiv).find('#retComm').val();
+        var bg = $(bgParentDiv).find('#retBG').val();
+        //
+        if (bg > 0) {
+            var amt = (Number(($(bgParentDiv).find('#contractVal').val() * bg) / 100));
+            var BGCost = (Number((amt * comm * month) / (100 * 12)));
+            $(bgParentDiv).find('#RetBGAmt').val(Number(amt).toFixed(3))
+            $(bgParentDiv).find('#RetTotalBGPercentage').val(Number(BGCost).toFixed(3));
+        }
+        else {
+            $(bgParentDiv).find('#RetBGAmt').val(0);
+            $(bgParentDiv).find('#RetTotalBGPercentage').val(0);
+        }
+        var totalBGPercentage = (Number($(bgParentDiv).find('#ADVTotalBGPercentage').val()) + Number($(bgParentDiv).find('#PfmTotalBGPercentage').val()) + Number($(bgParentDiv).find("#RetTotalBGPercentage").val()));
+        //ShowSnackBar(totalBGPercentage);
+        if (!isNaN(totalBGPercentage)) {
+            totalBGPercentage = totalBGPercentage.toFixed(3);
+        }
+        $(bgParentDiv).find('#TotalCalcBG').val(Number(totalBGPercentage).toFixed(3));
+    }
+
+    function SaveBGData() {
+        var formSerialized = $(bgParentDiv).find("#BGCommisionForm").serialize();
+        formSerialized = formSerialized + "&TenderNo=" + $(bgParentDiv).find("#tndId").val() + "&TenderRevisionNo=" + $(bgParentDiv).find("#tndRevId").val();
+        $.ajax({
+            type: 'POST',
+            url: "/TenderPricing/SaveBGData",
+            data: formSerialized,
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    $(bgParentDiv).find(".modal").modal('hide');
+                    successModal();
+                }
+                else {
+                    failureModal('creation');
+                }
+            },
+            error: function (response) {
+            }
+        });
+    }
+
+    function setValues() {
+        
+        $(bgParentDiv).find("#pfmMonth").val(Number($(bgParentDiv).find("#deliveryMonths").val()) + Number($(bgParentDiv).find("#performancePeriod").val()) + Number($(bgParentDiv).find("#gracePeriod").val()));
+
+        SetAdvValues();
+        SetPfmValues();
+        RetValues();
+    }
+
+    //$(bgParentDiv).find(document).ready(function () {
+    
+    //});
+
+</script>

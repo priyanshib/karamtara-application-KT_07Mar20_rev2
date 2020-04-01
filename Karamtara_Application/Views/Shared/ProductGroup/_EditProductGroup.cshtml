@@ -1,0 +1,257 @@
+﻿@model Karamtara_Application.Models.ProductGroupModel
+
+@using (Html.BeginForm("EditAssembly", "ProductGroup", FormMethod.Post, new { @id = "CreateComponentForm" }))
+{
+    <div class="Catgdetails tableBlock" id="divProdEdit">
+        <div class="row">
+            <table class="table prodDetails m-0" id="prodTbl1">
+                <tr>
+                    <th class="proGrpCode" colspan="1">Product Group Code</th>
+                    <th class="proGrpNm" colspan="3">Product Group Name</th>
+                    <th colspan="2">Group Type</th>
+                    @*<th>Summary</th>
+                    <th>Drawing No</th>*@
+                </tr>
+                <tr>
+                    <td class="proGrpCode" colspan="1">
+                        <label id="lbl1" value="Group Code">@Model.ProductGroupCode</label>
+                        <input type="hidden" value="@Model.ProductGroupId" id="hidGroupId" name="AssemblyId" />
+                    </td>
+                    <td class="proGrpNm" colspan="3">
+                        <label id="lbl2" value="Name">@Model.ProductGroupName</label>
+                    </td>
+                    <td colspan="2">
+                        <label id="lbl3" value="Group Type">@Model.GroupType</label>
+                    </td>
+
+                    @*<td>
+            <label id="lbl4" value="DrawingNo">@Model.DrawingNo</label>
+        </td>*@
+                </tr>
+                <tr>
+                    <th colspan="1">Line Voltage</th>
+                    <th colspan="2"> Conductor Type</th>
+                    <th colspan="2">Conductor Name</th>
+                    <th colspan="1">Bundle Type</th>
+                    <th colspan="1">Bundle Spacing</th>
+                </tr>
+                <tr>
+                    <td colspan="1">
+                        <label id="lbl1" value="Line Voltage">@Model.LineVoltage</label>
+                    </td>
+                    <td colspan="2">
+                        <label id="lbl2" value="UTS">@Model.Conductor</label>
+                    </td>
+                    <td colspan="2">
+                        <label id="lbl0" value="Conductor">@Model.ConductorName</label>
+                    </td>
+                    <td colspan="1">
+                        <label id="lbl3" value="Bundle Type">@Model.BundleType</label>
+                    </td>
+                    <td colspan="1">
+                        <label id="lbl3" value="Bundle Spacing">@Model.BundleSpacing</label>
+                    </td>
+                </tr>
+
+            </table>
+            <table class="table prodDetails mb-5" id="prodTbl2">
+                <tr>
+                    <th class="srNo">Sr.No</th>
+                    <th class="catNo">Code / Catalogue Number</th>
+                    <th class="productNm">Name</th>
+                    <th class="productNm"> Technical Name</th>
+                    @*<th class="prodNo text-center">Quantity <span class="position-relative" style="top:5px">(Nos)</span></th>*@
+                    <th class="prodNo">Remove</th>
+                </tr>
+                @{int foreachCount = 1;
+
+                }
+                @foreach (var item in Model.MasterList)
+                {
+                    <tr>
+                        <td><input type="text" value="@foreachCount" class="prods" /></td>
+                        <td>
+                            <input type="text" value="@(string.IsNullOrEmpty(item.CatalogueNo) ? item.Code : item.CatalogueNo)" readonly="readonly" disabled="disabled" class="prods autocompCode" name="editAssmCode" data-value=@foreachCount id="ObjectCode_@foreachCount" onclick="AutoCompleteCode();" />
+                            <input type="hidden" value="@item.Id" name="editAssmId" data-value=@foreachCount id="ObjectId_@foreachCount" />
+                            <input type="hidden" value="@item.MasterType" name="ObjectType" data-value=@foreachCount id="ObjectType_@foreachCount" />
+                        </td>
+                        <td><input type="text" value="@item.Name" class="prods autocompName" name="editAssmName" readonly="readonly" disabled="disabled" data-value=@foreachCount id="ObjectName_@foreachCount" onclick="AutoCompleteName();" /></td>
+                        <td><input type="text" value="@item.TechnicalName" class="prods autocompTech" name="editAssmTech" data-value=@foreachCount id="ObjectTech_@foreachCount" readonly="readonly" disabled="disabled" /></td>
+                        @*<td><input type="text" value="@item.Quantity" class="prods" name="editQty" id="Quantity_@foreachCount" /></td>*@
+                        <td class="closesTD c-pointer text-center">
+                            <img src="/Assets/images/collapseClose.svg" width="12px" id=Rem_@foreachCount onclick="ClearRow('@foreachCount')">
+                        </td>
+                    </tr>
+                    foreachCount++;
+                }
+            </table>
+            <div class="saveProddtls">
+                <button type="button" class="submitBomBtn saveBtn opacityBtnyelow" id="addRowsBtn" onclick="AddRowFunction();">Add Rows</button>
+                <button type="submit" class="submitBomBtn publishBtn opacityBtngreen" id="btnProdSave">Save </button>
+            </div>
+        </div>
+    </div>
+}
+<script>
+
+    function AutoCompleteName() {
+        $(".autocompName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/ProductGroup/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                //$("#ObjectId_" + countId).val(objectId);
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+                //var type = i.item.Type;
+
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num = $(this).attr('data-value');
+                    $("#ObjectId_" + num).val("");
+                    $("#type_" + num).val("");
+                    ClearRow(num);
+                }
+            },
+            create: function () {
+                $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/" + item.Type + ".png' width='20px'></span></div>")
+                        .appendTo(ul);
+                };
+            },
+            minLength: 2
+        });
+    }
+
+    function AutoCompleteCode() {
+
+        $(".autocompCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/ProductGroup/GetAssembliesAutoComplete",
+                    data: { prefix: request.term },
+                    dataType: 'json',
+                    success: function (data) {
+                        autoData = data;
+                        response($.map(data, function (item) {
+                            return { label: item.Name + '( ' + (item.CatalogueNo ? item.CatalogueNo : item.Code) + ' )', value: item.Id, Type: item.MasterType }
+                        }))
+                    },
+                    error: function (response) {
+                    },
+                    failure: function (response) {
+                    }
+                });
+            },
+            select: function (e, i) {
+                $(this).val(i.item.label);
+                var countId = $(this).attr('data-value');
+                var objectId = i.item.value;
+                //$("#ObjectId_" + countId).val(objectId);
+                AutoFillSelectedRow(countId, objectId, i.item.Type);
+                //var type = i.item.Type;
+
+                return false;
+            },
+            change: function (e, i) {
+                if (i.item == null) {
+                    $(this).val("");
+                    $(this).focus();
+                    var num = $(this).attr('data-value');
+                    $("#ObjectId_" + num).val("");
+                    $("#type_" + num).val("");
+                    ClearRow(num);
+                }
+            },
+            create: function () {
+                $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .append("<div>" + item.label + "<span class='float-right'><img src='../Assets/images/" + item.Type + ".png' width='20px'></span></div>")
+                        .appendTo(ul);
+                };
+            },
+            minLength: 2
+        })
+    }
+
+    function AutoFillSelectedRow(num, objectId, type) {
+        let obj = autoData.find(x => x.Id == objectId && x.MasterType == type);
+        if (type == 2) {
+            $("#ObjectCode_" + num).val(obj.Code);
+        }
+        else {
+            $("#ObjectCode_" + num).val(obj.CatalogueNo);
+        }
+        $("#ObjectId_" + num).val(objectId);
+        $("#ObjectName_" + num).val(obj.Name);
+        $("#ObjectTech_" + num).val(obj.TechnicalName);
+        $("#ObjectType_" + num).val(type);
+    };
+
+    function ClearRow(num) {
+        $("#ObjectCode_" + num).val("");
+        $("#ObjectId_" + num).val("");
+        $("#ObjectName_" + num).val("");
+        $("#ObjectTech_" + num).val("");
+        $("#ObjectType_" + num).val("");
+        //$("#Quantity_" + num).val("");
+
+        $("#ObjectCode_" + num).removeAttr('readonly');
+        $("#ObjectName_" + num).removeAttr('readonly');
+
+        $("#ObjectCode_" + num).removeAttr('disabled');
+        $("#ObjectName_" + num).removeAttr('disabled');
+
+        $("#ObjectCode_" + num).addClass('whiteBgInput');
+        $("#ObjectName_" + num).addClass('whiteBgInput');
+        //$("#Quantity_" + num).addClass('whiteBgInput');
+
+        $("#ObjectTech_" + num).removeAttr('disabled');
+
+    };
+
+    function AddRowFunction() {
+        var oldCount = $('#prodTbl2 tr').length;
+        $.each(new Array(5), function (index) {
+            var newCount = oldCount + index;
+            $('#prodTbl2 tr:last')
+                .after('<tr> <td><input type="text" value=' + newCount + ' class= "prods" /></td > <td>' +
+                    '<input type="text" class="prods autocompCode whiteBgInput" name="editAssmCode" data-value=' + newCount + ' id = ObjectCode_' + newCount + ' onclick = "AutoCompleteCode();" />' +
+                    '<input type="hidden" class="prods autocompCode" name="editAssmId" data-value=' + newCount + ' id = ObjectId_' + newCount + ' /></td>' +
+                    '<input type="hidden" name="ObjectType" data-value=' + newCount + ' id=ObjectType_' + newCount + '  />' +
+                    '<td><input type="text" class="prods autocompName whiteBgInput" name="editAssmName" data-value=' + newCount + ' id = ObjectName_' + newCount + ' onclick= "AutoCompleteName();"/></td>' +
+                    '<td><input type="text" class="prods autocompTech" name="editAssmTech" data-value=' + newCount + ' id = ObjectTech_' + newCount + ' readonly="readonly" /></td>' +
+                    //'<td><input type="text" class="prods whiteBgInput" name="editQty" id="Quantity_' + newCount + '" /></td>' +
+                    '<td class="closesTD c-pointer text-center">' +
+                    '<img src="/Assets/images/collapseClose.svg" width="12px" id="Rem_' + newCount + '" onclick="ClearRow(' + newCount + ')">' +
+                    '</td> </tr > ');
+            index++;
+        });
+
+    };
+
+</script>
+
